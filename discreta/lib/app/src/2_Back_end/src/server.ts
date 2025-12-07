@@ -11,11 +11,6 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
-// Test route
-app.get("/api/health", (_, res) => {
-  res.json({ status: "ok", server: "Discreta API" });
-});
-
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
