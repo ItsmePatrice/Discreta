@@ -11,6 +11,11 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
+app.get("/", (req, res) => {
+  res.json({ message: "Discreta server is running" });
+});
+
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
