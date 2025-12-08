@@ -15,7 +15,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
