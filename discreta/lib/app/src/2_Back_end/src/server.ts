@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
+import { initDB } from "./Config/database";
 
 dotenv.config();
 
@@ -16,8 +17,12 @@ app.get("/", (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 3000;
+initDB().then(() => {
+  const PORT = process.env.SERVER_PORT;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Discreta server running on port ${PORT}`);
+  app.listen(PORT, () => {
+    console.log(`🚀 Discreta server running on port ${PORT}`);
+  });
+}).catch((err) => {
+  console.error("Failed to initialize database", err);
 });

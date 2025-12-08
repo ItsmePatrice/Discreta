@@ -23,6 +23,7 @@
     "@types/express": "^5.0.6",
     "@types/helmet": "^0.0.48",
     "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
