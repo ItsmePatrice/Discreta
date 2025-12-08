@@ -18,7 +18,7 @@ async function initDB() {
     try {
         await pool.query('SELECT NOW()');
     } catch (e) {
-        console.error('Error connecting to the database', e);
+        throw e;
     }
 }
 
