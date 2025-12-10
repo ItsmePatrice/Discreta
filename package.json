@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "@types/winston": "^2.4.4"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.6.0"
+  }
+}

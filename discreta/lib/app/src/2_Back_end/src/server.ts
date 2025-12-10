@@ -3,19 +3,23 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import { initDB } from "./Config/database";
+import authRoutes from './Routes/authRoutes.js';
 
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+}));
+
 app.use(helmet());
 
-app.get("/", (req, res) => {
-  res.json({ message: "Discreta server is running" });
-});
-
+// Mount routes
+app.use('/api/auth', authRoutes);
 
 initDB().then(() => {
   const PORT = process.env.SERVER_PORT;
