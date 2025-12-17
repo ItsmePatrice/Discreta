@@ -1,9 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import authController from '../Controllers/authController.js';
-import tokenVerifier from '../Middlewares/verifyToken.js';
+import authController from '../Controllers/authController';
+import tokenVerifier from '../Middlewares/verifyToken';
 
-router.get('/user-exists/:firebaseUid', authController.checkIfUserExists);
-router.post('/register', tokenVerifier.verifyToken, authController.googleSignUp);
+router.post('/login', tokenVerifier.verifyToken, authController.googleSignUp);
 
 export default router;

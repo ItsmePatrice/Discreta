@@ -1,4 +1,10 @@
+import 'dart:convert';
+
+import 'package:discreta/app/src/1_Front_end/lib/Classes/discreta_user.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/http_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/status_codes.dart';
+import 'package:discreta/app/src/1_Front_end/lib/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -14,6 +20,7 @@ class AuthService {
   String? get userFirstName => currentUser?.displayName?.split(' ').first;
   String? _firebaseIdToken;
   String? get firebaseIdToken => _firebaseIdToken;
+  DiscretaUser? discretaUser;
 
   // Google sign in
   Future<UserCredential?> signInWithGoogle() async {
@@ -42,6 +49,27 @@ class AuthService {
         e,
         stackTrace,
       );
+      rethrow;
+    }
+  }
+
+  Future<DiscretaUser> fetchOrCreateUser() async {
+    try {
+      final response = await HttpService.instance.post(ApiRoutes.login);
+      final responseBody = jsonDecode(response.body);
+      if (response.statusCode == StatusCodes.created) {
+        DiscretaUser user = DiscretaUser.fromJson(responseBody);
+        discretaUser = user;
+        return user;
+      } else {
+        String message = responseBody['message'];
+        LogService.instance.logWarning(
+          "The server responded with status code ${response.statusCode} and message: $message",
+        );
+        throw Exception(message);
+      }
+    } catch (e) {
+      LogService.instance.logError('Error while fetching or creating user', e);
       rethrow;
     }
   }

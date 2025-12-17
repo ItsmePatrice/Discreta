@@ -1,10 +1,12 @@
-import UserService from '../Services/userService.js';
-import type { UserDto } from '../Models/userDTO.js';
+import UserService from '../Services/userService';
+import type { UserDto } from '../Models/userDTO';
 import { Request, Response } from "express";
-import StatusCodes from '../StatusCodes/statusCode.js';
-import logger from '../logs.js';
+import StatusCodes from '../StatusCodes/statusCode';
+import logger from '../logs';
 
 const authController = {
+
+    // creates a new user or returns an existing one
     googleSignUp: async (req: Request, res: Response) => {
         try {
             const firebaseUid = req.firebaseUid;
@@ -13,12 +15,6 @@ const authController = {
             }
             const existingUser = await UserService.findUserByFirebaseId(firebaseUid);
             if (!existingUser) {
-                const { profilePictureUrl, userType } = req.body;
-                if (!profilePictureUrl || !userType) {
-                    return res
-                        .status(StatusCodes.badRequest)
-                        .json({ message: 'profilePictureUrl and userType are required' });
-                }
                 if (!req.firebaseUid || !req.firstName || !req.lastName || !req.email) {
                     throw ("One or more of these fields are undefined: firebaseUid, firstName, lastName, email");
                 }
@@ -41,30 +37,6 @@ const authController = {
             return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
         }
     },
-
-    checkIfUserExists: async (req: Request, res: Response) => {
-        const firebaseUserId = req.params.firebaseUid;
-        try {
-            if (!firebaseUserId) {
-                logger.info('the Firebase user id was not found in the request');
-                return res.status(StatusCodes.badRequest).json({
-                    'message':
-                        'the Firebase user id was not found in the request'
-                });
-            }
-            const existingUser = await UserService.findUserByFirebaseId(firebaseUserId);
-            if (!existingUser) {
-                return res.status(StatusCodes.notFound).json({ exists: false });
-            } else {
-                return res.status(StatusCodes.ok).json(existingUser);
-            }
-        } catch (e) {
-            return res.status(StatusCodes.internalServerError).json({
-                message: `error checking 
-            if user exits: ${e}`
-            });
-        }
-    }
 }
 
 export default authController;

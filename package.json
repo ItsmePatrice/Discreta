@@ -3,6 +3,7 @@
     "@types/winston": "^2.4.4"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "firebase-admin": "^13.6.0"
   }
 }

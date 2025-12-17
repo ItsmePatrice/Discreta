@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import StatusCodes from "../StatusCodes/statusCode.js";
+import StatusCodes from "../StatusCodes/statusCode";
 
-import logger from "../logs.js";
-import admin from '../Config/firebase.js';
+import logger from "../logs";
+import admin from '../Config/firebase';
 
 const tokenVerifier = {
     verifyToken: async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +22,7 @@ const tokenVerifier = {
             req.lastName = lastName;
             req.email = decodedToken.email;
             // add login here to make sure firebase connection was successfull
-            logger.info(`Firebase connection successful for user: ${firebaseUid}`);
+            logger.info(`Firebase connection successful for user: ${firebaseUid} with name ${req.firstName}`);
             next();
         } catch (e) {
             logger.error('Token verification failed:', e);
