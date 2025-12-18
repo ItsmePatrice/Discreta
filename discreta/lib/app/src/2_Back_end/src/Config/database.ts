@@ -31,7 +31,6 @@ export function decrypt(encryptedText: string) {
   return decrypted;
 }
 
-// ----- DB initialization helpers -----
 export async function testDbConnection() {
   try {
     const result = await sql`SELECT version()` as { version: string }[];
