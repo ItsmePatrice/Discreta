@@ -98,11 +98,23 @@ abstract class AppLocalizations {
     Locale('fr'),
   ];
 
-  /// The conventional newborn programmer greeting
+  /// No description provided for @noInternetTitle.
   ///
   /// In en, this message translates to:
-  /// **'Hello World!'**
-  String get helloWorld;
+  /// **'No internet connection'**
+  String get noInternetTitle;
+
+  /// No description provided for @noInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Please verify your internet connection and try again.'**
+  String get noInternetConnection;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

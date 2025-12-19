@@ -96,9 +96,9 @@ class _SplashPageState extends State<SplashPage> {
       if (mounted) {
         MessageService.displayNoConnectionDialog(
           context: context,
-          title: 'No Internet Connection',
-          message:
-              'Device is not connected to the internet. Please check your connection and try again.',
+          title: AppLocalizations.of(context)!.noInternetTitle,
+          message: AppLocalizations.of(context)!.noInternetConnection,
+          buttonText: AppLocalizations.of(context)!.retry,
           onRetry: () async {
             initializeApp();
           },

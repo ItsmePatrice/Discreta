@@ -9,5 +9,12 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get helloWorld => 'Hello World!';
+  String get noInternetTitle => 'No internet connection';
+
+  @override
+  String get noInternetConnection =>
+      'Please verify your internet connection and try again.';
+
+  @override
+  String get retry => 'Retry';
 }
