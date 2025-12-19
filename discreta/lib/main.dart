@@ -1,97 +1,137 @@
+import 'package:discreta/app/src/1_Front_end/lib/Classes/discreta_user.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/home_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/login_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/connectivity_checker.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
+import 'package:discreta/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'firebase_options.dart';
+
+// Global key to control MyApp state (for changing locale)
+GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(const MyApp());
+  runApp(MyApp(key: myAppKey));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('fr');
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString('language', locale.languageCode);
+    });
+  }
+
+  String currentLanguage() => _locale.languageCode;
+
+  void setLanguage(String code) {
+    final lang = (code == 'en') ? 'en' : 'fr';
+    myAppKey.currentState?.setLocale(Locale(lang));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return ScreenUtilInit(
+      designSize: const Size(360, 800),
+      minTextAdapt: true,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'Discreta',
+          locale: _locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('en'), Locale('fr')],
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          ),
+          home: const SplashPage(),
+        );
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class SplashPage extends StatefulWidget {
+  const SplashPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<SplashPage> createState() => _SplashPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  // check if the user is already signed in. If so, lead them to home page directly.
-  // if not, show the login page.
+class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    initializePage();
+    Future.delayed(Duration.zero, () => initializeApp());
   }
 
-  void initializePage() async {
-    bool isSignedIn =
-        AuthService.instance.currentUser !=
-        null; // verify this logic again. It seams to not be giving the right output
+  Future<void> initializeApp() async {
+    bool isConnected = await ConnectivityChecker.hasInternetConnection();
+
+    if (!isConnected) {
+      if (mounted) {
+        MessageService.displayNoConnectionDialog(
+          context: context,
+          title: 'No Internet Connection',
+          message:
+              'Device is not connected to the internet. Please check your connection and try again.',
+          onRetry: () async {
+            initializeApp();
+          },
+        );
+      }
+      return;
+    }
+
+    bool isSignedIn = AuthService.instance.currentUser != null;
     if (!isSignedIn) {
-      _leadUserToLoginPage();
+      safePushReplacement(const LoginPage());
     } else {
-      _leadUserToHomePage();
+      safePushReplacement(const HomePage());
     }
   }
 
-  void _leadUserToLoginPage() {
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
-  }
-
-  void _leadUserToHomePage() {
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+  void safePushReplacement(Widget page) {
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (context) => page));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-        title: Text(widget.title),
+      body: Center(
+        child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }
