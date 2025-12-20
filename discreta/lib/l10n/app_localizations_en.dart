@@ -9,11 +9,11 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get noInternetTitle => 'No internet connection';
+  String get noInternetTitle => 'No Internet connection';
 
   @override
   String get noInternetConnection =>
-      'Please verify your internet connection and try again.';
+      'Please verify your Internet connection and try again.';
 
   @override
   String get retry => 'Retry';

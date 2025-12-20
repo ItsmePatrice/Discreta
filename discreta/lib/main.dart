@@ -1,4 +1,4 @@
-import 'package:discreta/app/src/1_Front_end/lib/Classes/discreta_user.dart';
+import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/home_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/login_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
@@ -15,6 +15,9 @@ import 'firebase_options.dart';
 
 // Global key to control MyApp state (for changing locale)
 GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
+
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,8 +69,11 @@ class _MyAppState extends State<MyApp> {
           ],
           supportedLocales: const [Locale('en'), Locale('fr')],
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppColors.primaryColor,
+            ),
           ),
+          navigatorObservers: [routeObserver],
           home: const SplashPage(),
         );
       },

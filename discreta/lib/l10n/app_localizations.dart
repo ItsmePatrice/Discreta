@@ -101,13 +101,13 @@ abstract class AppLocalizations {
   /// No description provided for @noInternetTitle.
   ///
   /// In en, this message translates to:
-  /// **'No internet connection'**
+  /// **'No Internet connection'**
   String get noInternetTitle;
 
   /// No description provided for @noInternetConnection.
   ///
   /// In en, this message translates to:
-  /// **'Please verify your internet connection and try again.'**
+  /// **'Please verify your Internet connection and try again.'**
   String get noInternetConnection;
 
   /// No description provided for @retry.
