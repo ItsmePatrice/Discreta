@@ -7,14 +7,14 @@ import logger from '../logs';
 const authController = {
 
     // creates a new user or returns an existing one
-    googleSignUp: async (req: Request, res: Response) => {
+    googleSignIn: async (req: Request, res: Response) => {
         try {
             const firebaseUid = req.firebaseUid;
             if (!firebaseUid) {
                 throw ("firebaseUid was null");
             }
             const existingUser = await UserService.findUserByFirebaseId(firebaseUid);
-            if (!existingUser) {
+            if (!existingUser?.uid) {
                 if (!req.firebaseUid || !req.firstName || !req.lastName || !req.email) {
                     throw ("One or more of these fields are undefined: firebaseUid, firstName, lastName, email");
                 }
@@ -26,7 +26,6 @@ const authController = {
                     isSubscribed: false
                 };
                 const user = await UserService.createUser(newUser);
-                logger.info(`Created new user with firebaseUid ${firebaseUid}. ${JSON.stringify(user)}`);
                 return res.status(StatusCodes.created).json(user);
             }
             logger.info(`User with firebaseUid ${firebaseUid} already exists. ${JSON.stringify(existingUser)}`);

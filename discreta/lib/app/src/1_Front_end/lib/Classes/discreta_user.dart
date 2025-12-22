@@ -1,5 +1,3 @@
-import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
-
 class DiscretaUser {
   final String uid;
   final String firebaseUserId;
@@ -22,17 +20,6 @@ class DiscretaUser {
   });
 
   factory DiscretaUser.fromJson(Map<String, dynamic> json) {
-    LogService.instance.logDebug('uid: ${json['uid']}');
-    LogService.instance.logDebug(
-      'firebase_user_id: ${json['firebase_user_id']}',
-    );
-    LogService.instance.logDebug('first_name: ${json['first_name']}');
-    LogService.instance.logDebug('last_name: ${json['last_name']}');
-    LogService.instance.logDebug('email: ${json['email']}');
-    LogService.instance.logDebug('isSubscribed: ${json['is_subscribed']}');
-    LogService.instance.logDebug('created_at: ${json['created_at']}');
-    LogService.instance.logDebug('updated_at: ${json['updated_at']}');
-
     return DiscretaUser(
       uid: json['uid'] as String,
       firebaseUserId: json['firebase_user_id'] as String,
