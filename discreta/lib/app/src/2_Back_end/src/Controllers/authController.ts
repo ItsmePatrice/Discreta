@@ -26,12 +26,11 @@ const authController = {
                     isSubscribed: false
                 };
                 const user = await UserService.createUser(newUser);
+                logger.info(`Created new user with firebaseUid ${firebaseUid}. ${JSON.stringify(user)}`);
                 return res.status(StatusCodes.created).json(user);
             }
-            return res.status(StatusCodes.conflict).json({
-                message:
-                    `This user account already exists`
-            });
+            logger.info(`User with firebaseUid ${firebaseUid} already exists. ${JSON.stringify(existingUser)}`);
+            return res.status(StatusCodes.ok).json(existingUser);
         } catch (e) {
             logger.error(e);
             return res.status(StatusCodes.internalServerError).json({ message: `${e}` });

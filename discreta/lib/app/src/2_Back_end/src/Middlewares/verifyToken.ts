@@ -21,8 +21,6 @@ const tokenVerifier = {
             req.firstName = firstName;
             req.lastName = lastName;
             req.email = decodedToken.email;
-            // add login here to make sure firebase connection was successfull
-            logger.info(`Firebase connection successful for user: ${firebaseUid} with name ${req.firstName}`);
             next();
         } catch (e) {
             logger.error('Token verification failed:', e);

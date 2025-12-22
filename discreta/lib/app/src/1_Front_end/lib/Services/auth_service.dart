@@ -27,9 +27,6 @@ class AuthService {
     try {
       final GoogleSignInAccount? gUser = await _googleSignIn.signIn();
       if (gUser == null) {
-        LogService.instance.logWarning(
-          'Google sign in was cancelled by the user',
-        );
         return null;
       }
       final GoogleSignInAuthentication gAuth = await gUser.authentication;
@@ -57,7 +54,11 @@ class AuthService {
     try {
       final response = await HttpService.instance.post(ApiRoutes.login);
       final responseBody = jsonDecode(response.body);
-      if (response.statusCode == StatusCodes.created) {
+      if (response.statusCode == StatusCodes.created ||
+          response.statusCode == StatusCodes.ok) {
+        LogService.instance.logInfo(
+          "User successfully fetched or created with response: $responseBody",
+        );
         DiscretaUser user = DiscretaUser.fromJson(responseBody);
         discretaUser = user;
         return user;

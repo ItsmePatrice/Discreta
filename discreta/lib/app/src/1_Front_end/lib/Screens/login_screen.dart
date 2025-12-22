@@ -58,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
         title: AppLocalizations.of(context)!.signInFailed,
         message: AppLocalizations.of(context)!.signInFailedMessage,
       );
+      await AuthService.instance.signOutUser();
       return;
     } finally {
       if (mounted) {

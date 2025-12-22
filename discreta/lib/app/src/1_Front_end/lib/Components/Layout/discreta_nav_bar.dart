@@ -36,6 +36,15 @@ class DiscretaNavBar extends StatelessWidget {
       onTap: (index) => _onItemTapped(context, index),
       items: [
         const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
+        const BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add'),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
       ],
     );
   }
