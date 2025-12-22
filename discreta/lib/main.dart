@@ -68,11 +68,6 @@ class _MyAppState extends State<MyApp> {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [Locale('en'), Locale('fr')],
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.primaryColor,
-            ),
-          ),
           navigatorObservers: [routeObserver],
           home: const SplashPage(),
         );

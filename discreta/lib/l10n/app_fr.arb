@@ -1,5 +1,13 @@
 {
+  "projectName": "Discreta",
   "noInternetTitle": "Pas de connexion Internet", 
   "noInternetConnection": "Veuillez vérifier votre connexion Internet et réessayer.",
-  "retry": "Réessayer"
+  "retry": "Réessayer",
+  "slogan": "La sécurité, en toute discretion",
+  "brandMessage": "Un geste. Une alerte. Un soutien fiable,\n en toute discrétion.",
+  "signInWithGoogle": "Se connecter avec Google",
+  "signInError": "Erreur de connexion",
+  "signInErrorMessage": "Nous n’avons pas pu compléter la connexion. Veuillez réessayer.",
+  "signInFailed": "Échec de la connexion",
+  "signInFailedMessage": "Une erreur inattendue est survenue. Veuillez réessayer plus tard ou vérifier votre connexion Internet."
 }

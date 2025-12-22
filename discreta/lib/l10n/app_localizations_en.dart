@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get projectName => 'Discreta';
+
+  @override
   String get noInternetTitle => 'No Internet connection';
 
   @override
@@ -17,4 +20,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get slogan => 'Safety in complete discretion';
+
+  @override
+  String get brandMessage =>
+      'One gesture. One alert. Reliable support,\n in complete discretion.';
+
+  @override
+  String get signInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get signInError => 'Sign in error';
+
+  @override
+  String get signInErrorMessage =>
+      'We couldn’t complete your sign in. Please try again.';
+
+  @override
+  String get signInFailed => 'Sign in failed';
+
+  @override
+  String get signInFailedMessage =>
+      'An unexpected error occurred. Please check your Internet connection or try again later.';
 }

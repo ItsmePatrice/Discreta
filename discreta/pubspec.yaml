@@ -75,6 +75,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/app/src/1_Front_end/Assets/Images/android_neutral_sq_ctn.svg
+    - lib/app/src/1_Front_end/Assets/Images/purple_lady.jpg
+    - lib/app/src/1_Front_end/Assets/Images/google_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('fr'),
   ];
 
+  /// No description provided for @projectName.
+  ///
+  /// In en, this message translates to:
+  /// **'Discreta'**
+  String get projectName;
+
   /// No description provided for @noInternetTitle.
   ///
   /// In en, this message translates to:
@@ -115,6 +121,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// No description provided for @slogan.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety in complete discretion'**
+  String get slogan;
+
+  /// No description provided for @brandMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'One gesture. One alert. Reliable support,\n in complete discretion.'**
+  String get brandMessage;
+
+  /// No description provided for @signInWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get signInWithGoogle;
+
+  /// No description provided for @signInError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in error'**
+  String get signInError;
+
+  /// No description provided for @signInErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn’t complete your sign in. Please try again.'**
+  String get signInErrorMessage;
+
+  /// No description provided for @signInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in failed'**
+  String get signInFailed;
+
+  /// No description provided for @signInFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please check your Internet connection or try again later.'**
+  String get signInFailedMessage;
 }
 
 class _AppLocalizationsDelegate
