@@ -9,5 +9,9 @@
   "signInError": "Sign in error",
   "signInErrorMessage": "We couldn’t complete your sign in. Please try again.",
   "signInFailed": "Sign in failed",
-  "signInFailedMessage": "An unexpected error occurred. Please check your Internet connection or try again later."
+  "signInFailedMessage": "An unexpected error occurred. Please check your Internet connection or try again later.",
+  "home": "Home",
+  "contacts": "Contacts",
+  "guide": "Guide",
+  "profile": "Profile" 
 }

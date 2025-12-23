@@ -75,6 +75,7 @@ export async function createUsersTable() {
         first_name TEXT,
         last_name JSONB NOT NULL,
         email JSONB NOT NULL,
+        language TEXT DEFAULT 'fr',
 
         is_subscribed BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMPTZ DEFAULT NOW(),

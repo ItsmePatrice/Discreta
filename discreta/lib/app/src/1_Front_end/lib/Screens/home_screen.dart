@@ -2,6 +2,8 @@ import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/Layout/discreta_nav_bar.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -13,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with RouteAware {
   String? _firstName;
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -42,8 +44,11 @@ class _HomePageState extends State<HomePage> with RouteAware {
   }
 
   void initializePage() async {
-    // _firstName = AuthService.instance.userFirstName;
-    // fetch all the user's info that they stored. Normally, their stored list of contacts for now.
+    _firstName = AuthService.instance.userFirstName;
+    final Locale userLocale = Locale(
+      AuthService.instance.discretaUser?.language ?? 'fr',
+    );
+    myAppKey.currentState?.setLocale(userLocale);
   }
 
   @override

@@ -16,6 +16,7 @@ const UserService = {
                 uid: user.uid,
                 firebase_user_id: user.firebase_user_id,
                 first_name: user.first_name,
+                language: user.language,
                 last_name: decrypt(user.last_name),
                 email: decrypt(user.email),
                 is_subscribed: user.is_subscribed,
@@ -51,6 +52,7 @@ const UserService = {
                 first_name: user.first_name,
                 last_name: decrypt(user.last_name),
                 email: decrypt(user.email),
+                language: user.language,
                 is_subscribed: user.is_subscribed,
                 created_at: user.created_at,
                 updated_at: user.updated_at

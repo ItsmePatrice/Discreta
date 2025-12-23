@@ -44,4 +44,16 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get signInFailedMessage =>
       'Une erreur inattendue est survenue. Veuillez réessayer plus tard ou vérifier votre connexion Internet.';
+
+  @override
+  String get home => 'Accueil';
+
+  @override
+  String get contacts => 'Contacts';
+
+  @override
+  String get guide => 'Guide';
+
+  @override
+  String get profile => 'Profil';
 }

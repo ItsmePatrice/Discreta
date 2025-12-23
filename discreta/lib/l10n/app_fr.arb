@@ -9,5 +9,9 @@
   "signInError": "Erreur de connexion",
   "signInErrorMessage": "Nous n’avons pas pu compléter la connexion. Veuillez réessayer.",
   "signInFailed": "Échec de la connexion",
-  "signInFailedMessage": "Une erreur inattendue est survenue. Veuillez réessayer plus tard ou vérifier votre connexion Internet."
+  "signInFailedMessage": "Une erreur inattendue est survenue. Veuillez réessayer plus tard ou vérifier votre connexion Internet.",
+  "home": "Accueil",
+  "contacts": "Contacts",
+  "guide": "Guide",
+  "profile": "Profil"
 }

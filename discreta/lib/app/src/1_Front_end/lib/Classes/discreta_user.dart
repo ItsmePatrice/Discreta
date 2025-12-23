@@ -5,6 +5,7 @@ class DiscretaUser {
   final String lastName;
   final String email;
   final bool isSubscribed;
+  final String language;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -15,6 +16,7 @@ class DiscretaUser {
     required this.lastName,
     required this.email,
     required this.isSubscribed,
+    required this.language,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -26,6 +28,7 @@ class DiscretaUser {
       firstName: json['first_name'] as String,
       lastName: json['last_name'] as String,
       email: json['email'] as String,
+      language: json['language'] as String,
       isSubscribed: json['is_subscribed'] as bool,
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
