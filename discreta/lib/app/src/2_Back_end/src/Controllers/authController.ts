@@ -14,7 +14,7 @@ const authController = {
                 throw ("firebaseUid was null");
             }
             const existingUser = await UserService.findUserByFirebaseId(firebaseUid);
-            if (!existingUser?.uid) {
+            if (!existingUser) {
                 if (!req.firebaseUid || !req.firstName || !req.lastName || !req.email) {
                     throw ("One or more of these fields are undefined: firebaseUid, firstName, lastName, email");
                 }
@@ -28,7 +28,6 @@ const authController = {
                 const user = await UserService.createUser(newUser);
                 return res.status(StatusCodes.created).json(user);
             }
-            logger.info(`User with firebaseUid ${firebaseUid} already exists. ${JSON.stringify(existingUser)}`);
             return res.status(StatusCodes.ok).json(existingUser);
         } catch (e) {
             logger.error(e);

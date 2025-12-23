@@ -56,9 +56,6 @@ class AuthService {
       final responseBody = jsonDecode(response.body);
       if (response.statusCode == StatusCodes.created ||
           response.statusCode == StatusCodes.ok) {
-        LogService.instance.logInfo(
-          "User successfully fetched or created with response: $responseBody",
-        );
         DiscretaUser user = DiscretaUser.fromJson(responseBody);
         discretaUser = user;
         return user;

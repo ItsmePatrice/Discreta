@@ -14,7 +14,7 @@ const UserService = {
 
             const decryptedUser = {
                 uid: user.uid,
-                firebase_user_id: decrypt(user.firebase_user_id),
+                firebase_user_id: user.firebase_user_id,
                 first_name: user.first_name,
                 last_name: decrypt(user.last_name),
                 email: decrypt(user.email),
@@ -35,7 +35,7 @@ const UserService = {
             const createdUser = await sql`
                 INSERT INTO Users (firebase_user_id, first_name, last_name, email, is_subscribed)
                 VALUES (
-                    ${encrypt(dto.firebaseUserId)},
+                    ${dto.firebaseUserId},
                     ${dto.firstName},
                     ${encrypt(dto.lastName)},
                     ${encrypt(dto.email)},
@@ -47,7 +47,7 @@ const UserService = {
             const user = createdUser[0];
             const decryptedUser = {
                 uid: user.uid,
-                firebase_user_id: decrypt(user.firebase_user_id),
+                firebase_user_id: user.firebase_user_id,
                 first_name: user.first_name,
                 last_name: decrypt(user.last_name),
                 email: decrypt(user.email),

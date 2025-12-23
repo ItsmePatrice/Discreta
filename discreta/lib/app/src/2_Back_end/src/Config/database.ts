@@ -14,21 +14,42 @@ const algorithm = "aes-256-gcm";
 const key = Buffer.from(DATA_ENCRYPTION_KEY, "hex");
 
 export function encrypt(text: string) {
-  const iv = crypto.randomBytes(16);
+  const iv = crypto.randomBytes(12);
   const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(text, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  const tag = cipher.getAuthTag().toString("hex");
-  return `${iv.toString("hex")}:${tag}:${encrypted}`;
+
+  const encrypted = Buffer.concat([
+    cipher.update(text, "utf8"),
+    cipher.final(),
+  ]);
+
+  const authTag = cipher.getAuthTag();
+
+  return {
+    iv: iv.toString("hex"),
+    content: encrypted.toString("hex"),
+    tag: authTag.toString("hex"),
+  };
 }
 
-export function decrypt(encryptedText: string) {
-  const [ivHex, tagHex, encrypted] = encryptedText.split(":");
-  const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(ivHex, "hex"));
-  decipher.setAuthTag(Buffer.from(tagHex, "hex"));
-  let decrypted = decipher.update(encrypted, "hex", "utf8");
-  decrypted += decipher.final("utf8");
-  return decrypted;
+export function decrypt(payload: {
+  iv: string;
+  content: string;
+  tag: string;
+}) {
+  const decipher = crypto.createDecipheriv(
+    algorithm,
+    key,
+    Buffer.from(payload.iv, "hex")
+  );
+
+  decipher.setAuthTag(Buffer.from(payload.tag, "hex"));
+
+  const decrypted = Buffer.concat([
+    decipher.update(Buffer.from(payload.content, "hex")),
+    decipher.final(),
+  ]);
+
+  return decrypted.toString("utf8");
 }
 
 export async function testDbConnection() {
@@ -47,12 +68,14 @@ export async function createUsersTable() {
 
     // Users table
     await sql`
-      CREATE TABLE IF NOT EXISTS Users (
-        uID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        CREATE TABLE IF NOT EXISTS Users (
+        uid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         firebase_user_id TEXT UNIQUE NOT NULL,
-        first_name TEXT NOT NULL,
-        last_name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
+
+        first_name TEXT,
+        last_name JSONB NOT NULL,
+        email JSONB NOT NULL,
+
         is_subscribed BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -81,7 +104,6 @@ export async function createUsersTable() {
       EXECUTE FUNCTION update_user_trigger_function();
     `;
 
-    console.log("Users table initialized ✅");
   } catch (e) {
     throw new Error(`Failed to initialize Users table: ${e}`);
   }

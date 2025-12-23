@@ -196,8 +196,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-
-          // Language selector in top-right corner
           if (_isLoading) LoadingOverlay(),
         ],
       ),
