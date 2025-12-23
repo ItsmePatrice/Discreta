@@ -3,6 +3,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Components/Layout/discreta_nav_
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,13 +64,22 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20.h),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       DiscretaText(
-                        text: 'Welcome $_firstName !',
+                        text:
+                            '${AppLocalizations.of(context)!.greeting} $_firstName.',
                         size: TextSize.large,
                         fontWeight: FontWeight.bold,
+                      ),
+                      DiscretaText(
+                        text: AppLocalizations.of(
+                          context,
+                        )!.discretaWelcomeMessage,
+                        size: TextSize.small,
+                        fontWeight: FontWeight.w300,
                       ),
                     ],
                   ),

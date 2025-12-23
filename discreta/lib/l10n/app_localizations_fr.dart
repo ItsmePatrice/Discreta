@@ -56,4 +56,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get profile => 'Profil';
+
+  @override
+  String get greeting => 'Bonjour';
+
+  @override
+  String get discretaWelcomeMessage => 'Discreta est là avec vous.';
 }

@@ -13,5 +13,7 @@
   "home": "Home",
   "contacts": "Contacts",
   "guide": "Guide",
-  "profile": "Profile" 
+  "profile": "Profile",
+  "greeting": "Hello",
+  "discretaWelcomeMessage": "Discreta is here with you."
 }

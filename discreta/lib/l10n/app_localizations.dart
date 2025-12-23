@@ -187,6 +187,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get profile;
+
+  /// No description provided for @greeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get greeting;
+
+  /// No description provided for @discretaWelcomeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Discreta is here with you.'**
+  String get discretaWelcomeMessage;
 }
 
 class _AppLocalizationsDelegate
