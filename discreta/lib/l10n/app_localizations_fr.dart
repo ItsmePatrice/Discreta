@@ -62,4 +62,28 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get discretaWelcomeMessage => 'Discreta est là avec vous.';
+
+  @override
+  String get status => 'status';
+
+  @override
+  String get connected => 'connecté';
+
+  @override
+  String get notConnected => 'non connecté';
+
+  @override
+  String get safetyTimer => 'Minuteur de sécurité';
+
+  @override
+  String get activateProtection => 'Activer la protection';
+
+  @override
+  String get stop => 'Arrêter';
+
+  @override
+  String get alertIn => 'Vos contacts seront alertés dans ...';
+
+  @override
+  String get protection => 'Protection';
 }

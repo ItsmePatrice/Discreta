@@ -199,6 +199,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Discreta is here with you.'**
   String get discretaWelcomeMessage;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'status'**
+  String get status;
+
+  /// No description provided for @connected.
+  ///
+  /// In en, this message translates to:
+  /// **'connected'**
+  String get connected;
+
+  /// No description provided for @notConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'not connected'**
+  String get notConnected;
+
+  /// No description provided for @safetyTimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety timer'**
+  String get safetyTimer;
+
+  /// No description provided for @activateProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate protection'**
+  String get activateProtection;
+
+  /// No description provided for @stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop;
+
+  /// No description provided for @alertIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your contacts will be alerted in ...'**
+  String get alertIn;
+
+  /// No description provided for @protection.
+  ///
+  /// In en, this message translates to:
+  /// **'Protection'**
+  String get protection;
 }
 
 class _AppLocalizationsDelegate

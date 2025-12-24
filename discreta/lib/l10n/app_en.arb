@@ -15,5 +15,13 @@
   "guide": "Guide",
   "profile": "Profile",
   "greeting": "Hello",
-  "discretaWelcomeMessage": "Discreta is here with you."
+  "discretaWelcomeMessage": "Discreta is here with you.",
+  "status": "status",
+  "connected": "connected",
+  "notConnected": "not connected",
+  "safetyTimer": "Safety timer",
+  "activateProtection": "Activate protection",
+  "stop": "Stop",
+  "alertIn": "Your contacts will be alerted in ...",
+  "protection": "Protection"
 }
