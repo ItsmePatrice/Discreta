@@ -35,5 +35,9 @@
   "add": "Add",
   "editContact": "Edit Contact",
   "save": "Save",
-  "invalidPhoneNumberMessage": "Please enter a valid 10-digit number."
+  "invalidPhoneNumberMessage": "Please enter a valid 10-digit number.",
+  "signOut": "Sign out",
+  "settings": "Settings",
+  "unknownError": "Unknown error",
+  "language": "language"
 }

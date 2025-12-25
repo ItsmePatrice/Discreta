@@ -123,4 +123,16 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get invalidPhoneNumberMessage =>
       'Veuillez entrer un numéro valide à 10 chiffres.';
+
+  @override
+  String get signOut => 'Se déconnecter';
+
+  @override
+  String get settings => 'Paramètres';
+
+  @override
+  String get unknownError => 'Erreur inconnu';
+
+  @override
+  String get language => 'langue';
 }

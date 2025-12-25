@@ -55,7 +55,7 @@ class _ContactsPageState extends State<ContactsPage> {
               controller: phoneController,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.phoneNumber,
-                hintText: 'ex: 524-123-4567',
+                hintText: 'ex: 5241234567',
               ),
               keyboardType: TextInputType.phone,
             ),
@@ -125,7 +125,7 @@ class _ContactsPageState extends State<ContactsPage> {
               controller: phoneController,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.phoneNumber,
-                hintText: '524-123-4567',
+                hintText: '5241234567',
               ),
               keyboardType: TextInputType.phone,
             ),

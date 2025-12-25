@@ -35,5 +35,9 @@
   "add": "Ajouter",
   "editContact": "Modifier le contact",
   "save": "Sauvegarder",
-  "invalidPhoneNumberMessage": "Veuillez entrer un numéro valide à 10 chiffres."
+  "invalidPhoneNumberMessage": "Veuillez entrer un numéro valide à 10 chiffres.",
+  "signOut": "Se déconnecter",
+  "settings": "Paramètres",
+  "unknownError": "Erreur inconnu",
+  "language": "langue"
 }

@@ -123,4 +123,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get invalidPhoneNumberMessage =>
       'Please enter a valid 10-digit number.';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get unknownError => 'Unknown error';
+
+  @override
+  String get language => 'language';
 }
