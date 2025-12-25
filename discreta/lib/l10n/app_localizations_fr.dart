@@ -86,4 +86,41 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get protection => 'Protection';
+
+  @override
+  String get contactsAndAlert => 'Contacts & Alerte';
+
+  @override
+  String get alertMessage => 'Message d\'alerte';
+
+  @override
+  String get alertMessagePlaceholder => 'Écrire votre message d\'alerte ici...';
+
+  @override
+  String get addContact => 'Ajouter un contact';
+
+  @override
+  String get maxContactMessage => 'Vous pouvez ajouter un maximum de  contacts';
+
+  @override
+  String get name => 'Nom';
+
+  @override
+  String get phoneNumber => 'Numéro de téléphone';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get add => 'Ajouter';
+
+  @override
+  String get editContact => 'Modifier le contact';
+
+  @override
+  String get save => 'Sauvegarder';
+
+  @override
+  String get invalidPhoneNumberMessage =>
+      'Veuillez entrer un numéro valide à 10 chiffres.';
 }

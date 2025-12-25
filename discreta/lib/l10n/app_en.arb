@@ -23,5 +23,17 @@
   "activateProtection": "Activate protection",
   "stop": "Stop",
   "alertIn": "Your contacts will be alerted in ...",
-  "protection": "Protection"
+  "protection": "Protection",
+  "contactsAndAlert": "Contacts & Alert",
+  "alertMessage": "Alert message",
+  "alertMessagePlaceholder": "Type your alert message here ...",
+  "addContact": "Add contact",
+  "maxContactMessage": "You can only add up to 5 contacts.",
+  "name": "Name",
+  "phoneNumber": "Phone number",
+  "cancel": "Cancel",
+  "add": "Add",
+  "editContact": "Edit Contact",
+  "save": "Save",
+  "invalidPhoneNumberMessage": "Please enter a valid 10-digit number."
 }

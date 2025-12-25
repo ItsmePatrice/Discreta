@@ -1,4 +1,5 @@
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Screens/contact_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/home_screen.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,9 @@ class DiscretaNavBar extends StatelessWidget {
         ).push(MaterialPageRoute(builder: (context) => const HomePage()));
         break;
       case 1:
-        /* Navigator.of(
+        Navigator.of(
           context,
-        ).push(MaterialPageRoute(builder: (context) => const ContactsScreen())); */
+        ).push(MaterialPageRoute(builder: (context) => const ContactsPage()));
         break;
       case 2:
         /* Navigator.of(

@@ -4,6 +4,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Screens/login_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/connectivity_checker.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/page_transition_builder.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,14 @@ class _MyAppState extends State<MyApp> {
         return MaterialApp(
           title: 'Discreta',
           locale: _locale,
+          theme: ThemeData(
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                for (var platform in TargetPlatform.values)
+                  platform: NoAnimationPageTransitionsBuilder(),
+              },
+            ),
+          ),
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

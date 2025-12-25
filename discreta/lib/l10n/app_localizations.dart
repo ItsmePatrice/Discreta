@@ -247,6 +247,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Protection'**
   String get protection;
+
+  /// No description provided for @contactsAndAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts & Alert'**
+  String get contactsAndAlert;
+
+  /// No description provided for @alertMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert message'**
+  String get alertMessage;
+
+  /// No description provided for @alertMessagePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your alert message here ...'**
+  String get alertMessagePlaceholder;
+
+  /// No description provided for @addContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get addContact;
+
+  /// No description provided for @maxContactMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can only add up to 5 contacts.'**
+  String get maxContactMessage;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phoneNumber;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @editContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Contact'**
+  String get editContact;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @invalidPhoneNumberMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid 10-digit number.'**
+  String get invalidPhoneNumberMessage;
 }
 
 class _AppLocalizationsDelegate

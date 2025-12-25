@@ -86,4 +86,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get protection => 'Protection';
+
+  @override
+  String get contactsAndAlert => 'Contacts & Alert';
+
+  @override
+  String get alertMessage => 'Alert message';
+
+  @override
+  String get alertMessagePlaceholder => 'Type your alert message here ...';
+
+  @override
+  String get addContact => 'Add contact';
+
+  @override
+  String get maxContactMessage => 'You can only add up to 5 contacts.';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get phoneNumber => 'Phone number';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get editContact => 'Edit Contact';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get invalidPhoneNumberMessage =>
+      'Please enter a valid 10-digit number.';
 }

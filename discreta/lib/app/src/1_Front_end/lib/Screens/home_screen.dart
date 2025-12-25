@@ -311,6 +311,15 @@ class _HomePageState extends State<HomePage> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: DiscretaText(
+          text: '${AppLocalizations.of(context)!.greeting} $_firstName.',
+          size: TextSize.large,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        backgroundColor: AppColors.primaryColor,
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -320,12 +329,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20.h),
-                  DiscretaText(
-                    text:
-                        '${AppLocalizations.of(context)!.greeting} $_firstName.',
-                    size: TextSize.large,
-                    fontWeight: FontWeight.bold,
-                  ),
+
                   DiscretaText(
                     text: AppLocalizations.of(context)!.discretaWelcomeMessage,
                     size: TextSize.small,

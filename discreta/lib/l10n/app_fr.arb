@@ -23,5 +23,17 @@
   "activateProtection": "Activer la protection",
   "stop": "Arrêter",
   "alertIn": "Vos contacts seront alertés dans ...",
-  "protection": "Protection"
+  "protection": "Protection",
+  "contactsAndAlert": "Contacts & Alerte",
+  "alertMessage": "Message d'alerte",
+  "alertMessagePlaceholder": "Écrire votre message d'alerte ici...",
+  "addContact": "Ajouter un contact",
+  "maxContactMessage": "Vous pouvez ajouter un maximum de  contacts",
+  "name": "Nom",
+  "phoneNumber": "Numéro de téléphone",
+  "cancel": "Annuler",
+  "add": "Ajouter",
+  "editContact": "Modifier le contact",
+  "save": "Sauvegarder",
+  "invalidPhoneNumberMessage": "Veuillez entrer un numéro valide à 10 chiffres."
 }
