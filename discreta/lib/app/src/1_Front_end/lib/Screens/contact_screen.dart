@@ -26,6 +26,12 @@ class _ContactsPageState extends State<ContactsPage> {
     });
   }
 
+  @override
+  void dispose() {
+    _alertController.dispose();
+    super.dispose();
+  }
+
   void _addContact() {
     if (_contacts.length >= 5) {
       ScaffoldMessenger.of(context).showSnackBar(

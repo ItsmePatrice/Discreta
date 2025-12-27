@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Components/Layout/discreta_nav_bar.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/login_screen.dart';
@@ -22,14 +21,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfileScreenState extends State<ProfilePage> {
   bool _isLoading = false;
 
-  late final StreamSubscription<Map<String, dynamic>> _subscription;
-
   @override
   void initState() {}
 
   @override
   void dispose() {
-    _subscription.cancel();
     super.dispose();
   }
 
