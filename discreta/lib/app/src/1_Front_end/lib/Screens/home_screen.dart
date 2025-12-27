@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Components/Layout/discreta_nav_bar.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
@@ -349,7 +348,6 @@ class _HomePageState extends State<HomePage> with RouteAware {
           if (_isLoading) LoadingOverlay(),
         ],
       ),
-      // bottomNavigationBar: DiscretaNavBar(currentIndex: 0),
     );
   }
 }
