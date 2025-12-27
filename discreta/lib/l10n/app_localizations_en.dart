@@ -67,10 +67,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get status => 'status';
 
   @override
-  String get connected => 'connected';
+  String get connected => 'bracelet Connected';
 
   @override
-  String get notConnected => 'not connected';
+  String get notConnected => 'bracelet not connected';
 
   @override
   String get safetyTimer => 'Safety timer';
@@ -82,7 +82,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stop => 'Stop';
 
   @override
-  String get alertIn => 'Your contacts will be alerted in ...';
+  String get alertIn => 'Your contacts will be alerted in';
 
   @override
   String get protection => 'Protection';
@@ -135,4 +135,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get language => 'language';
+
+  @override
+  String get timeBeforeAutomaticAlert => 'Time before automatic alert';
 }

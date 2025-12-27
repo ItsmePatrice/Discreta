@@ -67,22 +67,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get status => 'status';
 
   @override
-  String get connected => 'connecté';
+  String get connected => 'bracelet connecté';
 
   @override
-  String get notConnected => 'non connecté';
+  String get notConnected => 'bracelet non connecté';
 
   @override
   String get safetyTimer => 'Minuteur de sécurité';
 
   @override
-  String get activateProtection => 'Activer la protection';
+  String get activateProtection => 'Démarrer la protection';
 
   @override
   String get stop => 'Arrêter';
 
   @override
-  String get alertIn => 'Vos contacts seront alertés dans ...';
+  String get alertIn => 'Vos contacts seront alertés dans';
 
   @override
   String get protection => 'Protection';
@@ -135,4 +135,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get language => 'langue';
+
+  @override
+  String get timeBeforeAutomaticAlert => 'Durée avant alerte automatique';
 }

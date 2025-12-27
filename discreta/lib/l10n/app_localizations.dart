@@ -209,13 +209,13 @@ abstract class AppLocalizations {
   /// No description provided for @connected.
   ///
   /// In en, this message translates to:
-  /// **'connected'**
+  /// **'bracelet Connected'**
   String get connected;
 
   /// No description provided for @notConnected.
   ///
   /// In en, this message translates to:
-  /// **'not connected'**
+  /// **'bracelet not connected'**
   String get notConnected;
 
   /// No description provided for @safetyTimer.
@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @alertIn.
   ///
   /// In en, this message translates to:
-  /// **'Your contacts will be alerted in ...'**
+  /// **'Your contacts will be alerted in'**
   String get alertIn;
 
   /// No description provided for @protection.
@@ -343,6 +343,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'language'**
   String get language;
+
+  /// No description provided for @timeBeforeAutomaticAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Time before automatic alert'**
+  String get timeBeforeAutomaticAlert;
 }
 
 class _AppLocalizationsDelegate

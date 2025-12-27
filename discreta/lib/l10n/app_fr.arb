@@ -17,12 +17,12 @@
   "greeting": "Bonjour",
   "discretaWelcomeMessage": "Discreta est là avec vous.",
   "status": "status",
-  "connected": "connecté",
-  "notConnected": "non connecté",
+  "connected": "bracelet connecté",
+  "notConnected": "bracelet non connecté",
   "safetyTimer": "Minuteur de sécurité",
-  "activateProtection": "Activer la protection",
+  "activateProtection": "Démarrer la protection",
   "stop": "Arrêter",
-  "alertIn": "Vos contacts seront alertés dans ...",
+  "alertIn": "Vos contacts seront alertés dans",
   "protection": "Protection",
   "contactsAndAlert": "Contacts & Alerte",
   "alertMessage": "Message d'alerte",
@@ -39,5 +39,6 @@
   "signOut": "Se déconnecter",
   "settings": "Paramètres",
   "unknownError": "Erreur inconnu",
-  "language": "langue"
+  "language": "langue",
+  "timeBeforeAutomaticAlert": "Durée avant alerte automatique"
 }

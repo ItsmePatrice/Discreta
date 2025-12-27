@@ -16,7 +16,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with RouteAware {
+class _HomePageState extends State<HomePage>
+    with RouteAware, TickerProviderStateMixin {
   String? _firstName;
   bool _isLoading = false;
 
@@ -27,16 +28,27 @@ class _HomePageState extends State<HomePage> with RouteAware {
   Timer? _countdownTimer;
   int _selectedMinutes = 15;
 
+  late AnimationController _pulseController;
+
   @override
   void initState() {
     super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat(reverse: true);
     initializePage();
   }
 
   @override
   void dispose() {
+    _pulseController.dispose();
     _countdownTimer?.cancel();
     super.dispose();
+  }
+
+  String get _countdownLabel {
+    return '${AppLocalizations.of(context)!.alertIn} ${_formatTime(_remainingSeconds)}';
   }
 
   void initializePage() async {
@@ -52,6 +64,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
 
     _totalSeconds = _selectedMinutes * 60;
     _remainingSeconds = _totalSeconds;
+    _pulseController.repeat(reverse: true);
 
     setState(() {
       _isProtectionActive = true;
@@ -80,6 +93,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
 
   void _deactivateProtection() {
     _countdownTimer?.cancel();
+    _pulseController.stop();
 
     setState(() {
       _isProtectionActive = false;
@@ -143,7 +157,37 @@ class _HomePageState extends State<HomePage> with RouteAware {
     );
   }
 
+  Widget _shieldIcon() {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.grey.withValues(alpha: 0.15),
+      ),
+      child: const Icon(Icons.shield_outlined, color: Colors.grey, size: 26),
+    );
+  }
+
+  Widget _pulsingDot() {
+    return ScaleTransition(
+      scale: Tween(begin: 0.8, end: 1.0).animate(
+        CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+      ),
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.red.withValues(alpha: 0.9),
+        ),
+      ),
+    );
+  }
+
   Widget protectionCard(BuildContext context) {
+    final bool isActive = _isProtectionActive && _remainingSeconds > 0;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -152,39 +196,52 @@ class _HomePageState extends State<HomePage> with RouteAware {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DiscretaText(
-            text: AppLocalizations.of(context)!.protection,
-            size: TextSize.medium,
-            fontWeight: FontWeight.w600,
-          ),
-          SizedBox(height: 12.h),
+          // LEFT ICON
+          isActive ? _pulsingDot() : _shieldIcon(),
 
-          if (_isProtectionActive && _remainingSeconds > 0) ...[
-            DiscretaText(
-              text: AppLocalizations.of(context)!.alertIn,
-              size: TextSize.small,
-              fontWeight: FontWeight.w400,
+          const SizedBox(width: 16),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DiscretaText(
+                  text: AppLocalizations.of(context)!.protection,
+                  size: TextSize.medium,
+                  fontWeight: FontWeight.w600,
+                ),
+                const SizedBox(height: 6),
+
+                if (isActive) ...[
+                  DiscretaText(
+                    text: _countdownLabel,
+                    size: TextSize.small,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primaryColor,
+                  ),
+                  const SizedBox(height: 16),
+                  LinearProgressIndicator(
+                    value: 1 - (_remainingSeconds / _totalSeconds),
+                    backgroundColor: AppColors.primaryColor.withValues(
+                      alpha: 0.15,
+                    ),
+                    color: AppColors.primaryColor,
+                    minHeight: 6,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ],
+              ],
             ),
-            SizedBox(height: 16.h),
-            animatedCountdown(context),
-            SizedBox(height: 20.h),
-            LinearProgressIndicator(
-              value: 1 - (_remainingSeconds / _totalSeconds),
-              backgroundColor: AppColors.primaryColor.withValues(alpha: 0.15),
-              color: AppColors.primaryColor,
-              minHeight: 6,
-              borderRadius: BorderRadius.circular(6),
-            ),
-          ],
+          ),
         ],
       ),
     );
@@ -242,6 +299,11 @@ class _HomePageState extends State<HomePage> with RouteAware {
             text: AppLocalizations.of(context)!.safetyTimer,
             size: TextSize.medium,
             fontWeight: FontWeight.w600,
+          ),
+          DiscretaText(
+            text: AppLocalizations.of(context)!.timeBeforeAutomaticAlert,
+            size: TextSize.small,
+            fontWeight: FontWeight.w100,
           ),
           SizedBox(height: 16.h),
 
@@ -332,7 +394,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
                   DiscretaText(
                     text: AppLocalizations.of(context)!.discretaWelcomeMessage,
                     size: TextSize.small,
-                    fontWeight: FontWeight.w300,
+                    fontWeight: FontWeight.bold,
                   ),
                   SizedBox(height: 30.h),
                   braceletStatusCard(context: context, isConnected: true),
