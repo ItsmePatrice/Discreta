@@ -1,6 +1,7 @@
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/home_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/login_screen.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/connectivity_checker.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
@@ -121,7 +122,7 @@ class _SplashPageState extends State<SplashPage> {
     if (!isSignedIn) {
       safePushReplacement(const LoginPage());
     } else {
-      safePushReplacement(const HomePage());
+      safePushReplacement(const MainShell());
     }
   }
 

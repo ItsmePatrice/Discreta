@@ -5,7 +5,7 @@ import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/google_sign_in_button.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Screens/home_screen.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
@@ -68,9 +68,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _leadUserToHomePage() async {
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const MainShell()),
+    );
   }
 
   @override

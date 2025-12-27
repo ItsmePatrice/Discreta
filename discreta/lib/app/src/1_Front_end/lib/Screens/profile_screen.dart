@@ -56,10 +56,6 @@ class _ProfileScreenState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
         title: DiscretaText(
           text: AppLocalizations.of(context)!.profile,
           fontWeight: FontWeight.bold,
@@ -113,7 +109,6 @@ class _ProfileScreenState extends State<ProfilePage> {
           if (_isLoading) LoadingOverlay(),
         ],
       ),
-      bottomNavigationBar: DiscretaNavBar(currentIndex: 3),
     );
   }
 }

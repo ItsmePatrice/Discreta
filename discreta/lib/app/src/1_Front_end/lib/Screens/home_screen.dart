@@ -349,7 +349,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
           if (_isLoading) LoadingOverlay(),
         ],
       ),
-      bottomNavigationBar: DiscretaNavBar(currentIndex: 0),
+      // bottomNavigationBar: DiscretaNavBar(currentIndex: 0),
     );
   }
 }

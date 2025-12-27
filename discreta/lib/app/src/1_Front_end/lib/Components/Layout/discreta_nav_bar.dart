@@ -1,43 +1,16 @@
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Screens/contact_screen.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Screens/home_screen.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Screens/profile_screen.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
-typedef OnNavBarTap = void Function(int index);
-
 class DiscretaNavBar extends StatelessWidget {
   final int currentIndex;
+  final ValueChanged<int> onTap;
 
-  const DiscretaNavBar({super.key, required this.currentIndex});
-
-  void _onItemTapped(BuildContext context, int index) {
-    if (index == currentIndex) return; // do nothing if already selected
-
-    switch (index) {
-      case 0:
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const HomePage()));
-        break;
-      case 1:
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const ContactsPage()));
-        break;
-      case 2:
-        /* Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const GuideScreen())); */
-        break;
-      case 3:
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const ProfilePage()));
-        break;
-    }
-  }
+  const DiscretaNavBar({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +19,7 @@ class DiscretaNavBar extends StatelessWidget {
       selectedItemColor: AppColors.primaryColor,
       unselectedItemColor: Colors.grey,
       currentIndex: currentIndex,
-      onTap: (index) => _onItemTapped(context, index),
+      onTap: onTap,
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),

@@ -273,7 +273,7 @@ class _ContactsPageState extends State<ContactsPage> {
           if (_isLoading) const LoadingOverlay(),
         ],
       ),
-      bottomNavigationBar: const DiscretaNavBar(currentIndex: 1),
+      // bottomNavigationBar: const DiscretaNavBar(currentIndex: 1),
     );
   }
 }
