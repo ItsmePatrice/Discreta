@@ -1,5 +1,3 @@
-import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Screens/home_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/login_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
