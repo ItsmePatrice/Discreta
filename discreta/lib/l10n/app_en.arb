@@ -18,7 +18,7 @@
   "discretaWelcomeMessage": "You're not alone.",
   "discretaReassuranceMessage": "Discreta is here with you.",
   "status": "status",
-  "connected": "bracelet Connected",
+  "connected": "bracelet connected",
   "notConnected": "bracelet not connected",
   "safetyTimer": "Safety timer",
   "start": "Start",

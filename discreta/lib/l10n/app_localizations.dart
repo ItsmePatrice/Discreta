@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @connected.
   ///
   /// In en, this message translates to:
-  /// **'bracelet Connected'**
+  /// **'bracelet connected'**
   String get connected;
 
   /// No description provided for @notConnected.

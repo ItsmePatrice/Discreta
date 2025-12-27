@@ -70,7 +70,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get status => 'status';
 
   @override
-  String get connected => 'bracelet Connected';
+  String get connected => 'bracelet connected';
 
   @override
   String get notConnected => 'bracelet not connected';
