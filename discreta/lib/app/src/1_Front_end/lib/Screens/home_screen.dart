@@ -357,7 +357,7 @@ class _HomePageState extends State<HomePage>
               child: DiscretaText(
                 text: _isProtectionActive
                     ? AppLocalizations.of(context)!.stop
-                    : AppLocalizations.of(context)!.activateProtection,
+                    : AppLocalizations.of(context)!.start,
                 size: TextSize.medium,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
@@ -393,7 +393,14 @@ class _HomePageState extends State<HomePage>
 
                   DiscretaText(
                     text: AppLocalizations.of(context)!.discretaWelcomeMessage,
-                    size: TextSize.small,
+                    size: TextSize.medium,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  DiscretaText(
+                    text: AppLocalizations.of(
+                      context,
+                    )!.discretaReassuranceMessage,
+                    size: TextSize.medium,
                     fontWeight: FontWeight.bold,
                   ),
                   SizedBox(height: 30.h),

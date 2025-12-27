@@ -61,7 +61,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get greeting => 'Bonjour';
 
   @override
-  String get discretaWelcomeMessage => 'Discreta est là avec vous.';
+  String get discretaWelcomeMessage => 'Vous n\'êtes pas seule.';
+
+  @override
+  String get discretaReassuranceMessage => 'Discreta est là avec vous.';
 
   @override
   String get status => 'status';
@@ -76,7 +79,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get safetyTimer => 'Minuteur de sécurité';
 
   @override
-  String get activateProtection => 'Démarrer la protection';
+  String get start => 'Démarrer';
 
   @override
   String get stop => 'Arrêter';

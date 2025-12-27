@@ -197,8 +197,14 @@ abstract class AppLocalizations {
   /// No description provided for @discretaWelcomeMessage.
   ///
   /// In en, this message translates to:
-  /// **'Discreta is here with you.'**
+  /// **'You\'re not alone.'**
   String get discretaWelcomeMessage;
+
+  /// No description provided for @discretaReassuranceMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Discreta is here with you.'**
+  String get discretaReassuranceMessage;
 
   /// No description provided for @status.
   ///
@@ -224,11 +230,11 @@ abstract class AppLocalizations {
   /// **'Safety timer'**
   String get safetyTimer;
 
-  /// No description provided for @activateProtection.
+  /// No description provided for @start.
   ///
   /// In en, this message translates to:
-  /// **'Activate protection'**
-  String get activateProtection;
+  /// **'Start'**
+  String get start;
 
   /// No description provided for @stop.
   ///
