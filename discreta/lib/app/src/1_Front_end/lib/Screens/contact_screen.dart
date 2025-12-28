@@ -272,6 +272,17 @@ class _ContactsPageState extends State<ContactsPage> {
     }
   }
 
+  Future<void> _confirmContactDeletion(int index) async {
+    MessageService.displayConfirmationDialog(
+      context: context,
+      message: AppLocalizations.of(context)!.confirmDeleteContact,
+      onYesPressed: () async {
+        Navigator.pop(context);
+        await _deleteContact(index);
+      },
+    );
+  }
+
   void _dismissKeyboard() {
     FocusScope.of(context).unfocus();
   }
@@ -381,7 +392,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                   Icons.delete,
                                   color: AppColors.red,
                                 ),
-                                onPressed: () => _deleteContact(index),
+                                onPressed: () => _confirmContactDeletion(index),
                               ),
                             ],
                           ),

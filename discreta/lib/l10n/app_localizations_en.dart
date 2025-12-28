@@ -147,4 +147,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertMessageSaved => 'Alert message saved.';
+
+  @override
+  String get confirmDeleteContact =>
+      'Are you sure you want to delete this contact?';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
 }

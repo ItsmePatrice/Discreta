@@ -43,5 +43,8 @@
   "language": "language",
   "timeBeforeAutomaticAlert": "Time before automatic alert",
   "success": "Success",
-  "alertMessageSaved": "Alert message saved."
+  "alertMessageSaved": "Alert message saved.",
+  "confirmDeleteContact": "Are you sure you want to delete this contact?",
+  "yes": "Yes",
+  "no": "No"
 }

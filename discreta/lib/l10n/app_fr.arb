@@ -43,5 +43,8 @@
   "language": "langue",
   "timeBeforeAutomaticAlert": "Durée avant alerte automatique",
   "success": "Succès",
-  "alertMessageSaved": "Message d'alerte enregistré."
+  "alertMessageSaved": "Message d'alerte enregistré.",
+  "confirmDeleteContact": "Êtes-vous sûr de vouloir supprimer ce contact?",
+  "yes": "Oui",
+  "no": "Non"
 }

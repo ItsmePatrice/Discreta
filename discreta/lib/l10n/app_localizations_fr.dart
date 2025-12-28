@@ -148,4 +148,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get alertMessageSaved => 'Message d\'alerte enregistré.';
+
+  @override
+  String get confirmDeleteContact =>
+      'Êtes-vous sûr de vouloir supprimer ce contact?';
+
+  @override
+  String get yes => 'Oui';
+
+  @override
+  String get no => 'Non';
 }

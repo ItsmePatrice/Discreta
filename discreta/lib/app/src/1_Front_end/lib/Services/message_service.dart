@@ -2,6 +2,7 @@ import 'package:discreta/app/src/1_Front_end/Assets/enum/button_size.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
+import 'package:discreta/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../Assets/colors.dart';
@@ -93,13 +94,13 @@ class MessageService {
       actions: <Widget>[
         Center(
           child: SizedBox(
-            width: screenWidth * 0.4,
+            width: screenWidth * 0.9,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Flexible(
                   child: DiscretaButton(
-                    text: 'No',
+                    text: AppLocalizations.of(context)!.no,
                     size: ButtonSize.medium,
                     onPressed: () => {Navigator.of(context).pop()},
                   ),
@@ -108,7 +109,7 @@ class MessageService {
                 SizedBox(width: 5.w),
                 Flexible(
                   child: DiscretaButton(
-                    text: 'Yes',
+                    text: AppLocalizations.of(context)!.yes,
                     onPressed: () {
                       onPressed();
                     },
