@@ -148,7 +148,7 @@ class _ContactsPageState extends State<ContactsPage> {
               try {
                 _setIsLoading(true);
                 await UserService.instance.addContact(
-                  Contact(name: name, phone: phone),
+                  Contact(name: name, phone: phone, id: '23'),
                 );
               } catch (e) {
                 _setIsLoading(false);
@@ -234,7 +234,7 @@ class _ContactsPageState extends State<ContactsPage> {
               _setIsLoading(true);
 
               await UserService.instance.updateContact(
-                Contact(name: name, phone: phone),
+                Contact(name: name, phone: phone, id: contact.id),
               );
               setState(() {});
 

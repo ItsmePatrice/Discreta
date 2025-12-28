@@ -95,8 +95,9 @@ class UserService {
   Future<void> updateContact(Contact contact) async {
     try {
       final data = {'name': contact.name, 'phoneNumber': contact.phone};
+      final String contactId = contact.id!;
       final response = await HttpService.instance.put(
-        '${ApiRoutes.contacts}/${contact.id}',
+        '${ApiRoutes.contacts}/$contactId',
         data,
       );
       if (response.statusCode != StatusCodes.ok) {
