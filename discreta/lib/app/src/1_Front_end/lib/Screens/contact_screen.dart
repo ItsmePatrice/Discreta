@@ -339,8 +339,13 @@ class _ContactsPageState extends State<ContactsPage> {
                       DiscretaButton(
                         text: AppLocalizations.of(context)!.save,
                         size: ButtonSize.medium,
-                        onPressed: () {
+                        onPressed: () async {
                           if (_alertController.text.trim().isEmpty) return;
+                          FocusManager.instance.primaryFocus?.unfocus();
+
+                          await Future.delayed(
+                            const Duration(milliseconds: 50),
+                          );
                           _saveAlertMessage();
                           _dismissKeyboard();
                         },
