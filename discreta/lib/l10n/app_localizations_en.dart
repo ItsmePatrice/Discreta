@@ -141,4 +141,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timeBeforeAutomaticAlert => 'Time before automatic alert';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get alertMessageSaved => 'Alert message saved.';
 }

@@ -103,7 +103,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get addContact => 'Ajouter un contact';
 
   @override
-  String get maxContactMessage => 'Vous pouvez ajouter un maximum de  contacts';
+  String get maxContactMessage =>
+      'Vous pouvez ajouter un maximum de 10 contacts';
 
   @override
   String get name => 'Nom';
@@ -141,4 +142,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get timeBeforeAutomaticAlert => 'Durée avant alerte automatique';
+
+  @override
+  String get success => 'Succès';
+
+  @override
+  String get alertMessageSaved => 'Message d\'alerte enregistré.';
 }

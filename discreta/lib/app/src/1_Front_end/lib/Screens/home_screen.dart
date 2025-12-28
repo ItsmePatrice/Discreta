@@ -205,7 +205,6 @@ class _HomePageState extends State<HomePage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // LEFT ICON
           isActive ? _pulsingDot() : _shieldIcon(),
 
           const SizedBox(width: 16),

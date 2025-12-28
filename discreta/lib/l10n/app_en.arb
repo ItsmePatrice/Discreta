@@ -41,5 +41,7 @@
   "settings": "Settings",
   "unknownError": "Unknown error",
   "language": "language",
-  "timeBeforeAutomaticAlert": "Time before automatic alert"
+  "timeBeforeAutomaticAlert": "Time before automatic alert",
+  "success": "Success",
+  "alertMessageSaved": "Alert message saved."
 }

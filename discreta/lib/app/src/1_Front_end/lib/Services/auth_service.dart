@@ -77,6 +77,7 @@ class AuthService {
       await _googleSignIn.signOut();
       await FirebaseAuth.instance.signOut();
       _firebaseIdToken = null;
+      discretaUser = null;
     } catch (e, stackTrace) {
       LogService.instance.logError('Error during sign out', e, stackTrace);
       rethrow;

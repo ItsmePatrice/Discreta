@@ -5,4 +5,8 @@ class ApiRoutes {
 
   // Auth routes
   static String login = '$baseUrl/api/auth/login';
+
+  // Alert flow
+  static String alertMessage = '$baseUrl/api/alert-flow/alert-message';
+  static String contacts = '$baseUrl/api/alert-flow/contacts';
 }

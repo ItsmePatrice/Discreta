@@ -4,6 +4,7 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import { initDB } from "./Config/database";
 import authRoutes from './Routes/authRoutes';
+import userRoutes from './Routes/userRoutes';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(helmet());
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/alert-flow', userRoutes);
 
 initDB().then(() => {
   const PORT = process.env.SERVER_PORT;

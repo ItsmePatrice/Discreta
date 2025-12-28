@@ -29,7 +29,7 @@
   "alertMessage": "Message d'alerte",
   "alertMessagePlaceholder": "Écrire votre message d'alerte ici...",
   "addContact": "Ajouter un contact",
-  "maxContactMessage": "Vous pouvez ajouter un maximum de  contacts",
+  "maxContactMessage": "Vous pouvez ajouter un maximum de 10 contacts",
   "name": "Nom",
   "phoneNumber": "Numéro de téléphone",
   "cancel": "Annuler",
@@ -41,5 +41,7 @@
   "settings": "Paramètres",
   "unknownError": "Erreur inconnu",
   "language": "langue",
-  "timeBeforeAutomaticAlert": "Durée avant alerte automatique"
+  "timeBeforeAutomaticAlert": "Durée avant alerte automatique",
+  "success": "Succès",
+  "alertMessageSaved": "Message d'alerte enregistré."
 }

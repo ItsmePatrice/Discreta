@@ -64,6 +64,94 @@ const UserService = {
             throw e;
         }
     },
+
+    async saveAlertMessage(firebaseUserId: string, messageContent: string) {
+        try {
+            const res = await sql`
+                INSERT INTO AlertMessages (firebase_user_id, message_content)
+                VALUES (${firebaseUserId}, ${messageContent})
+                ON CONFLICT (firebase_user_id)
+                DO UPDATE SET
+                    message_content = EXCLUDED.message_content
+                RETURNING *;
+            `;
+
+            return res[0];
+        } catch (e) {
+            logger.error('Database error while saving alert message', e);
+            throw e;
+        }
+    },
+
+
+    async fetchAlertMessage(firebaseUserId: string) {
+        try {
+            const res = await sql`
+                SELECT * FROM AlertMessages WHERE firebase_user_id = ${firebaseUserId} LIMIT 1
+            `;
+            return res[0]?.message_content ?? null;
+        }
+        catch (e) {
+            logger.error('Database error while fetching alert message: ', e);
+            throw e;
+        }
+    },
+
+    async addContact(firebaseUserId: string, name: string, phoneNumber: string) {
+        try {
+            const res = await sql`
+                INSERT INTO Contacts (firebase_user_id, contact_name, contact_phone)
+                VALUES (${firebaseUserId}, ${name}, ${encrypt(phoneNumber)})
+                RETURNING *;
+            `;
+            return res[0];
+        } catch (e) {
+            logger.error('Database error while adding contact: ', e);
+            throw e;
+        }
+    },
+
+    async fetchContacts(firebaseUserId: string) {
+        try {
+            const res = await sql`
+                SELECT * FROM Contacts WHERE firebase_user_id = ${firebaseUserId};
+            `;
+            return res.map(contact => ({
+                id: contact.id,
+                name: contact.contact_name,
+                phoneNumber: decrypt(contact.contact_phone)
+            }));
+        } catch (e) {
+            logger.error('Database error while fetching contacts: ', e);
+            throw e;
+        }
+    },
+    async deleteContact(contactId: string, firebaseUserId: string) {
+        try {
+            await sql`
+                DELETE FROM Contacts 
+                WHERE id = ${contactId} AND firebase_user_id = ${firebaseUserId};
+            `;
+        } catch (e) {
+            logger.error('Database error while deleting contact: ', e);
+            throw e;
+        }
+    },
+
+    async updateContact(contactId: string, firebaseUserId: string, name: string, phoneNumber: string) {
+        try {
+            const res = await sql`
+                UPDATE Contacts
+                SET contact_name = ${name}, contact_phone = ${encrypt(phoneNumber)}, updated_at = NOW()
+                WHERE id = ${contactId} AND firebase_user_id = ${firebaseUserId}
+                RETURNING *;
+            `;
+            return res[0];
+        } catch (e) {
+            logger.error('Database error while updating contact: ', e);
+            throw e;
+        }   
+    }
 };
 
 export default UserService;

@@ -355,6 +355,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Time before automatic alert'**
   String get timeBeforeAutomaticAlert;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @alertMessageSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert message saved.'**
+  String get alertMessageSaved;
 }
 
 class _AppLocalizationsDelegate

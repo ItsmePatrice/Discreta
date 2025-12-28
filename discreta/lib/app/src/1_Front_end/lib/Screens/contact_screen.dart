@@ -5,6 +5,8 @@ import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,13 +29,60 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    initializePage();
+  }
+
+  @override
   void dispose() {
     _alertController.dispose();
     super.dispose();
   }
 
-  void _addContact() {
-    if (_contacts.length >= 5) {
+  void initializePage() async {
+    _setIsLoading(true);
+    try {
+      final alertMessage = await UserService.instance.fetchAlertMessage();
+      _alertController.text = alertMessage ?? '';
+      final contacts = await UserService.instance.fetchContacts();
+      setState(() {
+        _contacts.addAll(contacts);
+      });
+    } catch (e) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.unknownError,
+        message: AppLocalizations.of(context)!.noInternetConnection,
+      );
+    } finally {
+      _setIsLoading(false);
+    }
+  }
+
+  void _saveAlertMessage() async {
+    _setIsLoading(true);
+    try {
+      await UserService.instance.saveAlertMessage(_alertController.text.trim());
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.success,
+        message: AppLocalizations.of(context)!.alertMessageSaved,
+      );
+    } catch (e) {
+      _setIsLoading(false);
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.unknownError,
+        message: AppLocalizations.of(context)!.noInternetConnection,
+      );
+    } finally {
+      _setIsLoading(false);
+    }
+  }
+
+  Future<void> _addContact() async {
+    if (_contacts.length >= 10) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.maxContactMessage),
@@ -54,6 +103,7 @@ class _ContactsPageState extends State<ContactsPage> {
           children: [
             TextField(
               controller: nameController,
+              maxLength: 20,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.name,
               ),
@@ -74,7 +124,7 @@ class _ContactsPageState extends State<ContactsPage> {
             child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final name = nameController.text.trim();
               var phone = phoneController.text.trim();
               if (name.isEmpty || phone.isEmpty) return;
@@ -95,9 +145,25 @@ class _ContactsPageState extends State<ContactsPage> {
               // Auto-prepend +1
               phone = '+1$phone';
 
+              try {
+                _setIsLoading(true);
+                await UserService.instance.addContact(
+                  Contact(name: name, phone: phone),
+                );
+              } catch (e) {
+                _setIsLoading(false);
+                MessageService.displayAlertDialog(
+                  context: context,
+                  title: AppLocalizations.of(context)!.unknownError,
+                  message: AppLocalizations.of(context)!.noInternetConnection,
+                );
+              }
+              final contacts = await UserService.instance.fetchContacts();
               setState(() {
-                _contacts.add(Contact(name: name, phone: phone));
+                _contacts.clear();
+                _contacts.addAll(contacts);
               });
+              _setIsLoading(false);
 
               Navigator.pop(context);
             },
@@ -108,7 +174,7 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 
-  void _editContact(int index) {
+  Future<void> _editContact(int index) async {
     final contact = _contacts[index];
     final nameController = TextEditingController(text: contact.name);
     final phoneController = TextEditingController(
@@ -124,6 +190,7 @@ class _ContactsPageState extends State<ContactsPage> {
           children: [
             TextField(
               controller: nameController,
+              maxLength: 20,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.name,
               ),
@@ -144,7 +211,7 @@ class _ContactsPageState extends State<ContactsPage> {
             child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final name = nameController.text.trim();
               var phone = phoneController.text.trim();
               if (name.isEmpty || phone.isEmpty) return;
@@ -164,8 +231,18 @@ class _ContactsPageState extends State<ContactsPage> {
 
               phone = '+1$phone';
 
+              _setIsLoading(true);
+
+              await UserService.instance.updateContact(
+                Contact(name: name, phone: phone),
+              );
+              setState(() {});
+
+              final contacts = await UserService.instance.fetchContacts();
               setState(() {
-                _contacts[index] = Contact(name: name, phone: phone);
+                _contacts.clear();
+                _contacts.addAll(contacts);
+                _isLoading = false;
               });
 
               Navigator.pop(context);
@@ -177,10 +254,22 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 
-  void _deleteContact(int index) {
-    setState(() {
-      _contacts.removeAt(index);
-    });
+  Future<void> _deleteContact(int index) async {
+    try {
+      _setIsLoading(true);
+      await UserService.instance.deleteContact(_contacts[index].id!);
+      setState(() {
+        _contacts.removeAt(index);
+      });
+      _setIsLoading(false);
+    } catch (e) {
+      _setIsLoading(false);
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.unknownError,
+        message: AppLocalizations.of(context)!.noInternetConnection + '$e',
+      );
+    }
   }
 
   void _dismissKeyboard() {
@@ -221,6 +310,7 @@ class _ContactsPageState extends State<ContactsPage> {
                   SizedBox(height: 8.h),
                   TextField(
                     controller: _alertController,
+                    maxLength: 160,
                     maxLines: 3,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -239,7 +329,8 @@ class _ContactsPageState extends State<ContactsPage> {
                         text: AppLocalizations.of(context)!.save,
                         size: ButtonSize.medium,
                         onPressed: () {
-                          // Save alert message logic here
+                          if (_alertController.text.trim().isEmpty) return;
+                          _saveAlertMessage();
                           _dismissKeyboard();
                         },
                       ),
@@ -258,6 +349,8 @@ class _ContactsPageState extends State<ContactsPage> {
                       DiscretaButton(
                         onPressed: _addContact,
                         text: AppLocalizations.of(context)!.addContact,
+                        icon: Icon(Icons.add),
+                        size: ButtonSize.large,
                       ),
                     ],
                   ),

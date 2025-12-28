@@ -21,9 +21,9 @@ export function encrypt(text: string) {
     cipher.update(text, "utf8"),
     cipher.final(),
   ]);
-
+  
   const authTag = cipher.getAuthTag();
-
+  
   return {
     iv: iv.toString("hex"),
     content: encrypted.toString("hex"),
@@ -43,16 +43,29 @@ export function decrypt(payload: {
   );
 
   decipher.setAuthTag(Buffer.from(payload.tag, "hex"));
-
+  
   const decrypted = Buffer.concat([
     decipher.update(Buffer.from(payload.content, "hex")),
     decipher.final(),
   ]);
-
+  
   return decrypted.toString("utf8");
 }
 
-export async function testDbConnection() {
+export async function initDB() {
+  try {
+    await testDbConnection();
+    await createUsersTable();
+    await createContactsTable();
+    await createAlertMessagesTable();
+    console.log("Database initialization complete ✅");
+  } catch (e) {
+    console.error("Database initialization failed:", e);
+    throw e;
+  }
+}
+
+async function testDbConnection() {
   try {
     const result = await sql`SELECT version()` as { version: string }[];
     console.log("Database connected:", result[0].version);
@@ -61,7 +74,7 @@ export async function testDbConnection() {
   }
 }
 
-export async function createUsersTable() {
+async function createUsersTable() {
   try {
     // Enable UUID generation
     await sql`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
@@ -110,14 +123,49 @@ export async function createUsersTable() {
   }
 }
 
-export async function initDB() {
+async function createContactsTable() {
   try {
-    await testDbConnection();
-    await createUsersTable();
-    console.log("Database initialization complete ✅");
+    await sql`
+        CREATE TABLE IF NOT EXISTS Contacts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        contact_name VARCHAR(20) NOT NULL, 
+        contact_phone JSONB NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
   } catch (e) {
-    console.error("Database initialization failed:", e);
-    throw e;
+    throw new Error(`Failed to initialize Contacts table: ${e}`);
+  }
+}
+
+async function createAlertMessagesTable() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS AlertMessages (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        message_content VARCHAR(160) NOT NULL
+      );
+    `;
+
+    await sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1
+          FROM pg_constraint
+          WHERE conname = 'unique_alert_per_user'
+        ) THEN
+          ALTER TABLE AlertMessages
+          ADD CONSTRAINT unique_alert_per_user UNIQUE (firebase_user_id);
+        END IF;
+      END
+      $$;
+    `;
+  } catch (e) {
+    throw new Error(`Failed to initialize AlertMessages table: ${e}`);
   }
 }
 
