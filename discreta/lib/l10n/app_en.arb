@@ -46,5 +46,20 @@
   "alertMessageSaved": "Alert message saved.",
   "confirmDeleteContact": "Are you sure you want to delete this contact?",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "howToUseDiscreta": "How to use Discreta",
+  "step1": "Hold the bracelet's power button for 3 seconds to turn it on.",
+  "step2": "Tap the bracelet's power button 3 times to turn on pairing mode.",
+  "step2Observations": "You should see a blue light blinking under the bracelet.",
+  "step3": "Connect your phone to the bracelet trough bluetooth.",
+  "step3Observations": "The light should turn back to green and you will see the bracelet status as connected on the Home page.",
+  "step4": "Add you alert message and your trusted contacts on the Contacts tab.",
+  "step6": "Double tap the power button on the bracelet to send an alert immediately.",
+  "step6Observation": "Your contacts should receive your alert message with your real-time location, and the bracelet should vibrate on your wrist as a sign of confirmation. Don't forget to confirm your safety on the Home tab.",
+  "step7": "Make sure that your phone is always connected to the internet while using the bracelet.",
+  "step8": "Hold the power button for 3 seconds to switch of the bracelet.",
+  "step9": "You're good to go.",
+  "powerSetup": "Power & Setup",
+  "pairingConnection": "Pairing & Connection",
+  "safetyAlerts": "Safety & Alerts"
 }

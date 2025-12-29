@@ -46,5 +46,20 @@
   "alertMessageSaved": "Message d'alerte enregistré.",
   "confirmDeleteContact": "Êtes-vous sûr de vouloir supprimer ce contact?",
   "yes": "Oui",
-  "no": "Non"
+  "no": "Non",
+  "howToUseDiscreta": "Comment utiliser Discreta",
+  "step1": "Maintenez le bouton d’alimentation du bracelet pendant 3 secondes pour l’allumer.",
+  "step2": "Appuyez 3 fois sur le bouton d’alimentation du bracelet pour activer le mode d’appairage.",
+  "step2Observations": "Vous devriez voir une lumière bleue clignoter sous le bracelet.",
+  "step3": "Connectez votre téléphone au bracelet via Bluetooth.",
+  "step3Observations": "La lumière devrait redevenir verte et le statut du bracelet apparaîtra comme connecté sur la page d’accueil.",
+  "step4": "Ajoutez votre message d’alerte et vos contacts de confiance dans l’onglet Contacts.",
+  "step6": "Appuyez deux fois sur le bouton d’alimentation du bracelet pour envoyer une alerte immédiatement.",
+  "step6Observation": "Vos contacts devraient recevoir votre message d’alerte avec votre position en temps réel, et le bracelet devrait vibrer sur votre poignet comme signe de confirmation. N’oubliez pas de confirmer votre sécurité dans l’onglet Accueil.",
+  "step7": "Assurez-vous que votre téléphone est toujours connecté à Internet lorsque vous utilisez le bracelet.",
+  "step8": "Maintenez le bouton d’alimentation pendant 3 secondes pour éteindre le bracelet.",
+  "step9": "Vous êtes prête.",
+  "powerSetup": "Allumage et configuration",
+  "pairingConnection": "Appairage et connexion",
+  "safetyAlerts": "Sécurité et alertes"
 }

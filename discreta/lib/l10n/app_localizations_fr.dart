@@ -158,4 +158,58 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get no => 'Non';
+
+  @override
+  String get howToUseDiscreta => 'Comment utiliser Discreta';
+
+  @override
+  String get step1 =>
+      'Maintenez le bouton d’alimentation du bracelet pendant 3 secondes pour l’allumer.';
+
+  @override
+  String get step2 =>
+      'Appuyez 3 fois sur le bouton d’alimentation du bracelet pour activer le mode d’appairage.';
+
+  @override
+  String get step2Observations =>
+      'Vous devriez voir une lumière bleue clignoter sous le bracelet.';
+
+  @override
+  String get step3 => 'Connectez votre téléphone au bracelet via Bluetooth.';
+
+  @override
+  String get step3Observations =>
+      'La lumière devrait redevenir verte et le statut du bracelet apparaîtra comme connecté sur la page d’accueil.';
+
+  @override
+  String get step4 =>
+      'Ajoutez votre message d’alerte et vos contacts de confiance dans l’onglet Contacts.';
+
+  @override
+  String get step6 =>
+      'Appuyez deux fois sur le bouton d’alimentation du bracelet pour envoyer une alerte immédiatement.';
+
+  @override
+  String get step6Observation =>
+      'Vos contacts devraient recevoir votre message d’alerte avec votre position en temps réel, et le bracelet devrait vibrer sur votre poignet comme signe de confirmation. N’oubliez pas de confirmer votre sécurité dans l’onglet Accueil.';
+
+  @override
+  String get step7 =>
+      'Assurez-vous que votre téléphone est toujours connecté à Internet lorsque vous utilisez le bracelet.';
+
+  @override
+  String get step8 =>
+      'Maintenez le bouton d’alimentation pendant 3 secondes pour éteindre le bracelet.';
+
+  @override
+  String get step9 => 'Vous êtes prête.';
+
+  @override
+  String get powerSetup => 'Allumage et configuration';
+
+  @override
+  String get pairingConnection => 'Appairage et connexion';
+
+  @override
+  String get safetyAlerts => 'Sécurité et alertes';
 }

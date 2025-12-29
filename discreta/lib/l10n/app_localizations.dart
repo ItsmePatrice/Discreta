@@ -385,6 +385,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No'**
   String get no;
+
+  /// No description provided for @howToUseDiscreta.
+  ///
+  /// In en, this message translates to:
+  /// **'How to use Discreta'**
+  String get howToUseDiscreta;
+
+  /// No description provided for @step1.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold the bracelet\'s power button for 3 seconds to turn it on.'**
+  String get step1;
+
+  /// No description provided for @step2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the bracelet\'s power button 3 times to turn on pairing mode.'**
+  String get step2;
+
+  /// No description provided for @step2Observations.
+  ///
+  /// In en, this message translates to:
+  /// **'You should see a blue light blinking under the bracelet.'**
+  String get step2Observations;
+
+  /// No description provided for @step3.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your phone to the bracelet trough bluetooth.'**
+  String get step3;
+
+  /// No description provided for @step3Observations.
+  ///
+  /// In en, this message translates to:
+  /// **'The light should turn back to green and you will see the bracelet status as connected on the Home page.'**
+  String get step3Observations;
+
+  /// No description provided for @step4.
+  ///
+  /// In en, this message translates to:
+  /// **'Add you alert message and your trusted contacts on the Contacts tab.'**
+  String get step4;
+
+  /// No description provided for @step6.
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap the power button on the bracelet to send an alert immediately.'**
+  String get step6;
+
+  /// No description provided for @step6Observation.
+  ///
+  /// In en, this message translates to:
+  /// **'Your contacts should receive your alert message with your real-time location, and the bracelet should vibrate on your wrist as a sign of confirmation. Don\'t forget to confirm your safety on the Home tab.'**
+  String get step6Observation;
+
+  /// No description provided for @step7.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure that your phone is always connected to the internet while using the bracelet.'**
+  String get step7;
+
+  /// No description provided for @step8.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold the power button for 3 seconds to switch of the bracelet.'**
+  String get step8;
+
+  /// No description provided for @step9.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re good to go.'**
+  String get step9;
+
+  /// No description provided for @powerSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Power & Setup'**
+  String get powerSetup;
+
+  /// No description provided for @pairingConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Pairing & Connection'**
+  String get pairingConnection;
+
+  /// No description provided for @safetyAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety & Alerts'**
+  String get safetyAlerts;
 }
 
 class _AppLocalizationsDelegate

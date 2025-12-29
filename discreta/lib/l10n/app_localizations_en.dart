@@ -157,4 +157,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no => 'No';
+
+  @override
+  String get howToUseDiscreta => 'How to use Discreta';
+
+  @override
+  String get step1 =>
+      'Hold the bracelet\'s power button for 3 seconds to turn it on.';
+
+  @override
+  String get step2 =>
+      'Tap the bracelet\'s power button 3 times to turn on pairing mode.';
+
+  @override
+  String get step2Observations =>
+      'You should see a blue light blinking under the bracelet.';
+
+  @override
+  String get step3 => 'Connect your phone to the bracelet trough bluetooth.';
+
+  @override
+  String get step3Observations =>
+      'The light should turn back to green and you will see the bracelet status as connected on the Home page.';
+
+  @override
+  String get step4 =>
+      'Add you alert message and your trusted contacts on the Contacts tab.';
+
+  @override
+  String get step6 =>
+      'Double tap the power button on the bracelet to send an alert immediately.';
+
+  @override
+  String get step6Observation =>
+      'Your contacts should receive your alert message with your real-time location, and the bracelet should vibrate on your wrist as a sign of confirmation. Don\'t forget to confirm your safety on the Home tab.';
+
+  @override
+  String get step7 =>
+      'Make sure that your phone is always connected to the internet while using the bracelet.';
+
+  @override
+  String get step8 =>
+      'Hold the power button for 3 seconds to switch of the bracelet.';
+
+  @override
+  String get step9 => 'You\'re good to go.';
+
+  @override
+  String get powerSetup => 'Power & Setup';
+
+  @override
+  String get pairingConnection => 'Pairing & Connection';
+
+  @override
+  String get safetyAlerts => 'Safety & Alerts';
 }

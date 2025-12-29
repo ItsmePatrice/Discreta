@@ -291,10 +291,6 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
         title: DiscretaText(
           text: AppLocalizations.of(context)!.contactsAndAlert,
           fontWeight: FontWeight.bold,

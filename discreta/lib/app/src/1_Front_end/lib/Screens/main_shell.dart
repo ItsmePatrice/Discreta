@@ -1,3 +1,4 @@
+import 'package:discreta/app/src/1_Front_end/lib/Screens/Guide_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/Layout/discreta_nav_bar.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/contact_screen.dart';
@@ -17,7 +18,7 @@ class _MainShellState extends State<MainShell> {
   final List<Widget> _pages = const [
     HomePage(),
     ContactsPage(),
-    Placeholder(), // Guide (later)
+    GuidePage(),
     ProfilePage(),
   ];
 
