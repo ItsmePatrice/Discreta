@@ -15,4 +15,6 @@ router.post('/contacts', tokenVerifier.verifyToken, userController.addContact);
 router.delete('/contacts/:contactId', tokenVerifier.verifyToken, userController.deleteContact);
 router.put('/contacts/:contactId', tokenVerifier.verifyToken, userController.updateContact);
 
+
+
 export default router;

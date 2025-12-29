@@ -151,7 +151,22 @@ const UserService = {
             logger.error('Database error while updating contact: ', e);
             throw e;
         }   
-    }
+    },
+
+    async updateLanguagePreference(firebaseUserId: string, language: string) {
+        try {
+            const res = await sql`
+                UPDATE Users
+                SET language = ${language}, updated_at = NOW()
+                WHERE firebase_user_id = ${firebaseUserId}
+                RETURNING *;
+            `;
+            return res[0].language;
+        } catch (e) {
+            logger.error('Database error while updating user language: ', e);
+            throw e;
+        }
+    },
 };
 
 export default UserService;

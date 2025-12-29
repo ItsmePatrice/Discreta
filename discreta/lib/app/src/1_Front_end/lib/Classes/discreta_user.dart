@@ -5,7 +5,7 @@ class DiscretaUser {
   final String lastName;
   final String email;
   final bool isSubscribed;
-  final String language;
+  String language;
   final DateTime createdAt;
   final DateTime updatedAt;
 

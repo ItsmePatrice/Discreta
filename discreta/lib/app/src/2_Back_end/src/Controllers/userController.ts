@@ -5,7 +5,6 @@ import logger from '../logs';
 
 const userController = {
 
-    // creates a new user or returns an existing one
     saveAlertMessage: async (req: Request, res: Response) => {
         try {
             const firebaseUid = req.firebaseUid;
@@ -111,6 +110,24 @@ const userController = {
             return res.status(StatusCodes.ok).json({ contact: updatedContact });
         }
         catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
+    updateLanguagePreference: async (req: Request, res: Response) => {
+        try {
+            const firebaseUid = req.firebaseUid;
+            if (!firebaseUid) {
+                throw ("firebaseUid was null");
+            }
+            const { language } = req.body;
+            if (!language || (language !== 'fr' && language !== 'en')) {
+                return res.status(StatusCodes.badRequest).json({ message: 'Language is required' });
+            }
+            const newLanguage = await UserService.updateLanguagePreference(firebaseUid, language);
+            return res.status(StatusCodes.ok).json({ language: newLanguage });
+        } catch (e) {
             logger.error(e);
             return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
         }

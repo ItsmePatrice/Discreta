@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Classes/discreta_user.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +55,7 @@ class _HomePageState extends State<HomePage>
 
   void initializePage() async {
     _firstName = AuthService.instance.userFirstName;
+    await AuthService.instance.fetchOrCreateUser();
     final Locale userLocale = Locale(
       AuthService.instance.discretaUser?.language ?? 'fr',
     );

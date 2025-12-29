@@ -1,6 +1,8 @@
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +23,21 @@ class _SettingsPageState extends State<SettingsPage> {
     _selectedLanguage = Localizations.localeOf(context).languageCode;
   }
 
-  void _changeLanguage(String languageCode) {
-    setState(() {
-      _selectedLanguage = languageCode;
-    });
+  Future<void> _changeLanguage(String languageCode) async {
+    try {
+      await UserService.instance.setLanguagePreference(languageCode);
+      setState(() {
+        _selectedLanguage = languageCode;
+      });
 
-    myAppKey.currentState?.setLocale(Locale(languageCode));
+      myAppKey.currentState?.setLocale(Locale(languageCode));
+    } catch (e) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.unknownError,
+        message: AppLocalizations.of(context)!.noInternetConnection,
+      );
+    }
   }
 
   @override

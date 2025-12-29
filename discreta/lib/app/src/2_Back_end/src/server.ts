@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { initDB } from "./Config/database";
 import authRoutes from './Routes/authRoutes';
 import userRoutes from './Routes/userRoutes';
+import preferenceRoutes from './Routes/preferenceRoutes';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(helmet());
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/alert-flow', userRoutes);
+app.use('/api/user', preferenceRoutes);
 
 initDB().then(() => {
   const PORT = process.env.SERVER_PORT;

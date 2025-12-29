@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:discreta/app/src/1_Front_end/lib/Classes/contact.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/http_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/status_codes.dart';
@@ -105,6 +106,25 @@ class UserService {
       }
     } catch (e) {
       LogService.instance.logError('Error updating contact', e);
+      rethrow;
+    }
+  }
+
+  Future<void> setLanguagePreference(String languageCode) async {
+    try {
+      final data = {'language': languageCode};
+      final response = await HttpService.instance.patch(
+        ApiRoutes.language,
+        data,
+      );
+      if (response.statusCode != StatusCodes.ok) {
+        throw Exception('Failed to set language preference');
+      }
+      final responseBody = jsonDecode(response.body);
+      final updatedLanguage = responseBody['language'] as String;
+      AuthService.instance.discretaUser?.language = updatedLanguage;
+    } catch (e) {
+      LogService.instance.logError('Error setting language preference', e);
       rethrow;
     }
   }
