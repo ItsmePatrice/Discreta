@@ -2,6 +2,7 @@ import UserService from '../Services/userService';
 import { Request, Response } from "express";
 import StatusCodes from '../StatusCodes/statusCode';
 import logger from '../logs';
+import AlertService from '../Services/alertService';
 
 const userController = {
 
@@ -127,6 +128,19 @@ const userController = {
             }
             const newLanguage = await UserService.updateLanguagePreference(firebaseUid, language);
             return res.status(StatusCodes.ok).json({ language: newLanguage });
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+    sendAlert: async (req: Request, res: Response) => {
+        try {
+            const firebaseUid = req.firebaseUid;
+            if (!firebaseUid) {
+                throw ("firebaseUid was null");
+            }
+            await AlertService.sendAlertMessage(firebaseUid);
+            return res.status(StatusCodes.ok).json({ });
         } catch (e) {
             logger.error(e);
             return res.status(StatusCodes.internalServerError).json({ message: `${e}` });

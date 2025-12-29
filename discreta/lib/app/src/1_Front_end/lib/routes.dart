@@ -9,6 +9,7 @@ class ApiRoutes {
   // Alert flow
   static String alertMessage = '$baseUrl/api/alert-flow/alert-message';
   static String contacts = '$baseUrl/api/alert-flow/contacts';
+  static String sendAlert = '$baseUrl/api/alert-flow/send-alert';
 
   // User routes
   static String language = '$baseUrl/api/user/language';
