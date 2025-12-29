@@ -203,7 +203,7 @@ abstract class AppLocalizations {
   /// No description provided for @discretaReassuranceMessage.
   ///
   /// In en, this message translates to:
-  /// **'Discreta is here with you.'**
+  /// **'Discreta is quietly watching.'**
   String get discretaReassuranceMessage;
 
   /// No description provided for @status.

@@ -64,7 +64,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get discretaWelcomeMessage => 'Vous n\'êtes pas seule.';
 
   @override
-  String get discretaReassuranceMessage => 'Discreta est là avec vous.';
+  String get discretaReassuranceMessage => 'Discreta veille discrètement.';
 
   @override
   String get status => 'status';
