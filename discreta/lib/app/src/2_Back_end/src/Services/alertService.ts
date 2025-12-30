@@ -27,7 +27,7 @@ const AlertService = {
                 LIMIT 1;
             `;
 
-            if (decryptedContacts.length === 0 || message.length === 0) {
+            if (decryptedContacts.length === 0) {
                 return false;
             }
 
@@ -36,7 +36,6 @@ const AlertService = {
             // send SMS to each contact
             for (const contact of decryptedContacts) {
                 await SmsService.sendSMS(username!, contact.name, contact.phone_number, alertMessage);
-                logger.info(`Alert messages sent to ${contact.name} contacts for user ${username}`);
             }
 
             return true;

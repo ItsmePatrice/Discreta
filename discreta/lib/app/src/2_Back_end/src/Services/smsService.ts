@@ -6,15 +6,26 @@ const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TO
 // create your phone number in twilio 
 const SmsService = {
 
-    async sendSMS(from:string, contactName: string, contactPhoneNumber: string, message: string) {
+    async sendSMS(from:string, contactName: string, contactPhoneNumber: string, message: string | null) {
         try {
             // Make sure to add time and the location url
             // Make the message is based on the user's language preference
-            const body = `🚨 DISCRETA SAFETY ALERT 
+            let body: string;
+            if (!message || message.trim() === "") {
+                 body = `🚨 DISCRETA SAFETY ALERT 
+Hey ${contactName}, this message was sent by Discreta. ${from} may be unsafe. If this is an emergency, please call local authorities immediately and share her live location with them.
+
+                — Discreta Safety System`;
+            ; 
+
+            } else {
+                 body = `🚨 DISCRETA SAFETY ALERT 
 Hey ${contactName}, this message was sent by Discreta. ${from} may be unsafe. Her message to you: "${message}" If this is an emergency, please call local authorities immediately and share her live location with them.
 
                 — Discreta Safety System`;
             ; 
+            }
+
                 
             return client.messages.create({
                 body: body,
