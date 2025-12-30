@@ -110,7 +110,9 @@ class MessageService {
                 Flexible(
                   child: DiscretaButton(
                     text: AppLocalizations.of(context)!.yes,
-                    onPressed: () {
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await Future.delayed(const Duration(milliseconds: 120));
                       onPressed();
                     },
                     size: ButtonSize.medium,

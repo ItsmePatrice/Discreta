@@ -211,4 +211,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get safetyAlerts => 'Safety & Alerts';
+
+  @override
+  String get sendAlert => 'Send alert';
+
+  @override
+  String get alertSent => 'Alert has been sent.';
+
+  @override
+  String get confirmSendAlert =>
+      'Are you sure you want to send an alert to your contacts?';
+
+  @override
+  String get alertNoSent =>
+      'The alert wasn\'t sent. Please make sure you have at least 1 saved contact.';
+
+  @override
+  String get error => 'Error';
 }

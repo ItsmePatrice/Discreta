@@ -61,5 +61,10 @@
   "step9": "Vous êtes prête.",
   "powerSetup": "Allumage et configuration",
   "pairingConnection": "Appairage et connexion",
-  "safetyAlerts": "Sécurité et alertes"
+  "safetyAlerts": "Sécurité et alertes",
+  "sendAlert": "Envoyer une alerte",
+  "alertSent": "L'alerte a été envoyée.",
+  "confirmSendAlert": "Êtes-vous sûr de vouloir envoyer une alerte?",
+  "alertNoSent": "L’alerte n’a pas été envoyée. Ajoutez au moins un contact pour continuer.",
+  "error": "Erreur"
 }

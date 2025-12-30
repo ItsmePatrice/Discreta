@@ -212,4 +212,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get safetyAlerts => 'Sécurité et alertes';
+
+  @override
+  String get sendAlert => 'Envoyer une alerte';
+
+  @override
+  String get alertSent => 'L\'alerte a été envoyée.';
+
+  @override
+  String get confirmSendAlert => 'Êtes-vous sûr de vouloir envoyer une alerte?';
+
+  @override
+  String get alertNoSent =>
+      'L’alerte n’a pas été envoyée. Ajoutez au moins un contact pour continuer.';
+
+  @override
+  String get error => 'Erreur';
 }

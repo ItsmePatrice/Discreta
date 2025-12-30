@@ -26,6 +26,11 @@ const AlertService = {
                 WHERE firebase_user_id = ${firebaseUserId}
                 LIMIT 1;
             `;
+
+            if (decryptedContacts.length === 0 || message.length === 0) {
+                return false;
+            }
+
             const alertMessage = message[0]?.message_content;
 
             // send SMS to each contact
@@ -34,9 +39,7 @@ const AlertService = {
                 logger.info(`Alert messages sent to ${contact.name} contacts for user ${username}`);
             }
 
-
-            // log who the alert message was sent to and by who
-
+            return true;
         } catch (e) {
             logger.error('Database error while saving alert message', e);
             throw e;

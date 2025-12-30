@@ -475,6 +475,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Safety & Alerts'**
   String get safetyAlerts;
+
+  /// No description provided for @sendAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Send alert'**
+  String get sendAlert;
+
+  /// No description provided for @alertSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert has been sent.'**
+  String get alertSent;
+
+  /// No description provided for @confirmSendAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to send an alert to your contacts?'**
+  String get confirmSendAlert;
+
+  /// No description provided for @alertNoSent.
+  ///
+  /// In en, this message translates to:
+  /// **'The alert wasn\'t sent. Please make sure you have at least 1 saved contact.'**
+  String get alertNoSent;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate

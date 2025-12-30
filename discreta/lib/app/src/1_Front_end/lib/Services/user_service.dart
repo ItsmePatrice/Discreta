@@ -129,12 +129,14 @@ class UserService {
     }
   }
 
-  Future<void> sendAlertNow() async {
+  Future<bool> sendAlertNow() async {
     try {
       final response = await HttpService.instance.post(ApiRoutes.sendAlert);
       if (response.statusCode != StatusCodes.ok) {
         throw Exception('Failed to send alert now');
       }
+      final responseBody = jsonDecode(response.body);
+      return responseBody['sentAlert'] as bool;
     } catch (e) {
       LogService.instance.logError('Error sending alert now', e);
       rethrow;

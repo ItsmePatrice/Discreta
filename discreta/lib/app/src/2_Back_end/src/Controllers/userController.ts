@@ -139,8 +139,8 @@ const userController = {
             if (!firebaseUid) {
                 throw ("firebaseUid was null");
             }
-            await AlertService.sendAlertMessage(firebaseUid, req.firstName);
-            return res.status(StatusCodes.ok).json({ });
+            const sentAlert = await AlertService.sendAlertMessage(firebaseUid, req.firstName);
+            return res.status(StatusCodes.ok).json({ sentAlert });
         } catch (e) {
             logger.error(e);
             return res.status(StatusCodes.internalServerError).json({ message: `${e}` });

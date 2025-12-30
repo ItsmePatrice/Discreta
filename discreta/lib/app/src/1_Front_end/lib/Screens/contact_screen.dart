@@ -267,7 +267,7 @@ class _ContactsPageState extends State<ContactsPage> {
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.unknownError,
-        message: AppLocalizations.of(context)!.noInternetConnection + '$e',
+        message: AppLocalizations.of(context)!.noInternetConnection,
       );
     }
   }

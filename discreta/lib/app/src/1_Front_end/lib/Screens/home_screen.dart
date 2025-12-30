@@ -2,16 +2,14 @@ import 'dart:async';
 
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Classes/discreta_user.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -106,6 +104,49 @@ class _HomePageState extends State<HomePage>
       _remainingSeconds = 0;
       _totalSeconds = 0;
     });
+  }
+
+  Future<void> _sendAlertNow() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final alertSent = await UserService.instance.sendAlertNow();
+
+      if (!alertSent) {
+        MessageService.displayAlertDialog(
+          context: context,
+          title: AppLocalizations.of(context)!.error,
+          message: AppLocalizations.of(context)!.alertNoSent,
+        );
+        return;
+      }
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.success,
+        message: AppLocalizations.of(context)!.alertSent,
+      );
+    } catch (e) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.unknownError,
+        message: AppLocalizations.of(context)!.noInternetConnection,
+      );
+      return;
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _confirmSendAlertNow() async {
+    MessageService.displayConfirmationDialog(
+      context: context,
+      onYesPressed: _sendAlertNow,
+      message: AppLocalizations.of(context)!.confirmSendAlert,
+    );
   }
 
   Widget braceletStatusCard({
@@ -388,42 +429,53 @@ class _HomePageState extends State<HomePage>
       ),
       body: Stack(
         children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20.h),
-
-                  DiscretaText(
-                    text: AppLocalizations.of(context)!.discretaWelcomeMessage,
-                    size: TextSize.medium,
-                    fontWeight: FontWeight.bold,
+          Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 20.h),
+                        DiscretaText(
+                          text: AppLocalizations.of(
+                            context,
+                          )!.discretaWelcomeMessage,
+                          size: TextSize.medium,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        DiscretaText(
+                          text: AppLocalizations.of(
+                            context,
+                          )!.discretaReassuranceMessage,
+                          size: TextSize.medium,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        SizedBox(height: 30.h),
+                        braceletStatusCard(context: context, isConnected: true),
+                        SizedBox(height: 30.h),
+                        protectionCard(context),
+                        SizedBox(height: 30.h),
+                        safetyTimerCard(context),
+                      ],
+                    ),
                   ),
-                  DiscretaText(
-                    text: AppLocalizations.of(
-                      context,
-                    )!.discretaReassuranceMessage,
-                    size: TextSize.medium,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  SizedBox(height: 30.h),
-                  braceletStatusCard(context: context, isConnected: true),
-                  SizedBox(height: 30.h),
-                  protectionCard(context),
-                  SizedBox(height: 30.h),
-                  safetyTimerCard(context),
-                  SizedBox(height: 20.h),
-                  DiscretaButton(
-                    text: 'send alert',
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(
+                  child: DiscretaButton(
+                    text: AppLocalizations.of(context)!.sendAlert,
                     onPressed: () async {
-                      await UserService.instance.sendAlertNow();
+                      _confirmSendAlertNow();
                     },
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
           if (_isLoading) LoadingOverlay(),
         ],

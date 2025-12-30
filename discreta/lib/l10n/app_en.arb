@@ -61,5 +61,10 @@
   "step9": "You're good to go.",
   "powerSetup": "Power & Setup",
   "pairingConnection": "Pairing & Connection",
-  "safetyAlerts": "Safety & Alerts"
+  "safetyAlerts": "Safety & Alerts",
+  "sendAlert": "Send alert",
+  "alertSent": "Alert has been sent.",
+  "confirmSendAlert": "Are you sure you want to send an alert to your contacts?",
+  "alertNoSent": "The alert wasn't sent. Please make sure you have at least 1 saved contact.",
+  "error": "Error"
 }
