@@ -1,7 +1,7 @@
 enum Environment { dev, prod }
 
 class AppEnvironment {
-  static const Environment current = Environment.dev;
+  static const Environment current = Environment.prod;
 
   static String get baseUrl {
     switch (current) {
