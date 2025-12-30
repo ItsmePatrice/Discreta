@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage>
     myAppKey.currentState?.setLocale(userLocale);
   }
 
-  void _activateProtection() {
+  Future<void> _activateProtection() async {
     _countdownTimer?.cancel();
 
     _totalSeconds = _selectedMinutes * 60;
@@ -78,9 +78,10 @@ class _HomePageState extends State<HomePage>
       if (_remainingSeconds <= 1) {
         timer.cancel();
         setState(() {
+          _isProtectionActive = false;
           _remainingSeconds = 0;
         });
-        // Protection finished / trigger action here (send alerts)
+        _sendAlertNow();
       } else {
         setState(() {
           _remainingSeconds--;
