@@ -4,10 +4,16 @@ import userController from '../Controllers/userController';
 import tokenVerifier from '../Middlewares/verifyToken';
 
 
-// Alert message routes
+// Alert routes
 router.put('/alert-message', tokenVerifier.verifyToken, userController.saveAlertMessage);
 router.get('/alert-message', tokenVerifier.verifyToken, userController.fetchAlertMessage);
 router.post('/send-alert', tokenVerifier.verifyToken, userController.sendAlert);
+router.post('/start-tracking-session', tokenVerifier.verifyToken, userController.startTrackingSession);
+router.post('/end-tracking-session', tokenVerifier.verifyToken, userController.stopTrackingSession);
+router.patch('/location-update', tokenVerifier.verifyToken, userController.updateLocation);
+
+// location mapper router
+router.get('/track/:token', userController.getLocation);
 
 
 // Contact management routes

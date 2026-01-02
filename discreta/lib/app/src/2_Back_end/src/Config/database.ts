@@ -52,12 +52,18 @@ export function decrypt(payload: {
   return decrypted.toString("utf8");
 }
 
+export function generateToken() {
+  return crypto.randomBytes(24).toString("hex");
+}
+
 export async function initDB() {
   try {
     await testDbConnection();
     await createUsersTable();
     await createContactsTable();
     await createAlertMessagesTable();
+    await createTrackingSessionsTable();
+    await createLogsTable();
     console.log("Database initialization complete ✅");
   } catch (e) {
     console.error("Database initialization failed:", e);
@@ -166,6 +172,41 @@ async function createAlertMessagesTable() {
     `;
   } catch (e) {
     throw new Error(`Failed to initialize AlertMessages table: ${e}`);
+  }
+}
+
+async function createTrackingSessionsTable() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS TrackingSessions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        token TEXT NOT NULL,
+        last_lat DOUBLE PRECISION,
+        last_lng DOUBLE PRECISION,
+        expires_at TIMESTAMP NOT NULL,
+        status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'ENDED', 'EXPIRED')),
+        start_time TIMESTAMPTZ DEFAULT NOW(),
+        end_time TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
+  } catch (e) {
+    throw new Error(`Failed to initialize TrackingSessions table: ${e}`);
+  }
+}
+
+async function createLogsTable() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS Logs (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        message TEXT NOT NULL,
+        timestamp TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
+  } catch (e) {
+    throw new Error(`Failed to initialize Logs table: ${e}`);
   }
 }
 

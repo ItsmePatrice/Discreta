@@ -449,7 +449,7 @@ abstract class AppLocalizations {
   /// No description provided for @step8.
   ///
   /// In en, this message translates to:
-  /// **'Hold the power button for 3 seconds to switch of the bracelet.'**
+  /// **'Hold the power button for 3 seconds to switch off the bracelet.'**
   String get step8;
 
   /// No description provided for @step9.
@@ -505,6 +505,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @locationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Location required'**
+  String get locationRequired;
+
+  /// No description provided for @locationAccessReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Discreta requires access to your location to share your real-time position with trusted contacts in case of danger.'**
+  String get locationAccessReason;
+
+  /// No description provided for @noLocationConsequence.
+  ///
+  /// In en, this message translates to:
+  /// **'Without location access, Discreta cannot function.'**
+  String get noLocationConsequence;
+
+  /// No description provided for @enableLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Location'**
+  String get enableLocation;
 }
 
 class _AppLocalizationsDelegate

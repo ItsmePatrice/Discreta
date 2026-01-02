@@ -1,6 +1,7 @@
 import { sql, encrypt, decrypt } from "../Config/database";
 import logger from "../logs";
 import { UserDto } from "../Models/userDTO";
+import LogService from "./logService";
 
 const UserService = {
     async findUserByFirebaseId(firebaseUserId: string) {
@@ -57,6 +58,8 @@ const UserService = {
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
+            const message = `${decryptedUser.first_name} joined`;
+            await LogService.logEvent(dto.firebaseUserId, message);
 
             return decryptedUser;
         } catch (e) {

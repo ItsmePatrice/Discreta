@@ -198,7 +198,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get step8 =>
-      'Hold the power button for 3 seconds to switch of the bracelet.';
+      'Hold the power button for 3 seconds to switch off the bracelet.';
 
   @override
   String get step9 => 'You\'re good to go.';
@@ -228,4 +228,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get locationRequired => 'Location required';
+
+  @override
+  String get locationAccessReason =>
+      'Discreta requires access to your location to share your real-time position with trusted contacts in case of danger.';
+
+  @override
+  String get noLocationConsequence =>
+      'Without location access, Discreta cannot function.';
+
+  @override
+  String get enableLocation => 'Enable Location';
 }

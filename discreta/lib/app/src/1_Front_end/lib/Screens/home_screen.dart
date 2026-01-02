@@ -61,6 +61,15 @@ class _HomePageState extends State<HomePage>
       AuthService.instance.discretaUser?.language ?? 'fr',
     );
     myAppKey.currentState?.setLocale(userLocale);
+    _checkLocationPermission();
+  }
+
+  Future<void> _checkLocationPermission() async {
+    try {
+      await UserService.instance.ensureLocationPermission();
+    } catch (e) {
+      MessageService.showLocationPermissionDialog(context);
+    }
   }
 
   Future<void> _activateProtection() async {

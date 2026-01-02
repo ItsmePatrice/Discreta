@@ -136,7 +136,7 @@ const userController = {
     sendAlert: async (req: Request, res: Response) => {
         try {
             const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
+            if (!firebaseUid || !req.firstName) {
                 throw ("firebaseUid was null");
             }
             const sentAlert = await AlertService.sendAlertMessage(firebaseUid, req.firstName);
@@ -146,6 +146,77 @@ const userController = {
             return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
         }
     },
+
+    startTrackingSession: async (req: Request, res: Response) => {
+        try {
+            const firebaseUid = req.firebaseUid;
+            if (!firebaseUid || !req.firstName) {
+                throw ("firebaseUid was null");
+            }
+            const { trackingToken } = await AlertService.startTrackingSession(firebaseUid, req.firstName);
+            return res.status(StatusCodes.created).json({ trackingToken });
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
+    stopTrackingSession: async (req: Request, res: Response) => {
+        try {
+            const firebaseUid = req.firebaseUid;
+            if (!firebaseUid || !req.firstName) {
+                throw ("firebaseUid was null");
+            }
+            const { trackingToken } = req.body;
+            if (!trackingToken) {
+                return res.status(StatusCodes.badRequest).json({ message: 'Tracking token is required' });
+            }
+            const username = req.firstName;
+            await AlertService.stopTrackingSession(username, firebaseUid, trackingToken);
+            return res.status(StatusCodes.ok).json({ message: 'Tracking session stopped successfully' });
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
+    updateLocation: async (req: Request, res: Response) => {
+        try {
+            const firebaseUid = req.firebaseUid;
+            if (!firebaseUid) {
+                throw ("firebaseUid was null");
+            }
+            const { trackingToken, lat, lng } = req.body;
+            if (!trackingToken || lat === undefined || lng === undefined) {
+                return res.status(StatusCodes.badRequest).json({ message: 'Tracking token, latitude, and longitude are required' });
+            }
+            await AlertService.updateLocation(firebaseUid, trackingToken, lat, lng);
+            return res.status(StatusCodes.ok).json({ message: 'Location updated successfully' });
+        }
+        catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
+    getLocation: async (req: Request, res: Response) => {
+        try {
+            const { trackingToken } = req.body;
+            if (!trackingToken) {
+                return res.status(StatusCodes.badRequest).json({ message: 'Tracking token missing' });
+            }
+            const { lat, lng } = await AlertService.getTrackingData(trackingToken);
+            return res.status(StatusCodes.ok).json({latitude: lat, longitude: lng });
+        }
+        catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
+
+
+    
 }
 
 export default userController;

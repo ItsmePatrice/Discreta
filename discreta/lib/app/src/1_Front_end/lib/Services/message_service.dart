@@ -5,6 +5,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart' as Geolocator;
 import '../../Assets/colors.dart';
 
 class MessageService {
@@ -30,6 +31,20 @@ class MessageService {
             }
           },
         );
+      },
+    );
+  }
+
+  static void showLocationPermissionDialog(BuildContext context) {
+    MessageService.displayAlertDialog(
+      context: context,
+      title: AppLocalizations.of(context)!.locationRequired,
+      message:
+          '${AppLocalizations.of(context)!.locationAccessReason}\n\n'
+          '${AppLocalizations.of(context)!.noLocationConsequence}',
+      buttonText: AppLocalizations.of(context)!.enableLocation,
+      onButtonPressed: () async {
+        await Geolocator.openAppSettings();
       },
     );
   }

@@ -57,7 +57,7 @@
   "step6": "Double tap the power button on the bracelet to send an alert immediately.",
   "step6Observation": "Your contacts should receive your alert message with your real-time location, and the bracelet should vibrate on your wrist as a sign of confirmation. Don't forget to confirm your safety on the Home tab.",
   "step7": "Make sure that your phone is always connected to the internet while using the bracelet.",
-  "step8": "Hold the power button for 3 seconds to switch of the bracelet.",
+  "step8": "Hold the power button for 3 seconds to switch off the bracelet.",
   "step9": "You're good to go.",
   "powerSetup": "Power & Setup",
   "pairingConnection": "Pairing & Connection",
@@ -66,5 +66,9 @@
   "alertSent": "Alert has been sent.",
   "confirmSendAlert": "Are you sure you want to send an alert to your contacts?",
   "alertNoSent": "The alert wasn't sent. Please make sure you have at least 1 saved contact.",
-  "error": "Error"
+  "error": "Error",
+  "locationRequired": "Location required",
+  "locationAccessReason": "Discreta requires access to your location to share your real-time position with trusted contacts in case of danger.",
+  "noLocationConsequence": "Without location access, Discreta cannot function.",
+  "enableLocation": "Enable Location"
 }

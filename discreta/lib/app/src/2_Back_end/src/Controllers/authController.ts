@@ -3,6 +3,7 @@ import type { UserDto } from '../Models/userDTO';
 import { Request, Response } from "express";
 import StatusCodes from '../StatusCodes/statusCode';
 import logger from '../logs';
+import LogService from '../Services/logService';
 
 const authController = {
 
@@ -12,7 +13,7 @@ const authController = {
             const firebaseUid = req.firebaseUid;
             if (!firebaseUid) {
                 throw ("firebaseUid was null");
-            }
+            } 
             const existingUser = await UserService.findUserByFirebaseId(firebaseUid);
             if (!existingUser) {
                 if (!req.firebaseUid || !req.firstName || !req.lastName || !req.email) {
@@ -28,6 +29,8 @@ const authController = {
                 const user = await UserService.createUser(newUser);
                 return res.status(StatusCodes.created).json(user);
             }
+            const message = `${req.firstName} signed in`;
+            await LogService.logEvent(req.firebaseUid!, message);
             return res.status(StatusCodes.ok).json(existingUser);
         } catch (e) {
             logger.error(e);

@@ -228,4 +228,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get error => 'Erreur';
+
+  @override
+  String get locationRequired => 'Localisation requise';
+
+  @override
+  String get locationAccessReason =>
+      'Discreta a besoin d’accéder à votre position afin de partager votre localisation en temps réel avec vos contacts de confiance en cas de danger.';
+
+  @override
+  String get noLocationConsequence =>
+      'Sans l’accès à la localisation, Discreta ne peut pas fonctionner.';
+
+  @override
+  String get enableLocation => 'Activer la localisation';
 }

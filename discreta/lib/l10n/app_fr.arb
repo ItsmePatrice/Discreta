@@ -66,5 +66,9 @@
   "alertSent": "L'alerte a été envoyée.",
   "confirmSendAlert": "Êtes-vous sûr de vouloir envoyer une alerte?",
   "alertNoSent": "L’alerte n’a pas été envoyée. Ajoutez au moins un contact pour continuer.",
-  "error": "Erreur"
+  "error": "Erreur",
+  "locationRequired": "Localisation requise",
+  "locationAccessReason": "Discreta a besoin d’accéder à votre position afin de partager votre localisation en temps réel avec vos contacts de confiance en cas de danger.",
+  "noLocationConsequence": "Sans l’accès à la localisation, Discreta ne peut pas fonctionner.",
+  "enableLocation": "Activer la localisation"
 }
