@@ -6,7 +6,7 @@ class AppEnvironment {
   static String get baseUrl {
     switch (current) {
       case Environment.dev:
-        return 'http://10.0.0.14:3000';
+        return 'http://192.168.0.15:3000';
       case Environment.prod:
         return 'https://discreta.ca';
     }
