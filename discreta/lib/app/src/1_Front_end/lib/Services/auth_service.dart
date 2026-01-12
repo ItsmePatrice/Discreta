@@ -67,7 +67,7 @@ class AuthService {
         throw Exception(message);
       }
     } catch (e) {
-      LogService.instance.logError('Error while fetching or creating user', e);
+      LogService.instance.logError('Error while fetching or creating user. $e');
       rethrow;
     }
   }
