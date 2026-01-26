@@ -73,6 +73,16 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> _activateProtection() async {
+    final hasTrustedContacts = await this.hasTrustedContacts();
+
+    if (!hasTrustedContacts) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.noTrustedContact,
+        message: AppLocalizations.of(context)!.pleaseAddContacts,
+      );
+      return;
+    }
     _countdownTimer?.cancel();
 
     _totalSeconds = _selectedMinutes * 60;
@@ -116,11 +126,27 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+  Future<bool> hasTrustedContacts() async {
+    final trustedContacts = await UserService.instance.fetchContacts();
+    return trustedContacts.isNotEmpty;
+  }
+
   Future<void> _sendAlertNow() async {
     try {
       setState(() {
         _isLoading = true;
       });
+
+      final hasTrustedContacts = await this.hasTrustedContacts();
+
+      if (!hasTrustedContacts) {
+        MessageService.displayAlertDialog(
+          context: context,
+          title: AppLocalizations.of(context)!.noTrustedContact,
+          message: AppLocalizations.of(context)!.pleaseAddContacts,
+        );
+        return;
+      }
 
       final alertSent = await UserService.instance.sendAlertNow();
 

@@ -529,6 +529,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable Location'**
   String get enableLocation;
+
+  /// No description provided for @noTrustedContact.
+  ///
+  /// In en, this message translates to:
+  /// **'No trusted contact found'**
+  String get noTrustedContact;
+
+  /// No description provided for @pleaseAddContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Please add a trusted contact'**
+  String get pleaseAddContacts;
 }
 
 class _AppLocalizationsDelegate

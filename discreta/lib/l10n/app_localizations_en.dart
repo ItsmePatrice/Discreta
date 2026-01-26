@@ -242,4 +242,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enableLocation => 'Enable Location';
+
+  @override
+  String get noTrustedContact => 'No trusted contact found';
+
+  @override
+  String get pleaseAddContacts => 'Please add a trusted contact';
 }

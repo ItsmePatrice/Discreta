@@ -70,5 +70,7 @@
   "locationRequired": "Location required",
   "locationAccessReason": "Discreta requires access to your location to share your real-time position with trusted contacts in case of danger.",
   "noLocationConsequence": "Without location access, Discreta cannot function.",
-  "enableLocation": "Enable Location"
+  "enableLocation": "Enable Location",
+  "noTrustedContact": "No trusted contact found",
+  "pleaseAddContacts": "Please add a trusted contact"
 }

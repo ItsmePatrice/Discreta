@@ -242,4 +242,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get enableLocation => 'Activer la localisation';
+
+  @override
+  String get noTrustedContact => 'Aucun contact de confiance trouvé';
+
+  @override
+  String get pleaseAddContacts => 'Veuillez ajouter un contact de confiance';
 }

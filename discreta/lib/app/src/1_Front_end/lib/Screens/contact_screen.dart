@@ -277,7 +277,7 @@ class _ContactsPageState extends State<ContactsPage> {
       context: context,
       message: AppLocalizations.of(context)!.confirmDeleteContact,
       onYesPressed: () async {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         await _deleteContact(index);
       },
     );
