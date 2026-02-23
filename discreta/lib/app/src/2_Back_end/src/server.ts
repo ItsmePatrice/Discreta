@@ -6,6 +6,8 @@ import { initDB } from "./Config/database";
 import authRoutes from './Routes/authRoutes';
 import userRoutes from './Routes/userRoutes';
 import preferenceRoutes from './Routes/preferenceRoutes';
+import publicLocationRoutes from './Routes/publicLocationRoutes';
+import path from "path";
 
 dotenv.config();
 
@@ -24,6 +26,9 @@ app.use(helmet());
 app.use('/api/auth', authRoutes);
 app.use('/api/alert-flow', userRoutes);
 app.use('/api/user', preferenceRoutes);
+
+app.use('/', publicLocationRoutes);
+app.use(express.static(path.join(__dirname, '../public')));
 
 initDB().then(() => {
   const PORT = process.env.SERVER_PORT;
