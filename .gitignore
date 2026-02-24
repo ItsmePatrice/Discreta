@@ -20,3 +20,6 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+github_actions_key
+github_actions_key.pub
