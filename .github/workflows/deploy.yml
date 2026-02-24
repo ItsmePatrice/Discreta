@@ -21,4 +21,4 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ec2-user
-            ./deploy.sh $GITHUB_REF_NAME
+            ./deploy.sh ${{ github.ref_name }}
