@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import StatusCodes from '../StatusCodes/statusCode';
 import logger from '../logs';
 import AlertService from '../Services/alertService';
+import path from 'path';
 
 const userController = {
 
@@ -201,12 +202,27 @@ const userController = {
 
     getLocation: async (req: Request, res: Response) => {
         try {
-            const { trackingToken } = req.body;
+            const trackingToken  = req.params.token;
             if (!trackingToken) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Tracking token missing' });
             }
             const { lat, lng } = await AlertService.getTrackingData(trackingToken);
-            return res.status(StatusCodes.ok).json({latitude: lat, longitude: lng });
+            const userLocation = await AlertService.getAddress(lat, lng);
+
+            if (!userLocation) {
+                return res.status(StatusCodes.notFound).json({ message: 'Location not found' });
+            }
+
+            const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+${lng},${lat}/${lng},${lat},16/600x400?access_token=${process.env.MAPBOX_TOKEN}`;
+            res.send(`
+                <h2>Her position</h2>
+                <p>Address: ${userLocation.fullAddress}</p>
+                <img src="${mapUrl}" alt="User Map">
+            `);
+            
+            /*res.sendFile(
+                path.join(__dirname, '../../public/alert.html')
+            );*/
         }
         catch (e) {
             logger.error(e);

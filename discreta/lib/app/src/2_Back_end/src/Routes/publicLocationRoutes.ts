@@ -1,11 +1,7 @@
 import express from 'express';
 const router = express.Router();
-import path from 'path';
+import userController from '../Controllers/userController';
 
-router.get('/track/:token', (req, res) => {
-  res.sendFile(
-    path.join(__dirname, '../../public/alert.html')
-  );
-});
+router.get('/track/:token', userController.getLocation);
 
 export default router;
