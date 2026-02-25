@@ -211,7 +211,7 @@ const userController = {
 
             if (!userLocation) {
                 return res.status(StatusCodes.notFound).json({ message: 'Location not found' });
-            }
+            } 
 
             const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+${lng},${lat}/${lng},${lat},16/600x400?access_token=${process.env.MAPBOX_TOKEN}`;
             res.send(`
