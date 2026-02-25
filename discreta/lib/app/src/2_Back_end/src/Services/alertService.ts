@@ -172,9 +172,6 @@ const AlertService = {
             const response = await fetch(url);
             const data = await response.json();
 
-            logger.info('Mapbox API response', data);
-            logger.info('number was ', process.env.TWILIO_PHONE_NUMBER);
-
             if (data.features && data.features.length > 0) {
                 const place = data.features[0];
                 return {
