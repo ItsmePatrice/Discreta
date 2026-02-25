@@ -173,6 +173,7 @@ const AlertService = {
             const data = await response.json();
 
             logger.info('Mapbox API response', data);
+            logger.info('token was ', process.env.MAPBOX_TOKEN);
 
             if (data.features && data.features.length > 0) {
                 const place = data.features[0];
