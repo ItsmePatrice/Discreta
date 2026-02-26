@@ -7,7 +7,7 @@ const mapLinkEl = document.getElementById('map-link');
 
 async function fetchLocation() {
     try {
-        const res = await fetch(`${window.location.origin}/api/track/${token}`);
+        const res = await fetch(`${window.location.origin}/api/public/track/${token}`);
         if (!res.ok) throw new Error('Failed to fetch location');
 
         const { lat, lng, minutesSinceLastUpdate } = await res.json();
