@@ -177,6 +177,12 @@ async function createAlertMessagesTable() {
 
 async function createTrackingSessionsTable() {
   try {
+
+    await sql`
+      ALTER TABLE TrackingSessions
+      ADD COLUMN IF NOT EXISTS last_updated TIMESTAMPTZ DEFAULT NOW();
+    `;
+
     await sql`
       CREATE TABLE IF NOT EXISTS TrackingSessions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

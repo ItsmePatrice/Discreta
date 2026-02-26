@@ -4,6 +4,7 @@ import StatusCodes from '../StatusCodes/statusCode';
 import logger from '../logs';
 import AlertService from '../Services/alertService';
 import path from 'path';
+import fs from 'fs';
 
 const userController = {
 
@@ -200,33 +201,35 @@ const userController = {
         }
     },
 
+    getAlertPage: async (req: Request, res: Response) => {
+        try {
+            const trackingToken = req.params.token;
+            if (!trackingToken) {
+                return res.status(StatusCodes.badRequest).json({ message: 'Tracking token missing' });
+            }
+            const htmlPath = path.join(__dirname, '../../public/alert.html');
+            res.sendFile(htmlPath);
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
     getLocation: async (req: Request, res: Response) => {
         try {
             const trackingToken  = req.params.token;
             if (!trackingToken) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Tracking token missing' });
             }
-            const { lat, lng } = await AlertService.getTrackingData(trackingToken);
+            const { lat, lng, minutesSinceLastUpdate } = await AlertService.getTrackingData(trackingToken);
 
-            const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-            res.send(`
-                <h1>⚠ Emergency Alert</h1>
-                <p>Latitude: ${lat}, Longitude: ${lng}</p>
-                <img src="${mapUrl}" alt="User Map">
-            `);
-            
-            /*res.sendFile(
-                path.join(__dirname, '../../public/alert.html')
-            );*/
+            return res.status(StatusCodes.ok).json({ lat, lng, minutesSinceLastUpdate });
         }
         catch (e) {
             logger.error(e);
             return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
         }
     },
-
-
-
     
 }
 

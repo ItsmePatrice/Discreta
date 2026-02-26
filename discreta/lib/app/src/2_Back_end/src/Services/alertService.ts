@@ -59,7 +59,9 @@ const AlertService = {
         try {
             const result = await sql`
             UPDATE TrackingSessions
-            SET last_lat = ${lat}, last_lng = ${lng}
+            SET last_lat = ${lat}, 
+            last_lng = ${lng},
+            last_updated = NOW()
             WHERE firebase_user_id = ${firebaseUserId}
                 AND token = ${trackingToken}
                 AND status = 'ACTIVE'
@@ -77,20 +79,40 @@ const AlertService = {
     async getTrackingData(trackingToken: string) {
         try {
             const result = await sql`
-            SELECT last_lat, last_lng
-            FROM TrackingSessions
-            WHERE token = ${trackingToken}
-                AND status = 'ACTIVE'
-            LIMIT 1;
-        `;
+                SELECT last_lat, last_lng, last_updated, expires_at
+                FROM TrackingSessions
+                WHERE token = ${trackingToken}
+                    AND status = 'ACTIVE'
+                LIMIT 1;
+            `;
+
+        // check if expiry time has passed and update status to EXPIRED if so
+        if (result.length > 0) {
+            const expiresAt = result[0].expires_at;
+            if (expiresAt && new Date(expiresAt) < new Date()) {
+                await sql`
+                    UPDATE TrackingSessions
+                    SET status = 'EXPIRED',
+                        end_time = NOW()
+                    WHERE token = ${trackingToken}
+                        AND status = 'ACTIVE'
+                `;
+                throw new Error('Tracking session has expired.');
+            }
+        }
 
 
         if (result.length === 0) {
-            throw new Error('No active tracking session found for the provided token.');
+            throw new Error('Tracking session not found or ended by user.');
         }
+
         const lat = result[0].last_lat;
         const lng = result[0].last_lng;
-        return { lat, lng };
+        const updatedAt = result[0].last_updated;
+        const lastUpdated = new Date(updatedAt);
+        const now = new Date();
+        const minutesSinceLastUpdate = (now.getTime() - lastUpdated.getTime()) / (1000 * 60);
+        return { lat, lng, minutesSinceLastUpdate };
         } catch (e) {
             logger.error('Database error while fetching tracking data', e);
             throw e;
@@ -149,7 +171,7 @@ const AlertService = {
 
             const public_token = await this.getTrackingToken(firebaseUserId);
 
-            const locationLink = `${process.env.PUBLIC_BASE_URL}/track/${public_token}`;
+            const locationLink = `${process.env.PUBLIC_BASE_URL}/track/page/${public_token}`;
 
             // send SMS to each contact
             for (const contact of decryptedContacts) {
