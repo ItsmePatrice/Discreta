@@ -106,8 +106,8 @@ const AlertService = {
             throw new Error('Tracking session not found or ended by user.');
         }
 
-        const lat = parseFloat(result[0].last_lat.toFixed(2));
-        const lng = parseFloat(result[0].last_lng.toFixed(2));
+        const lat = result[0].last_lat;
+        const lng = result[0].last_lng;
         const updatedAt = result[0].last_updated;
         const lastUpdated = new Date(updatedAt);
         const now = new Date();
