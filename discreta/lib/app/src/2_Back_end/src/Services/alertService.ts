@@ -106,12 +106,12 @@ const AlertService = {
             throw new Error('Tracking session not found or ended by user.');
         }
 
-        const lat = result[0].last_lat;
-        const lng = result[0].last_lng;
+        const lat = parseFloat(result[0].last_lat.toFixed(2));
+        const lng = parseFloat(result[0].last_lng.toFixed(2));
         const updatedAt = result[0].last_updated;
         const lastUpdated = new Date(updatedAt);
         const now = new Date();
-        const minutesSinceLastUpdate = (now.getTime() - lastUpdated.getTime()) / (1000 * 60);
+        const minutesSinceLastUpdate = Math.floor((now.getTime() - lastUpdated.getTime()) / (1000 * 60));
         return { lat, lng, minutesSinceLastUpdate };
         } catch (e) {
             logger.error('Database error while fetching tracking data', e);
