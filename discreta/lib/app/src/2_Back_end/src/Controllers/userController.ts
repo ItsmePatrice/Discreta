@@ -207,16 +207,11 @@ const userController = {
                 return res.status(StatusCodes.badRequest).json({ message: 'Tracking token missing' });
             }
             const { lat, lng } = await AlertService.getTrackingData(trackingToken);
-            const userLocation = await AlertService.getAddress(lat, lng);
 
-            if (!userLocation) {
-                return res.status(StatusCodes.notFound).json({ message: 'Location not found' });
-            } 
-
-            const mapUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+${lng},${lat}/${lng},${lat},16/600x400?access_token=${process.env.MAPBOX_TOKEN}`;
+            const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
             res.send(`
-                <h2>Her position</h2>
-                <p>Address: ${userLocation.fullAddress}</p>
+                <h1>⚠ Emergency Alert</h1>
+                <p>Latitude: ${lat}, Longitude: ${lng}</p>
                 <img src="${mapUrl}" alt="User Map">
             `);
             

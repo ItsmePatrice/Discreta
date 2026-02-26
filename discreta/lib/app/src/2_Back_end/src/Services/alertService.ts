@@ -1,5 +1,4 @@
 import { sql, decrypt, generateToken } from "../Config/database";
-import { MapboxContext } from "../Interface/mapboxContext";
 import logger from "../logs";
 import LogService from "./logService";
 import SmsService from "./smsService";
@@ -165,28 +164,6 @@ const AlertService = {
             throw e;
         }
     },
-
-    async getAddress(lat: number, lng: number) {
-        try {
-            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${process.env.MAPBOX_TOKEN}`;
-            const response = await fetch(url);
-            const data = await response.json();
-
-            if (data.features && data.features.length > 0) {
-                const place = data.features[0];
-                return {
-                    fullAddress: place.place_name,
-                    street: place.text,
-                    city: place.context?.find((c: MapboxContext) => c.id.startsWith('place'))?.text,
-                    postalCode: place.context?.find((c: MapboxContext) => c.id.startsWith('postcode'))?.text
-                };
-            }
-            return null;
-        } catch (e) {
-            logger.error('Error while fetching address from Mapbox API', e);
-            throw e;
-        }
-    }
 };
 
 export default AlertService;
