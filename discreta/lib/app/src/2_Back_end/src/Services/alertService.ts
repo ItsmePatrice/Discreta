@@ -171,7 +171,7 @@ const AlertService = {
 
             const public_token = await this.getTrackingToken(firebaseUserId);
 
-            const locationLink = `${process.env.PUBLIC_BASE_URL}/track/page/${public_token}`;
+            const locationLink = `${process.env.PUBLIC_BASE_URL}/api/public/track/page/${public_token}`;
 
             // send SMS to each contact
             for (const contact of decryptedContacts) {

@@ -27,7 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/alert-flow', userRoutes);
 app.use('/api/user', preferenceRoutes);
 
-app.use('/', publicLocationRoutes);
+app.use('/api/public', publicLocationRoutes);
 app.use(express.static(path.join(__dirname, '../public')));
 
 initDB().then(() => {

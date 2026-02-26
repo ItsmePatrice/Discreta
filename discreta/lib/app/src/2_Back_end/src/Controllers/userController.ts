@@ -215,6 +215,16 @@ const userController = {
         }
     },
 
+    getJsFileForAlertPage: async (req: Request, res: Response) => {
+        try {
+            const jsPath = path.join(__dirname, '../../public/js/alert.js');
+            res.sendFile(jsPath);
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
     getLocation: async (req: Request, res: Response) => {
         try {
             const trackingToken  = req.params.token;
