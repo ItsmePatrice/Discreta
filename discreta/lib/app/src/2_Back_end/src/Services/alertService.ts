@@ -8,11 +8,14 @@ const AlertService = {
     async startTrackingSession(firebaseUserId: string, username: string) {
         try {
             const trackingToken = generateToken();
-            const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
-
             await sql`
                 INSERT INTO TrackingSessions (firebase_user_id, token, expires_at, status)
-                VALUES (${firebaseUserId}, ${trackingToken}, ${expiresAt}, 'ACTIVE')
+                VALUES (
+                    ${firebaseUserId},
+                    ${trackingToken},
+                    NOW() + INTERVAL '2 hours',
+                    'ACTIVE'
+                )
             `;
             await LogService.logEvent(firebaseUserId, `${username} started a tracking session.`);
 
@@ -33,14 +36,6 @@ const AlertService = {
             WHERE firebase_user_id = ${firebaseUserId}
                 AND token = ${trackingToken}
                 AND status = 'ACTIVE'
-            `;
-
-            await sql`
-            UPDATE TrackingSessions
-            SET status = 'EXPIRED',
-                end_time = NOW()
-            WHERE status = 'ACTIVE'
-                AND expires_at < NOW()
             `;
 
             const message = `${username} ended the tracking session`;
@@ -65,6 +60,7 @@ const AlertService = {
             WHERE firebase_user_id = ${firebaseUserId}
                 AND token = ${trackingToken}
                 AND status = 'ACTIVE'
+                AND expires_at > NOW()
             RETURNING id;
         `;
         if (result.length === 0) {
@@ -83,24 +79,9 @@ const AlertService = {
                 FROM TrackingSessions
                 WHERE token = ${trackingToken}
                     AND status = 'ACTIVE'
+                    AND expires_at > NOW()
                 LIMIT 1;
             `;
-
-        // check if expiry time has passed and update status to EXPIRED if so
-        if (result.length > 0) {
-            const expiresAt = result[0].expires_at;
-            if (expiresAt && new Date(expiresAt) < new Date()) {
-                await sql`
-                    UPDATE TrackingSessions
-                    SET status = 'EXPIRED',
-                        end_time = NOW()
-                    WHERE token = ${trackingToken}
-                        AND status = 'ACTIVE'
-                `;
-                throw new Error('Tracking session has expired.');
-            }
-        }
-
 
         if (result.length === 0) {
             throw new Error('Tracking session not found or ended by user.');
@@ -122,11 +103,11 @@ const AlertService = {
     async getTrackingToken(firebaseUserId: string) {
         try {
             const result = await sql`
-            SELECT token
-            FROM TrackingSessions
-            WHERE firebase_user_id = ${firebaseUserId}
-                AND status = 'ACTIVE'
-            LIMIT 1;
+                SELECT token
+                FROM TrackingSessions
+                WHERE firebase_user_id = ${firebaseUserId}
+                    AND status = 'ACTIVE'
+                LIMIT 1;
             `;
 
             if (result.length === 0) {
