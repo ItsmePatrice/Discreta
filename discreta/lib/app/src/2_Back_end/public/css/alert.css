@@ -1,3 +1,4 @@
+/* ======================= Reset ======================= */
 * {
     margin: 0;
     padding: 0;
@@ -6,92 +7,152 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
-    background-color: #f4f6f8;
-    color: #1f2933;
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: #0e2e61; 
     display: flex;
-    align-items: center;
     justify-content: center;
-    height: 100vh;
-    padding: 20px;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
 }
 
-/* ========== Card Container ========== */
-body::before {
-    content: "";
-    position: absolute;
+/* ======================= Container ======================= */
+.container {
     width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-    top: 0;
-    left: 0;
-    z-index: -1;
+    max-width: 480px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-body > * {
-    max-width: 500px;
-    width: 100%;
-}
-
-h1 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: 25px;
+/* ======================= Header ======================= */
+.header {
     text-align: center;
-    letter-spacing: 0.5px;
 }
 
-p, a {
+.header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.header h1::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #ef4444;
+    border-radius: 2px;
+    margin: 12px auto 0;
+}
+
+.status-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.status-indicator .pulse {
+    width: 12px;
+    height: 12px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    animation: pulse 1.2s infinite;
+}
+
+.status-indicator .status-text {
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.7; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0.7; }
+}
+
+/* ======================= Info Blocks ======================= */
+.info-block label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
     display: block;
 }
 
 #coords,
-#last-update,
-#map-link {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 18px 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    font-size: 0.95rem;
-}
-
-#coords {
-    font-weight: 500;
-    font-size: 1rem;
-}
-
 #last-update {
-    color: #6b7280;
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #111827;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    word-break: break-word;
 }
 
+/* ======================= Map Link (Button) ======================= */
 #map-link {
+    display: block;
     text-align: center;
     text-decoration: none;
     font-weight: 600;
-    background: #111827;
-    color: #ffffff;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
+    font-size: 1rem;
+    background: #ffffff;           /* white background */
+    color: #111827;                /* dark text for readability */
+    padding: 14px 0;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1d5db;    /* subtle border */
 }
 
 #map-link:hover {
-    background: #1f2937;
+    background: #f3f4f6;           /* light gray hover */
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 #map-link:active {
     transform: translateY(0);
-    box-shadow: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-h1::after {
-    content: "";
-    display: block;
-    width: 60px;
-    height: 3px;
-    background-color: #ef4444;
-    margin: 12px auto 0;
-    border-radius: 2px;
+/* ======================= Footer ======================= */
+.footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* ======================= Responsive Enhancements ======================= */
+@media (max-width: 400px) {
+    .container {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    #coords,
+    #last-update {
+        font-size: 0.95rem;
+        padding: 14px 16px;
+    }
+
+    #map-link {
+        font-size: 0.95rem;
+        padding: 12px 0;
+    }
 }
