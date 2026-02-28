@@ -7,6 +7,16 @@ const AlertService = {
 
     async startTrackingSession(firebaseUserId: string, username: string) {
         try {
+
+            // if the user currently has an active session, end it before starting a new one
+            await sql`
+                UPDATE TrackingSessions
+                SET status = 'ENDED',
+                    end_time = NOW()
+                WHERE firebase_user_id = ${firebaseUserId}
+                    AND status = 'ACTIVE'
+            `;
+
             const result = await sql`
                 INSERT INTO TrackingSessions (firebase_user_id, expires_at, status)
                 VALUES (
@@ -20,7 +30,6 @@ const AlertService = {
             await LogService.logEvent(firebaseUserId, `${username} started a tracking session.`);
 
             return { trackingToken: result[0].token };
-
         } catch (e) {
             logger.error('Database error while starting tracking session', e);
             throw e;
