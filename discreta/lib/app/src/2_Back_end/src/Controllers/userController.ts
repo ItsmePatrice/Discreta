@@ -225,6 +225,17 @@ const userController = {
         }
     },
 
+    getCssFileForAlertPage: async (req: Request, res: Response) => {
+        try {
+            const cssPath = path.join(__dirname, '../../public/css/alert.css');
+            res.setHeader('Content-Type', 'text/css');
+            res.sendFile(cssPath);
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
     getLocation: async (req: Request, res: Response) => {
         try {
             const trackingToken  = req.params.token;

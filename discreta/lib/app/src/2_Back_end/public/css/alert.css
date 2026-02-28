@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: #f4f6f8;
+    color: #1f2933;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+/* ========== Card Container ========== */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+body > * {
+    max-width: 500px;
+    width: 100%;
+}
+
+h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 25px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+p, a {
+    display: block;
+}
+
+#coords,
+#last-update,
+#map-link {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    font-size: 0.95rem;
+}
+
+#coords {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+#last-update {
+    color: #6b7280;
+}
+
+#map-link {
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    background: #111827;
+    color: #ffffff;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+#map-link:hover {
+    background: #1f2937;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+#map-link:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+h1::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #ef4444;
+    margin: 12px auto 0;
+    border-radius: 2px;
+}

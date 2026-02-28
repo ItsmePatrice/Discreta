@@ -1,14 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Emergency Alert</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discreta | Emergency Tracking</title>
+    <link rel="stylesheet" href="/api/public/css" />
+    <meta name="theme-color" content="#111827" />
 </head>
+
 <body>
-    <h1>⚠ Emergency Alert</h1>
-    <p id="coords">Latitude: --, Longitude: --</p>
-    <p id="last-update">Last Updated: -- minutes ago</p>
-    <a id="map-link" href="#" target="_blank">Open in Google Maps</a>
+    <div class="container">
+
+        <header class="header">
+            <h1>Emergency Alert</h1>
+            <div class="status-indicator">
+                <span class="pulse"></span>
+                <span class="status-text">Live Tracking Active</span>
+            </div>
+        </header>
+
+        <main class="card">
+            <section class="info-block">
+                <label>Current Coordinates</label>
+                <p id="coords">Latitude: --, Longitude: --</p>
+            </section>
+
+            <section class="info-block">
+                <label>Last Location Update</label>
+                <p id="last-update">--</p>
+            </section>
+
+            <a id="map-link" href="#" target="_blank" rel="noopener noreferrer">
+                Open in Google Maps
+            </a>
+
+        </main>
+
+        <footer class="footer">
+            <p>Discreta Secure Location Monitoring</p>
+        </footer>
+
+    </div>
 
     <script src="/api/public/js"></script>
 </body>

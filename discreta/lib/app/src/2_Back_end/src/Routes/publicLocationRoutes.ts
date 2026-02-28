@@ -5,5 +5,6 @@ import userController from '../Controllers/userController';
 router.get('/track/page/:token', userController.getAlertPage);
 router.get('/track/:token', userController.getLocation);
 router.get('/js', userController.getJsFileForAlertPage);
+router.get('/css', userController.getCssFileForAlertPage);
 
 export default router;
