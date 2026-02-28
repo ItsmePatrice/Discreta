@@ -1,4 +1,4 @@
-import { sql, decrypt, generateToken } from "../Config/database";
+import { sql, decrypt } from "../Config/database";
 import logger from "../logs";
 import LogService from "./logService";
 import SmsService from "./smsService";
@@ -7,19 +7,19 @@ const AlertService = {
 
     async startTrackingSession(firebaseUserId: string, username: string) {
         try {
-            const trackingToken = generateToken();
-            await sql`
-                INSERT INTO TrackingSessions (firebase_user_id, token, expires_at, status)
+            const result = await sql`
+                INSERT INTO TrackingSessions (firebase_user_id, expires_at, status)
                 VALUES (
                     ${firebaseUserId},
-                    ${trackingToken},
                     NOW() + INTERVAL '2 hours',
                     'ACTIVE'
                 )
+                RETURNING token;
             `;
+
             await LogService.logEvent(firebaseUserId, `${username} started a tracking session.`);
 
-            return { trackingToken };
+            return { trackingToken: result[0].token };
 
         } catch (e) {
             logger.error('Database error while starting tracking session', e);

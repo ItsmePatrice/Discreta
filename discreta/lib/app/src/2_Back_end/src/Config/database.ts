@@ -180,18 +180,18 @@ async function createTrackingSessionsTable() {
 
     await sql`
       ALTER TABLE TrackingSessions
-      ADD COLUMN IF NOT EXISTS last_updated TIMESTAMPTZ DEFAULT NOW();
+      ALTER COLUMN token SET DEFAULT encode(gen_random_bytes(24), 'hex');
     `;
 
     await sql`
       CREATE TABLE IF NOT EXISTS TrackingSessions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
-        token TEXT NOT NULL,
+        token TEXT UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(24), 'hex'),
         last_lat DOUBLE PRECISION,
         last_lng DOUBLE PRECISION,
         expires_at TIMESTAMP NOT NULL,
-        status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'ENDED', 'EXPIRED')),
+        status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'ENDED')),
         start_time TIMESTAMPTZ DEFAULT NOW(),
         end_time TIMESTAMPTZ DEFAULT NOW()
       );
