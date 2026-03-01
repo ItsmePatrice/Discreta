@@ -16,10 +16,31 @@ async function fetchLocation() {
 
         latEl.textContent = `Latitude: ${lat}`;
         lngEl.textContent = `Longitude: ${lng}`;
+
         lastUpdateEl.textContent = `Last Updated: ${minutesSinceLastUpdate} minute${minutesSinceLastUpdate !== 1 ? 's' : ''} ago`;
+
         mapLinkEl.href = `https://www.google.com/maps?q=${lat},${lng}`;
+        mapLinkEl.style.pointerEvents = 'auto';
+        mapLinkEl.style.opacity = '1';
+
+        document.querySelector('.status-text').textContent = 'Live Tracking Active';
+        document.querySelector('.pulse').style.backgroundColor = '#ef4444'; 
+
     } catch (err) {
         console.error('Error fetching location:', err);
+
+        latEl.textContent = 'Latitude: unavailable';
+        lngEl.textContent = 'Longitude: unavailable';
+        lastUpdateEl.textContent = 'Unable to fetch location. Tracking session may have ended or expired.';
+        
+        // Disable map link
+        mapLinkEl.href = '#';
+        mapLinkEl.style.pointerEvents = 'none';
+        mapLinkEl.style.opacity = '0.5';
+
+        // Show offline status
+        document.querySelector('.status-text').textContent = 'Tracking unavailable';
+        document.querySelector('.pulse').style.backgroundColor = '#6b7280'; 
     }
 }
 
