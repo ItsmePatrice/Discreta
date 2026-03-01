@@ -134,6 +134,10 @@ body {
     color: #6b7280;
 }
 
+#location-update-title {
+    margin-top: 15px;
+}
+
 /* ======================= Responsive Enhancements ======================= */
 @media (max-width: 400px) {
     .container {
