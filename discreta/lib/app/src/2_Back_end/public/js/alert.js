@@ -6,6 +6,7 @@ const lngEl = document.getElementById('longitude');
 
 const lastUpdateEl = document.getElementById('last-update');
 const mapLinkEl = document.getElementById('map-link');
+const locationName = document.getElementById('location-name');
 
 async function fetchLocation() {
     try {
@@ -17,9 +18,12 @@ async function fetchLocation() {
         latEl.textContent = `Latitude: ${lat}`;
         lngEl.textContent = `Longitude: ${lng}`;
 
+        const reverseGeoCoded = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+        const displayName = reverseGeoCoded.ok ? (await reverseGeoCoded.json()).display_name : '';
+        locationName.textContent = displayName;
         lastUpdateEl.textContent = `Last Updated: ${minutesSinceLastUpdate} minute${minutesSinceLastUpdate !== 1 ? 's' : ''} ago`;
 
-        mapLinkEl.href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+        mapLinkEl.href = `https://www.google.com/maps?q=${lat},${lng}`;
         mapLinkEl.style.pointerEvents = 'auto';
         mapLinkEl.style.opacity = '1';
 
