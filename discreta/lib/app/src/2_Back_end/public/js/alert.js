@@ -19,7 +19,7 @@ async function fetchLocation() {
 
         lastUpdateEl.textContent = `Last Updated: ${minutesSinceLastUpdate} minute${minutesSinceLastUpdate !== 1 ? 's' : ''} ago`;
 
-        mapLinkEl.href = `https://www.google.com/maps?q=${lat},${lng}`;
+        mapLinkEl.href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
         mapLinkEl.style.pointerEvents = 'auto';
         mapLinkEl.style.opacity = '1';
 
