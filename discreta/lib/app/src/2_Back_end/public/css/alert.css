@@ -88,7 +88,7 @@ body {
     display: block;
 }
 
-#latitude, #longintude
+#coords,
 #last-update {
     background: #f9fafb;
     border-radius: 12px;
