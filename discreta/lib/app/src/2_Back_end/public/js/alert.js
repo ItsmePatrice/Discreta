@@ -18,9 +18,6 @@ async function fetchLocation() {
         latEl.textContent = `Latitude: ${lat}`;
         lngEl.textContent = `Longitude: ${lng}`;
 
-        const reverseGeoCoded = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-        const displayName = reverseGeoCoded.ok ? (await reverseGeoCoded.json()).display_name : '';
-        locationName.textContent = displayName;
         lastUpdateEl.textContent = `Last Updated: ${minutesSinceLastUpdate} minute${minutesSinceLastUpdate !== 1 ? 's' : ''} ago`;
 
         mapLinkEl.href = `https://www.google.com/maps?q=${lat},${lng}`;
