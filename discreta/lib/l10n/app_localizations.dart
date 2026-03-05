@@ -541,6 +541,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please add a trusted contact'**
   String get pleaseAddContacts;
+
+  /// No description provided for @safetyConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m safe'**
+  String get safetyConfirmed;
 }
 
 class _AppLocalizationsDelegate

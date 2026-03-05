@@ -54,7 +54,7 @@ class LocationService {
 
   Future<void> endTracking() async {
     try {
-      await HttpService.instance.post(ApiRoutes.endTrackingSession);
+      await HttpService.instance.post(ApiRoutes.endTrackingSessions);
     } catch (e) {
       throw Exception('Error ending tracking session: $e');
     }

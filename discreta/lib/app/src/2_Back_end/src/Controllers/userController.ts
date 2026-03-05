@@ -201,6 +201,20 @@ const userController = {
         }
     },
 
+    hasActiveTrackingSession: async (req: Request, res: Response) => {
+        try {
+            const firebaseUid = req.firebaseUid;
+            if (!firebaseUid) {
+                throw ("firebaseUid was null");
+            }
+            const hasActiveSession = await AlertService.hasActiveTrackingSession(firebaseUid);
+            return res.status(StatusCodes.ok).json({ "hasActiveTrackingSession": hasActiveSession });
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+        }
+    },
+
     getAlertPage: async (req: Request, res: Response) => {
         try {
             const trackingToken = req.params.token;

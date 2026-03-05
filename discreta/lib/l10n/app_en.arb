@@ -72,5 +72,6 @@
   "noLocationConsequence": "Without location access, Discreta cannot function.",
   "enableLocation": "Enable Location",
   "noTrustedContact": "No trusted contact found",
-  "pleaseAddContacts": "Please add a trusted contact"
+  "pleaseAddContacts": "Please add a trusted contact",
+  "safetyConfirmed": "I'm safe"
 }

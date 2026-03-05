@@ -13,9 +13,11 @@ class ApiRoutes {
 
   static String startTrackingSession =
       '$baseUrl/api/alert-flow/start-tracking-session';
-  static String endTrackingSession =
+  static String endTrackingSessions =
       '$baseUrl/api/alert-flow/end-tracking-session';
   static String sendLocationUpdate = '$baseUrl/api/alert-flow/location-update';
+  static String hasActiveTrackingSession =
+      '$baseUrl/api/alert-flow/has-active-tracking-session';
 
   // User routes
   static String language = '$baseUrl/api/user/language';

@@ -37,7 +37,7 @@ class UserService {
     _autoStopTimer?.cancel();
 
     _autoStopTimer = Timer(const Duration(hours: 2), () async {
-      await endLocationUpdates();
+      await endTrackingSession();
     });
   }
 
@@ -196,14 +196,33 @@ class UserService {
     }
   }
 
-  // call this method when the user clicks on "I'm safe" after an alert has been sent
-  Future<void> endLocationUpdates() async {
+  // End all active tracking sessions and stop location updates
+  // If the user double taps on the alert button multiple times, they must have triggered multiple alert sessions.
+  // In that case, we want to end all the active sessions, so we end location updates regardless of how many active sessions there are.
+  Future<void> endTrackingSession() async {
     try {
       await positionStream?.cancel();
       positionStream = null;
       await LocationService.instance.endTracking();
     } catch (e) {
       LogService.instance.logError('Error ending location updates', e);
+      rethrow;
+    }
+  }
+
+  Future<bool> hasActiveTrackingSession() async {
+    try {
+      final response = await HttpService.instance.get(
+        ApiRoutes.hasActiveTrackingSession,
+      );
+      if (response.statusCode == StatusCodes.ok) {
+        final responseBody = jsonDecode(response.body);
+        return responseBody['hasActiveTrackingSession'] as bool;
+      } else {
+        throw Exception('Failed to check active tracking session');
+      }
+    } catch (e) {
+      LogService.instance.logError('Error checking active tracking session', e);
       rethrow;
     }
   }

@@ -248,4 +248,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get pleaseAddContacts => 'Veuillez ajouter un contact de confiance';
+
+  @override
+  String get safetyConfirmed => 'Tout va bien';
 }

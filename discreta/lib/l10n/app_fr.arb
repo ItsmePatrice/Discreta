@@ -72,5 +72,6 @@
   "noLocationConsequence": "Sans l’accès à la localisation, Discreta ne peut pas fonctionner.",
   "enableLocation": "Activer la localisation",
   "noTrustedContact": "Aucun contact de confiance trouvé",
-  "pleaseAddContacts": "Veuillez ajouter un contact de confiance"
+  "pleaseAddContacts": "Veuillez ajouter un contact de confiance",
+  "safetyConfirmed": "Tout va bien"
 }

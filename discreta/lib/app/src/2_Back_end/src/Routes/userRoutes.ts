@@ -10,6 +10,7 @@ router.post('/send-alert', tokenVerifier.verifyToken, userController.sendAlert);
 router.post('/start-tracking-session', tokenVerifier.verifyToken, userController.startTrackingSession);
 router.post('/end-tracking-session', tokenVerifier.verifyToken, userController.stopTrackingSession);
 router.patch('/location-update', tokenVerifier.verifyToken, userController.updateLocation);
+router.get('/has-active-tracking-session', tokenVerifier.verifyToken, userController.hasActiveTrackingSession);
 
 // Contact management routes
 router.get('/contacts', tokenVerifier.verifyToken, userController.fetchContacts);

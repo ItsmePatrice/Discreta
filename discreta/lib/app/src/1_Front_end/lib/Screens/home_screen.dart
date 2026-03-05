@@ -31,6 +31,8 @@ class _HomePageState extends State<HomePage>
   Timer? _countdownTimer;
   int _selectedMinutes = 15;
 
+  bool _hasActiveTrackingSession = false;
+
   late AnimationController _pulseController;
 
   @override
@@ -62,6 +64,7 @@ class _HomePageState extends State<HomePage>
     );
     myAppKey.currentState?.setLocale(userLocale);
     _checkLocationPermission();
+    _checkActiveTrackingSession();
   }
 
   Future<void> _checkLocationPermission() async {
@@ -107,6 +110,37 @@ class _HomePageState extends State<HomePage>
         });
       }
     });
+  }
+
+  Future<void> _endTrackingSessions() async {
+    try {
+      await UserService.instance.endTrackingSession();
+      setState(() {
+        _hasActiveTrackingSession = false;
+      });
+    } catch (e) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.unknownError,
+        message: AppLocalizations.of(context)!.noInternetConnection,
+      );
+    }
+  }
+
+  Future<void> _checkActiveTrackingSession() async {
+    try {
+      final hasActiveSession = await UserService.instance
+          .hasActiveTrackingSession();
+      setState(() {
+        _hasActiveTrackingSession = hasActiveSession;
+      });
+    } catch (e) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.unknownError,
+        message: AppLocalizations.of(context)!.noInternetConnection,
+      );
+    }
   }
 
   String _formatTime(int seconds) {
@@ -504,9 +538,15 @@ class _HomePageState extends State<HomePage>
                 padding: const EdgeInsets.all(10.0),
                 child: Center(
                   child: DiscretaButton(
-                    text: AppLocalizations.of(context)!.sendAlert,
+                    text: _hasActiveTrackingSession
+                        ? AppLocalizations.of(context)!.safetyConfirmed
+                        : AppLocalizations.of(context)!.sendAlert,
                     onPressed: () async {
-                      _confirmSendAlertNow();
+                      if (!_hasActiveTrackingSession) {
+                        await _confirmSendAlertNow();
+                      } else {
+                        await _endTrackingSessions();
+                      }
                     },
                   ),
                 ),

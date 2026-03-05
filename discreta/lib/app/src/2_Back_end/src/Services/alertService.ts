@@ -59,6 +59,22 @@ const AlertService = {
         }
     },
 
+    async hasActiveTrackingSession(firebaseUserId: string) {
+        try {
+            const result = await sql`
+                SELECT COUNT(*) AS count
+                FROM TrackingSessions
+                WHERE firebase_user_id = ${firebaseUserId}
+                    AND status = 'ACTIVE'
+                    AND expires_at > NOW();
+            `;
+            return parseInt(result[0].count) > 0;
+        } catch (e) {
+            logger.error('Database error while checking active tracking session', e);
+            throw e;
+        }
+    },
+
     async updateLocation(firebaseUserId: string, trackingToken: string, lat: number, lng: number) {
         try {
             const result = await sql`
