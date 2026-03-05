@@ -36,14 +36,13 @@ const AlertService = {
         }   
     },
 
-    async stopTrackingSession(username: string, firebaseUserId: string, trackingToken: string) {
+    async stopTrackingSession(username: string, firebaseUserId: string) {
         try {
             const result = await sql`
             UPDATE TrackingSessions
             SET status = 'ENDED',
                 end_time = NOW()
             WHERE firebase_user_id = ${firebaseUserId}
-                AND token = ${trackingToken}
                 AND status = 'ACTIVE'
             `;
 

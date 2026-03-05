@@ -169,12 +169,8 @@ const userController = {
             if (!firebaseUid || !req.firstName) {
                 throw ("firebaseUid was null");
             }
-            const { trackingToken } = req.body;
-            if (!trackingToken) {
-                return res.status(StatusCodes.badRequest).json({ message: 'Tracking token is required' });
-            }
             const username = req.firstName;
-            await AlertService.stopTrackingSession(username, firebaseUid, trackingToken);
+            await AlertService.stopTrackingSession(username, firebaseUid);
             return res.status(StatusCodes.ok).json({ message: 'Tracking session stopped successfully' });
         } catch (e) {
             logger.error(e);

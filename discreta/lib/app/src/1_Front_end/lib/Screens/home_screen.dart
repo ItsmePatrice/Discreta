@@ -197,6 +197,9 @@ class _HomePageState extends State<HomePage>
         title: AppLocalizations.of(context)!.success,
         message: AppLocalizations.of(context)!.alertSent,
       );
+      setState(() {
+        _hasActiveTrackingSession = true;
+      });
     } catch (e) {
       MessageService.displayAlertDialog(
         context: context,
