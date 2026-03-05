@@ -26,27 +26,6 @@ class GuidePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Power setup
-            _guideSection(
-              context,
-              icon: Icons.power_settings_new,
-              title: t.powerSetup,
-              steps: [t.step1, t.step8],
-            ),
-
-            /// Pairing & connection
-            _guideSection(
-              context,
-              icon: Icons.bluetooth,
-              title: t.pairingConnection,
-              steps: [
-                t.step2,
-                t.step2Observations,
-                t.step3,
-                t.step3Observations,
-              ],
-            ),
-
             /// Safety & alerts
             _guideSection(
               context,
