@@ -1,0 +1,18 @@
+services:
+  production:
+    build: .
+    container_name: discreta_production
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  staging:
+    build: .
+    container_name: discreta_staging
+    ports:
+      - "127.0.0.1:3001:3000"
+    env_file:
+      - .env.staging
+    restart: unless-stopped
