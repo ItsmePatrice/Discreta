@@ -27,7 +27,10 @@ jobs:
             git reset --hard
             git checkout staging
             git pull origin staging
-            echo "${{ secrets.ENV_FILE_STAGING }}" > .env
+            cat << 'EOF' > .env
+            ${{ secrets.ENV_FILE_STAGING }}
+            EOF
+
             npm install
             npm run build
             docker stop discreta_staging || true
@@ -46,7 +49,9 @@ jobs:
             git reset --hard
             git checkout main
             git pull origin main
-            echo "${{ secrets.ENV_FILE_PRODUCTION }}" > .env
+            cat << 'EOF' > .env
+            ${{ secrets.ENV_FILE_PRODUCTION }}
+            EOF
             npm install
             npm run build
             docker stop discreta_production || true
