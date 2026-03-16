@@ -8,6 +8,7 @@ RUN npm ci --omit=dev
 
 COPY dist ./dist
 
+COPY public ./public
 
 EXPOSE 3000
 

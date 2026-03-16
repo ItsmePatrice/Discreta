@@ -217,7 +217,7 @@ const userController = {
             if (!trackingToken) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Tracking token missing' });
             }
-            const htmlPath = path.join(__dirname, '../../public/alert.html');
+            const htmlPath = path.join(__dirname, '../../../public/alert.html');
             res.sendFile(htmlPath);
         } catch (e) {
             logger.error(e);
@@ -227,7 +227,7 @@ const userController = {
 
     getJsFileForAlertPage: async (req: Request, res: Response) => {
         try {
-            const jsPath = path.join(__dirname, '../../public/js/alert.js');
+            const jsPath = path.join(__dirname, '../../../public/js/alert.js');
             res.sendFile(jsPath);
         } catch (e) {
             logger.error(e);
@@ -237,7 +237,7 @@ const userController = {
 
     getCssFileForAlertPage: async (req: Request, res: Response) => {
         try {
-            const cssPath = path.join(__dirname, '../../public/css/alert.css');
+            const cssPath = path.join(__dirname, '../../../public/css/alert.css');
             res.setHeader('Content-Type', 'text/css');
             res.sendFile(cssPath);
         } catch (e) {
