@@ -12,4 +12,4 @@ COPY public ./public
 
 EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/server.js"] 
