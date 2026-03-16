@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Staging
+      - name: Deploy Staging
         if: github.ref == 'refs/heads/staging'
         uses: appleboy/ssh-action@v1.0.3
         with:
