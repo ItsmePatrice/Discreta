@@ -175,7 +175,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get step7 =>
-      'Make sure that the app is opened and that your phone is always connected to the internet and the button.';
+      'Even if your screen is off, make sure that the app is opened and that your phone is always connected to the internet and the button.';
 
   @override
   String get step9 => 'You\'re good to go.';

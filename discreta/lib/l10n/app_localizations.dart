@@ -413,7 +413,7 @@ abstract class AppLocalizations {
   /// No description provided for @step7.
   ///
   /// In en, this message translates to:
-  /// **'Make sure that the app is opened and that your phone is always connected to the internet and the button.'**
+  /// **'Even if your screen is off, make sure that the app is opened and that your phone is always connected to the internet and the button.'**
   String get step7;
 
   /// No description provided for @step9.

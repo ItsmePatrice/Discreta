@@ -176,7 +176,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get step7 =>
-      'Assurez-vous que l\'application est ouverte et que votre téléphone est toujours connecté à Internet et au bouton.';
+      'Même si votre écran est fermé, assurez-vous que l\'application est ouverte et que votre téléphone est toujours connecté à Internet et au bouton.';
 
   @override
   String get step9 => 'Vous êtes prête.';
