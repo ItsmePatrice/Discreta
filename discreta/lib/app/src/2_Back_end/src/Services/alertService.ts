@@ -28,6 +28,7 @@ const AlertService = {
             `;
 
             await LogService.logEvent(firebaseUserId, `${username} started a tracking session.`);
+            logger.info(`${username} started a tracking session.`);
 
             return { trackingToken: result[0].token };
         } catch (e) {
@@ -48,10 +49,12 @@ const AlertService = {
 
             const message = `${username} ended the tracking session`;
             await LogService.logEvent(firebaseUserId, message);
+            
+            if (result.length === 0) {
+                throw new Error('No active tracking session found for the provided token.');
+            }
 
-        if (result.length === 0) {
-            throw new Error('No active tracking session found for the provided token.');
-        }
+            logger.info(message);
         } catch (e) {
             logger.error('Database error while stopping tracking session', e);
             throw e;
