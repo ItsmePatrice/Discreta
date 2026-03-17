@@ -8,6 +8,8 @@ const lastUpdateEl = document.getElementById('last-update');
 const mapLinkEl = document.getElementById('map-link');
 const locationName = document.getElementById('location-name');
 
+let fetchInterval;
+
 async function fetchLocation() {
     try {
         const res = await fetch(`${window.location.origin}/api/public/track/${token}`);
@@ -42,10 +44,16 @@ async function fetchLocation() {
         // Show offline status
         document.querySelector('.status-text').textContent = 'Tracking unavailable';
         document.querySelector('.pulse').style.backgroundColor = '#6b7280'; 
+
+        // Stop fetching since session has ended
+        if (fetchInterval) {
+            clearInterval(fetchInterval);
+            fetchInterval = null;
+        }
     }
 }
 
 // Initial fetch
 fetchLocation();
 
-setInterval(fetchLocation, 5000);
+fetchInterval = setInterval(fetchLocation, 5000);
