@@ -49,10 +49,6 @@ const AlertService = {
 
             const message = `${username} ended the tracking session`;
             await LogService.logEvent(firebaseUserId, message);
-            
-            if (result[0].count === 0) {
-                throw new Error('No active tracking session found for the provided user.');
-            }
 
             logger.info(message);
         } catch (e) {
