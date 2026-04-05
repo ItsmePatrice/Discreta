@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.discreta"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
     
 
