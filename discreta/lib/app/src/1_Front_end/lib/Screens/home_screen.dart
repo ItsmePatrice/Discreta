@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:discreta/app/src/1_Front_end/lib/Services/flic_service.dart';
-import 'package:flic_button/flic_button.dart';
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart';
@@ -11,17 +12,25 @@ import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
+import 'package:flic_button/flic_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
+// Implement Flic2Listener directly on the state, exactly as the working example does.
 class _HomePageState extends State<HomePage>
-    with RouteAware, TickerProviderStateMixin {
+    with RouteAware, TickerProviderStateMixin
+    implements Flic2Listener {
+  // ---------------------------------------------------------------------------
+  // App state
+  // ---------------------------------------------------------------------------
   String? _firstName;
   bool _isLoading = false;
 
@@ -33,13 +42,36 @@ class _HomePageState extends State<HomePage>
 
   bool _hasActiveTrackingSession = false;
 
-  // Flic state
+  // ---------------------------------------------------------------------------
+  // Flic2 state  (mirrors the working example pattern)
+  // ---------------------------------------------------------------------------
+
+  /// The plugin manager — null until initialized.
+  FlicButtonPlugin? _flicButtonManager;
+
+  /// All buttons discovered / retrieved, keyed by uuid.
+  final Map<String, Flic2Button> _buttonsFound = {};
+
+  /// The most recently connected button (used for disconnect).
+  Flic2Button? _connectedButton;
+
   bool _isFlicScanning = false;
   bool _isFlicConnected = false;
   bool _showFlicPanel = false;
 
+  /// Cooldown to prevent repeated alerts from rapid button presses.
+  static const _alertCooldown = Duration(seconds: 30);
+  DateTime? _lastAlertTime;
+
+  // ---------------------------------------------------------------------------
+  // Animations
+  // ---------------------------------------------------------------------------
   late AnimationController _pulseController;
   late AnimationController _scanController;
+
+  // ---------------------------------------------------------------------------
+  // Lifecycle
+  // ---------------------------------------------------------------------------
 
   @override
   void initState() {
@@ -55,59 +87,65 @@ class _HomePageState extends State<HomePage>
       duration: const Duration(milliseconds: 1500),
     );
 
-    // Listen to FlicService so the UI rebuilds on any connection/discovery change.
-    FlicService.instance.addListener(_onFlicStateChanged);
-
-    initializePage();
-    FlicService.instance.init();
+    _initFlic2();
+    _initializePage();
   }
 
   @override
   void dispose() {
-    FlicService.instance.removeListener(_onFlicStateChanged);
     _pulseController.dispose();
     _scanController.dispose();
     _countdownTimer?.cancel();
+    // Dispose the plugin cleanly.
+    _flicButtonManager?.disposeFlic2();
     super.dispose();
   }
 
   // ---------------------------------------------------------------------------
-  // Flic state sync
+  // Flic2 initialization  (same pattern as the working example)
   // ---------------------------------------------------------------------------
 
-  void _onFlicStateChanged() {
-    if (!mounted) return;
+  void _initFlic2() {
     setState(() {
-      _isFlicConnected = FlicService.instance.isConnected;
-      _isFlicScanning = FlicService.instance.isScanning;
-
-      // Auto-stop scan animation once connected.
-      if (_isFlicConnected) {
-        _scanController.stop();
-        _scanController.reset();
-      }
+      _flicButtonManager = FlicButtonPlugin(flic2listener: this);
     });
-
-    // Surface any SDK error as a snackbar.
-    final error = FlicService.instance.lastError;
-    if (error != null) {
-      FlicService.instance.lastError = null;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Button error: $error')));
-        }
-      });
-    }
   }
 
   // ---------------------------------------------------------------------------
-  // Flic scan helpers
+  // Flic2 scan helpers
   // ---------------------------------------------------------------------------
 
-  void _startScan() {
-    FlicService.instance.startScan();
+  Future<void> _startScan() async {
+    if (_flicButtonManager == null) return;
+
+    final bool granted;
+    if (!Platform.isAndroid) {
+      granted = await Permission.bluetooth.request().isGranted;
+    } else {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt > 30) {
+        granted =
+            await Permission.bluetoothScan.request().isGranted &&
+            await Permission.bluetoothConnect.request().isGranted;
+      } else {
+        granted =
+            await Permission.bluetooth.request().isGranted &&
+            await Permission.location.request().isGranted;
+      }
+    }
+
+    if (!granted) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bluetooth permission required to scan.'),
+          ),
+        );
+      }
+      return;
+    }
+
+    _flicButtonManager!.scanForFlic2();
     _scanController.repeat();
     setState(() {
       _isFlicScanning = true;
@@ -116,9 +154,10 @@ class _HomePageState extends State<HomePage>
   }
 
   void _stopScan() {
-    FlicService.instance.stopScan();
-    _scanController.stop();
-    _scanController.reset();
+    _flicButtonManager?.cancelScanForFlic2();
+    _scanController
+      ..stop()
+      ..reset();
     setState(() => _isFlicScanning = false);
   }
 
@@ -126,11 +165,122 @@ class _HomePageState extends State<HomePage>
     setState(() => _showFlicPanel = !_showFlicPanel);
   }
 
+  /// Add a button to the map and immediately start listening to it —
+  /// exactly as _addButtonAndListen does in the working example.
+  void _addButtonAndListen(Flic2Button button) {
+    setState(() {
+      _buttonsFound[button.uuid] = button;
+      _flicButtonManager?.listenToFlic2Button(button.uuid);
+    });
+  }
+
+  /// Connect or disconnect a button (mirrors _connectDisconnectButton).
+  Future<void> _connectButton(Flic2Button button) async {
+    if (button.connectionState == Flic2ButtonConnectionState.disconnected) {
+      if (!await Permission.bluetoothConnect.request().isGranted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Bluetooth connect permission required.'),
+            ),
+          );
+        }
+        return;
+      }
+      _flicButtonManager?.connectButton(button.uuid);
+    } else {
+      _flicButtonManager?.disconnectButton(button.uuid);
+    }
+    // _isFlicConnected will update via onButtonConnected / onButtonUpOrDown
+    // callbacks — no need to set it here.
+  }
+
+  // ---------------------------------------------------------------------------
+  // Flic2Listener callbacks  (same implementations as the working example)
+  // ---------------------------------------------------------------------------
+
+  @override
+  void onButtonClicked(Flic2ButtonClick buttonClick) {
+    debugPrint('Flic button ${buttonClick.button.uuid} clicked');
+    if (!buttonClick.isDoubleClick) return;
+    final now = DateTime.now();
+    if ((_lastAlertTime != null &&
+            now.difference(_lastAlertTime!) < _alertCooldown) &&
+        _hasActiveTrackingSession) {
+      debugPrint('Alert suppressed — cooldown active.');
+      return;
+    }
+    _lastAlertTime = now;
+    _sendAlertNow();
+  }
+
+  @override
+  void onButtonConnected() {
+    debugPrint('Flic button connected');
+    setState(() => _isFlicConnected = true);
+    _scanController
+      ..stop()
+      ..reset();
+  }
+
+  @override
+  void onButtonUpOrDown(Flic2ButtonUpOrDown button) {
+    debugPrint('button ${button.button.uuid} ${button.isDown ? 'down' : 'up'}');
+  }
+
+  @override
+  void onButtonDiscovered(String buttonAddress) {
+    debugPrint('button @$buttonAddress discovered');
+    _flicButtonManager?.getFlic2ButtonByAddress(buttonAddress).then((button) {
+      if (button != null) {
+        debugPrint('resolved $buttonAddress → ${button.uuid}');
+        _addButtonAndListen(button);
+      }
+    });
+  }
+
+  @override
+  void onButtonFound(Flic2Button button) {
+    debugPrint('button ${button.uuid} found');
+    _addButtonAndListen(button);
+  }
+
+  @override
+  void onFlic2Error(String error) {
+    debugPrint('Flic2 ERROR: $error');
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Button error: $error')));
+    }
+  }
+
+  @override
+  void onPairedButtonDiscovered(Flic2Button button) {
+    debugPrint('paired button ${button.uuid} discovered');
+    _addButtonAndListen(button);
+  }
+
+  @override
+  void onScanCompleted() {
+    debugPrint('Flic scan completed');
+    _scanController
+      ..stop()
+      ..reset();
+    setState(() => _isFlicScanning = false);
+  }
+
+  @override
+  void onScanStarted() {
+    debugPrint('Flic scan started');
+    setState(() => _isFlicScanning = true);
+  }
+
   // ---------------------------------------------------------------------------
   // Page init
   // ---------------------------------------------------------------------------
 
-  void initializePage() async {
+  void _initializePage() async {
     _firstName = AuthService.instance.userFirstName;
     await AuthService.instance.fetchOrCreateUser();
     final Locale userLocale = Locale(
@@ -154,8 +304,8 @@ class _HomePageState extends State<HomePage>
   // ---------------------------------------------------------------------------
 
   Future<void> _activateProtection() async {
-    final hasTrustedContacts = await this.hasTrustedContacts();
-    if (!hasTrustedContacts) {
+    final hasTrusted = await _hasTrustedContacts();
+    if (!hasTrusted) {
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.noTrustedContact,
@@ -227,16 +377,16 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  Future<bool> hasTrustedContacts() async {
-    final trustedContacts = await UserService.instance.fetchContacts();
-    return trustedContacts.isNotEmpty;
+  Future<bool> _hasTrustedContacts() async {
+    final contacts = await UserService.instance.fetchContacts();
+    return contacts.isNotEmpty;
   }
 
   Future<void> _sendAlertNow() async {
     try {
       setState(() => _isLoading = true);
-      final hasTrustedContacts = await this.hasTrustedContacts();
-      if (!hasTrustedContacts) {
+      final hasTrusted = await _hasTrustedContacts();
+      if (!hasTrusted) {
         MessageService.displayAlertDialog(
           context: context,
           title: AppLocalizations.of(context)!.noTrustedContact,
@@ -244,6 +394,11 @@ class _HomePageState extends State<HomePage>
         );
         return;
       }
+
+      if (_hasActiveTrackingSession) {
+        await _endTrackingSessions();
+      }
+
       final alertSent = await UserService.instance.sendAlertNow();
       if (!alertSent) {
         MessageService.displayAlertDialog(
@@ -288,10 +443,8 @@ class _HomePageState extends State<HomePage>
   Widget _flicButtonCard(Flic2Button button) {
     return GestureDetector(
       onTap: () {
-        FlicService.instance.connect(button);
-        FlicService.instance.listen(button);
+        _connectButton(button);
         _stopScan();
-        // _isFlicConnected flips via _onFlicStateChanged once onButtonConnected fires.
         setState(() => _showFlicPanel = false);
       },
       child: Container(
@@ -383,213 +536,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _flicDeviceCard() {
-    // Merge previously-paired and newly discovered buttons, deduplicated by uuid.
-    final seen = <String>{};
-    final buttons = [
-      ...FlicService.instance.pairedButtons,
-      ...FlicService.instance.discoveredButtons,
-    ].where((b) => seen.add(b.uuid)).toList();
-
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeInOut,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Header ──────────────────────────────────────────────────────
-            Row(
-              children: [
-                if (_isFlicConnected)
-                  _statusDot(AppColors.primaryColor)
-                else if (_isFlicScanning)
-                  _scanningRing()
-                else
-                  _statusDot(Colors.grey.shade400),
-
-                const SizedBox(width: 14),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DiscretaText(
-                        text: 'Safety Button',
-                        size: TextSize.medium,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      const SizedBox(height: 3),
-                      DiscretaText(
-                        text: _isFlicConnected
-                            ? 'Connected'
-                            : _isFlicScanning
-                            ? 'Scanning for buttons…'
-                            : 'Not connected',
-                        size: TextSize.small,
-                        fontWeight: FontWeight.w300,
-                        color: _isFlicConnected
-                            ? AppColors.primaryColor
-                            : Colors.grey,
-                      ),
-                    ],
-                  ),
-                ),
-
-                if (_showFlicPanel || _isFlicConnected)
-                  GestureDetector(
-                    onTap: _toggleFlicPanel,
-                    child: AnimatedRotation(
-                      turns: _showFlicPanel ? 0.5 : 0,
-                      duration: const Duration(milliseconds: 300),
-                      child: const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-
-            // ── Expanded panel ───────────────────────────────────────────────
-            if (_showFlicPanel) ...[
-              const SizedBox(height: 20),
-              const Divider(height: 1),
-              const SizedBox(height: 20),
-
-              if (_isFlicConnected) ...[
-                Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle_outline,
-                      color: AppColors.primaryColor,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: DiscretaText(
-                        text:
-                            'Your button is connected and will trigger an alert when pressed.',
-                        size: TextSize.small,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      FlicService.instance.disconnect();
-                      setState(() => _showFlicPanel = false);
-                    },
-                    icon: const Icon(Icons.link_off, size: 18),
-                    label: const Text('Disconnect button'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.redAccent,
-                      side: const BorderSide(color: Colors.redAccent),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
-              ] else ...[
-                DiscretaText(
-                  text:
-                      'Hold your button for 7 seconds to put it in\n'
-                      'pairing mode, then press Scan.',
-                  size: TextSize.small,
-                  fontWeight: FontWeight.w300,
-                ),
-                const SizedBox(height: 16),
-
-                if (_isFlicScanning && buttons.isEmpty)
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: DiscretaText(
-                        text: 'Waiting for nearby buttons…',
-                        size: TextSize.small,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  )
-                else if (buttons.isNotEmpty)
-                  ...buttons.map((b) => _flicButtonCard(b)),
-
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _isFlicScanning ? _stopScan : _startScan,
-                    icon: Icon(
-                      _isFlicScanning ? Icons.stop : Icons.bluetooth_searching,
-                      size: 18,
-                    ),
-                    label: Text(
-                      _isFlicScanning ? 'Stop scanning' : 'Scan for button',
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isFlicScanning
-                          ? Colors.grey.shade200
-                          : AppColors.primaryColor,
-                      foregroundColor: _isFlicScanning
-                          ? Colors.grey.shade700
-                          : Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                  ),
-                ),
-              ],
-            ] else if (!_showFlicPanel && !_isFlicConnected) ...[
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: _toggleFlicPanel,
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.add_circle_outline,
-                      color: AppColors.primaryColor,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 8),
-                    DiscretaText(
-                      text: 'Pair button',
-                      size: TextSize.small,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryColor,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _statusDot(Color color) {
     return Container(
       width: 42,
@@ -599,6 +545,201 @@ class _HomePageState extends State<HomePage>
         color: color.withValues(alpha: 0.12),
       ),
       child: Icon(Icons.radio_button_on, color: color, size: 22),
+    );
+  }
+
+  Widget _flicDeviceCard() {
+    final buttons = _buttonsFound.values.toList();
+
+    return FutureBuilder(
+      // Wait for the plugin to finish initializing before showing controls.
+      future: _flicButtonManager?.invokation,
+      builder: (context, snapshot) {
+        final bool pluginReady =
+            snapshot.connectionState == ConnectionState.done;
+
+        return AnimatedSize(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeInOut,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Header ────────────────────────────────────────────────
+                Row(
+                  children: [
+                    if (_isFlicConnected)
+                      _statusDot(AppColors.primaryColor)
+                    else if (_isFlicScanning)
+                      _scanningRing()
+                    else
+                      _statusDot(Colors.grey.shade400),
+
+                    const SizedBox(width: 14),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DiscretaText(
+                            text: 'Safety Button',
+                            size: TextSize.medium,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          const SizedBox(height: 3),
+                          DiscretaText(
+                            text: !pluginReady
+                                ? 'Initializing…'
+                                : _isFlicConnected
+                                ? 'Connected'
+                                : _isFlicScanning
+                                ? 'Scanning for buttons…'
+                                : 'Not connected',
+                            size: TextSize.small,
+                            fontWeight: FontWeight.w300,
+                            color: _isFlicConnected
+                                ? AppColors.primaryColor
+                                : Colors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    if (_showFlicPanel || _isFlicConnected)
+                      GestureDetector(
+                        onTap: _toggleFlicPanel,
+                        child: AnimatedRotation(
+                          turns: _showFlicPanel ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 300),
+                          child: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+
+                // ── Expanded panel ────────────────────────────────────────
+                if (_showFlicPanel && pluginReady) ...[
+                  const SizedBox(height: 20),
+                  const Divider(height: 1),
+                  const SizedBox(height: 20),
+
+                  if (_isFlicConnected) ...[
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          color: AppColors.primaryColor,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: DiscretaText(
+                            text:
+                                'Your button is connected and will trigger an alert when pressed.',
+                            size: TextSize.small,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ] else ...[
+                    DiscretaText(
+                      text:
+                          'Hold your button for 7 seconds to put it in\n'
+                          'pairing mode, then press Scan.',
+                      size: TextSize.small,
+                      fontWeight: FontWeight.w300,
+                    ),
+                    const SizedBox(height: 16),
+
+                    if (_isFlicScanning && buttons.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: DiscretaText(
+                            text: 'Waiting for nearby buttons…',
+                            size: TextSize.small,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      )
+                    else if (buttons.isNotEmpty)
+                      ...buttons.map((b) => _flicButtonCard(b)),
+
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _isFlicScanning ? _stopScan : _startScan,
+                        icon: Icon(
+                          _isFlicScanning
+                              ? Icons.stop
+                              : Icons.bluetooth_searching,
+                          size: 18,
+                        ),
+                        label: Text(
+                          _isFlicScanning ? 'Stop scanning' : 'Scan for button',
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _isFlicScanning
+                              ? Colors.grey.shade200
+                              : AppColors.primaryColor,
+                          foregroundColor: _isFlicScanning
+                              ? Colors.grey.shade700
+                              : Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ] else if (!_showFlicPanel && !_isFlicConnected) ...[
+                  const SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: _toggleFlicPanel,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add_circle_outline,
+                          color: AppColors.primaryColor,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        DiscretaText(
+                          text: 'Pair button',
+                          size: TextSize.small,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -634,7 +775,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget protectionCard(BuildContext context) {
+  Widget _protectionCard(BuildContext context) {
     final bool isActive = _isProtectionActive && _remainingSeconds > 0;
 
     return Container(
@@ -692,7 +833,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget safetyTimerCard(BuildContext context) {
+  Widget _safetyTimerCard(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -826,9 +967,9 @@ class _HomePageState extends State<HomePage>
                         SizedBox(height: 30.h),
                         _flicDeviceCard(),
                         SizedBox(height: 16.h),
-                        protectionCard(context),
+                        _protectionCard(context),
                         SizedBox(height: 30.h),
-                        safetyTimerCard(context),
+                        _safetyTimerCard(context),
                         SizedBox(height: 20.h),
                       ],
                     ),

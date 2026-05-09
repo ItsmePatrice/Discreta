@@ -2,12 +2,12 @@ import "dotenv/config";
 import { neon } from "@neondatabase/serverless";
 import crypto from "crypto";
 
-const { DB_URL, DATA_ENCRYPTION_KEY } = process.env;
+const { DATABASE_URL_PRODUCTION, DATA_ENCRYPTION_KEY } = process.env;
 
-if (!DB_URL) throw new Error("DATABASE_URL is not defined in the environment variables");
+if (!DATABASE_URL_PRODUCTION) throw new Error("DATABASE_URL is not defined in the environment variables");
 if (!DATA_ENCRYPTION_KEY) throw new Error("DATA_ENCRYPTION_KEY is not defined in the environment variables (32 bytes key)");
 
-const sql = neon(DB_URL);
+const sql = neon(DATABASE_URL_PRODUCTION);
 
 // ----- Encryption helpers -----
 const algorithm = "aes-256-gcm";
