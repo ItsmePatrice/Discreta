@@ -109,6 +109,23 @@ class _HomePageState extends State<HomePage>
     setState(() {
       _flicButtonManager = FlicButtonPlugin(flic2listener: this);
     });
+    _restorePairedButtons();
+  }
+
+  Future<void> _restorePairedButtons() async {
+    if (_flicButtonManager == null) return;
+
+    // Wait for the plugin to finish initializing
+    await _flicButtonManager!.invokation;
+
+    final buttons = await _flicButtonManager!.getFlic2Buttons();
+    if (buttons.isEmpty) return;
+
+    for (final button in buttons) {
+      _addButtonAndListen(button);
+      // Automatically connect to previously paired buttons
+      _flicButtonManager!.connectButton(button.uuid);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -217,7 +234,10 @@ class _HomePageState extends State<HomePage>
   @override
   void onButtonConnected() {
     debugPrint('Flic button connected');
-    setState(() => _isFlicConnected = true);
+    setState(() {
+      _isFlicConnected = true;
+      _connectedButton = _buttonsFound.values.firstOrNull;
+    });
     _scanController
       ..stop()
       ..reset();
