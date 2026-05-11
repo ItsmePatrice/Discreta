@@ -116,11 +116,13 @@ class _SplashPageState extends State<SplashPage> {
       return;
     }
 
-    bool isSignedIn = AuthService.instance.currentUser != null;
-    if (!isSignedIn) {
-      safePushReplacement(const LoginPage());
-    } else {
+    // Wait for Firebase to restore auth state before checking
+    final user = await AuthService.instance.authStateReady;
+
+    if (user != null) {
       safePushReplacement(const MainShell());
+    } else {
+      safePushReplacement(const LoginPage());
     }
   }
 

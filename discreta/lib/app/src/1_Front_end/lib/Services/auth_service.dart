@@ -22,6 +22,35 @@ class AuthService {
   String? get firebaseIdToken => _firebaseIdToken;
   DiscretaUser? discretaUser;
 
+  /// Waits for Firebase Auth to restore persisted state, then returns the user.
+  Future<User?> get authStateReady async {
+    // Wait for Firebase to restore its state
+    final user = await _auth.authStateChanges().first;
+    if (user != null) return user;
+
+    // Firebase has no user, but Google might still have a cached account
+    // Try a silent sign-in to re-link them
+    try {
+      final isSignedIn = await _googleSignIn.isSignedIn();
+      if (!isSignedIn) return null;
+
+      final gUser = await _googleSignIn.signInSilently();
+      if (gUser == null) return null;
+
+      final gAuth = await gUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: gAuth.accessToken,
+        idToken: gAuth.idToken,
+      );
+      final userCredential = await _auth.signInWithCredential(credential);
+      _firebaseIdToken = await userCredential.user?.getIdToken();
+      return userCredential.user;
+    } catch (e) {
+      LogService.instance.logError('Silent sign-in failed: $e');
+      return null;
+    }
+  }
+
   // Google sign in
   Future<UserCredential?> signInWithGoogle() async {
     try {
