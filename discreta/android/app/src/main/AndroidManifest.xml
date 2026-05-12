@@ -51,7 +51,7 @@
             android:exported="false" />
 
         <service
-            android:name="com.discreta.FlicForegroundService"
+            android:name=".FlicKeepaliveService"
             android:foregroundServiceType="connectedDevice"
             android:exported="false" />
 
