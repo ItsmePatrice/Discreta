@@ -16,6 +16,7 @@ import 'package:flic_button/flic_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as Geolocator;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -315,8 +316,40 @@ class _HomePageState extends State<HomePage>
     try {
       await UserService.instance.ensureLocationPermission();
     } catch (e) {
-      MessageService.showLocationPermissionDialog(context);
+      if (e.toString().contains('background_location_required')) {
+        _showBackgroundLocationDialog();
+      } else {
+        MessageService.showLocationPermissionDialog(context);
+      }
     }
+  }
+
+  void _showBackgroundLocationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: const Text('Background location required'),
+        content: const Text(
+          'Discreta needs to access your location at all times to send '
+          'your position when you trigger an alert, even when your screen is locked.\n\n'
+          'In the next screen: tap Location → select "Allow all the time".',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Not now'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Geolocator.openAppSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
   }
 
   // ---------------------------------------------------------------------------

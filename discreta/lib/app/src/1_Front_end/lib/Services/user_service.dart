@@ -163,6 +163,12 @@ class UserService {
         'Location permission permanently denied. Please enable it in settings.',
       );
     }
+
+    // Request background location — needed for GPS when screen is locked
+    if (permission == LocationPermission.whileInUse) {
+      permission = await Geolocator.requestPermission();
+      // This triggers "Allow all the time" dialog on Android
+    }
   }
 
   // Make sure you capture the user's current location first
