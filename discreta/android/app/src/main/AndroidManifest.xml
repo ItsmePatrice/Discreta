@@ -18,6 +18,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+
     <application
         android:label="discreta"
         android:name="${applicationName}"
@@ -45,6 +48,11 @@
         <service
             android:name="com.discreta.LocationForegroundService"
             android:foregroundServiceType="location"
+            android:exported="false" />
+
+        <service
+            android:name="com.discreta.FlicForegroundService"
+            android:foregroundServiceType="connectedDevice"
             android:exported="false" />
 
         <meta-data
