@@ -18,8 +18,8 @@
   "discretaWelcomeMessage": "You're not alone.",
   "discretaReassuranceMessage": "Discreta is quietly watching.",
   "status": "status",
-  "connected": "Button is connected",
-  "notConnected": "Button disconnected",
+  "connected": "Connected",
+  "notConnected": "Not connected",
   "safetyTimer": "Safety timer",
   "start": "Start",
   "stop": "Stop",
@@ -65,5 +65,14 @@
   "enableLocation": "Enable Location",
   "noTrustedContact": "No trusted contact found",
   "pleaseAddContacts": "Please add a trusted contact",
-  "safetyConfirmed": "I'm safe"
+  "safetyConfirmed": "I'm safe",
+  "initializing": "initializing...",
+  "scanning": "Scanning for buttons...",
+  "safetyDevice": "Safety Device",
+  "pairButton": "Pair button",
+  "pairingInstructions": "After clicking on `Scan for button`, hold your button for 7 seconds to pair.",
+  "stopScanning": "Stop scanning",
+  "scanForButton": "Scan for button",
+  "connectionSuccess": "Your button is connected and will trigger an alert when double tapped.",
+  "tapToConnect": "Tap to connect"
 }

@@ -533,13 +533,13 @@ class _HomePageState extends State<HomePage>
                   DiscretaText(
                     text: button.name.isNotEmpty
                         ? button.name
-                        : 'Safety button',
+                        : AppLocalizations.of(context)!.safetyDevice,
                     size: TextSize.medium,
                     fontWeight: FontWeight.w600,
                   ),
                   const SizedBox(height: 2),
                   DiscretaText(
-                    text: 'Tap to connect',
+                    text: AppLocalizations.of(context)!.tapToConnect,
                     size: TextSize.small,
                     fontWeight: FontWeight.w300,
                   ),
@@ -648,19 +648,19 @@ class _HomePageState extends State<HomePage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DiscretaText(
-                            text: 'Safety Button',
+                            text: AppLocalizations.of(context)!.safetyDevice,
                             size: TextSize.medium,
                             fontWeight: FontWeight.w600,
                           ),
                           const SizedBox(height: 3),
                           DiscretaText(
                             text: !pluginReady
-                                ? 'Initializing…'
+                                ? AppLocalizations.of(context)!.initializing
                                 : _isFlicConnected
-                                ? 'Connected'
+                                ? AppLocalizations.of(context)!.connected
                                 : _isFlicScanning
-                                ? 'Scanning for buttons…'
-                                : 'Not connected',
+                                ? AppLocalizations.of(context)!.scanning
+                                : AppLocalizations.of(context)!.notConnected,
                             size: TextSize.small,
                             fontWeight: FontWeight.w300,
                             color: _isFlicConnected
@@ -703,8 +703,9 @@ class _HomePageState extends State<HomePage>
                         const SizedBox(width: 10),
                         Expanded(
                           child: DiscretaText(
-                            text:
-                                'Your button is connected and will trigger an alert when pressed.',
+                            text: AppLocalizations.of(
+                              context,
+                            )!.connectionSuccess,
                             size: TextSize.small,
                             fontWeight: FontWeight.w300,
                           ),
@@ -713,9 +714,7 @@ class _HomePageState extends State<HomePage>
                     ),
                   ] else ...[
                     DiscretaText(
-                      text:
-                          'Hold your button for 7 seconds to put it in\n'
-                          'pairing mode, then press Scan.',
+                      text: AppLocalizations.of(context)!.pairingInstructions,
                       size: TextSize.small,
                       fontWeight: FontWeight.w300,
                     ),
@@ -731,9 +730,7 @@ class _HomePageState extends State<HomePage>
                             color: Colors.grey,
                           ),
                         ),
-                      )
-                    else if (buttons.isNotEmpty)
-                      ...buttons.map((b) => _flicButtonCard(b)),
+                      ),
 
                     const SizedBox(height: 16),
 
@@ -748,7 +745,9 @@ class _HomePageState extends State<HomePage>
                           size: 18,
                         ),
                         label: Text(
-                          _isFlicScanning ? 'Stop scanning' : 'Scan for button',
+                          _isFlicScanning
+                              ? AppLocalizations.of(context)!.stopScanning
+                              : AppLocalizations.of(context)!.scanForButton,
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _isFlicScanning
@@ -779,7 +778,7 @@ class _HomePageState extends State<HomePage>
                         ),
                         const SizedBox(width: 8),
                         DiscretaText(
-                          text: 'Pair button',
+                          text: AppLocalizations.of(context)!.pairButton,
                           size: TextSize.small,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryColor,

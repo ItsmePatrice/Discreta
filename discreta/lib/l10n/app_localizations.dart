@@ -215,13 +215,13 @@ abstract class AppLocalizations {
   /// No description provided for @connected.
   ///
   /// In en, this message translates to:
-  /// **'Button is connected'**
+  /// **'Connected'**
   String get connected;
 
   /// No description provided for @notConnected.
   ///
   /// In en, this message translates to:
-  /// **'Button disconnected'**
+  /// **'Not connected'**
   String get notConnected;
 
   /// No description provided for @safetyTimer.
@@ -499,6 +499,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I\'m safe'**
   String get safetyConfirmed;
+
+  /// No description provided for @initializing.
+  ///
+  /// In en, this message translates to:
+  /// **'initializing...'**
+  String get initializing;
+
+  /// No description provided for @scanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning for buttons...'**
+  String get scanning;
+
+  /// No description provided for @safetyDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety Device'**
+  String get safetyDevice;
+
+  /// No description provided for @pairButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair button'**
+  String get pairButton;
+
+  /// No description provided for @pairingInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'After clicking on `Scan for button`, hold your button for 7 seconds to pair.'**
+  String get pairingInstructions;
+
+  /// No description provided for @stopScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop scanning'**
+  String get stopScanning;
+
+  /// No description provided for @scanForButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan for button'**
+  String get scanForButton;
+
+  /// No description provided for @connectionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your button is connected and will trigger an alert when double tapped.'**
+  String get connectionSuccess;
+
+  /// No description provided for @tapToConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to connect'**
+  String get tapToConnect;
 }
 
 class _AppLocalizationsDelegate

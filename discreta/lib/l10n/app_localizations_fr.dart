@@ -70,10 +70,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get status => 'status';
 
   @override
-  String get connected => 'Bouton connecté';
+  String get connected => 'Connecté';
 
   @override
-  String get notConnected => 'Bouton déconnecté';
+  String get notConnected => 'Non connecté';
 
   @override
   String get safetyTimer => 'Minuteur de sécurité';
@@ -222,4 +222,33 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get safetyConfirmed => 'Tout va bien';
+
+  @override
+  String get initializing => 'Initialisation…';
+
+  @override
+  String get scanning => 'Recherche de boutons…';
+
+  @override
+  String get safetyDevice => 'Dispositif de sécurité';
+
+  @override
+  String get pairButton => 'Associer le bouton';
+
+  @override
+  String get pairingInstructions =>
+      'Après avoir appuyé sur Scanner, maintenez votre bouton enfoncé pendant 7 secondes pour l’associer.';
+
+  @override
+  String get stopScanning => 'Arrêter la recherche';
+
+  @override
+  String get scanForButton => 'Scanner';
+
+  @override
+  String get connectionSuccess =>
+      'Votre bouton est connecté et déclenchera une alerte lorsqu’il sera appuyé deux fois.';
+
+  @override
+  String get tapToConnect => 'Touchez pour connecter';
 }

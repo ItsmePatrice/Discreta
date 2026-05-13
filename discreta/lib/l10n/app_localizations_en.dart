@@ -70,10 +70,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get status => 'status';
 
   @override
-  String get connected => 'Button is connected';
+  String get connected => 'Connected';
 
   @override
-  String get notConnected => 'Button disconnected';
+  String get notConnected => 'Not connected';
 
   @override
   String get safetyTimer => 'Safety timer';
@@ -222,4 +222,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get safetyConfirmed => 'I\'m safe';
+
+  @override
+  String get initializing => 'initializing...';
+
+  @override
+  String get scanning => 'Scanning for buttons...';
+
+  @override
+  String get safetyDevice => 'Safety Device';
+
+  @override
+  String get pairButton => 'Pair button';
+
+  @override
+  String get pairingInstructions =>
+      'After clicking on `Scan for button`, hold your button for 7 seconds to pair.';
+
+  @override
+  String get stopScanning => 'Stop scanning';
+
+  @override
+  String get scanForButton => 'Scan for button';
+
+  @override
+  String get connectionSuccess =>
+      'Your button is connected and will trigger an alert when double tapped.';
+
+  @override
+  String get tapToConnect => 'Tap to connect';
 }

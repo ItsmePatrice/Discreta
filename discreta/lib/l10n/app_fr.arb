@@ -18,8 +18,8 @@
   "discretaWelcomeMessage": "Vous n'êtes pas seule.",
   "discretaReassuranceMessage": "Discreta veille discrètement.",
   "status": "status",
-  "connected": "Bouton connecté",
-  "notConnected": "Bouton déconnecté",
+  "connected": "Connecté",
+  "notConnected": "Non connecté",
   "safetyTimer": "Minuteur de sécurité",
   "start": "Démarrer",
   "stop": "Arrêter",
@@ -65,5 +65,14 @@
   "enableLocation": "Activer la localisation",
   "noTrustedContact": "Aucun contact de confiance trouvé",
   "pleaseAddContacts": "Veuillez ajouter un contact de confiance",
-  "safetyConfirmed": "Tout va bien"
+  "safetyConfirmed": "Tout va bien",
+  "initializing": "Initialisation…",
+  "scanning": "Recherche de boutons…",
+  "safetyDevice": "Dispositif de sécurité",
+  "pairButton": "Associer le bouton",
+  "pairingInstructions": "Après avoir appuyé sur Scanner, maintenez votre bouton enfoncé pendant 7 secondes pour l’associer.",
+  "stopScanning": "Arrêter la recherche",
+  "scanForButton": "Scanner",
+  "connectionSuccess": "Votre bouton est connecté et déclenchera une alerte lorsqu’il sera appuyé deux fois.",
+  "tapToConnect": "Touchez pour connecter"
 }
