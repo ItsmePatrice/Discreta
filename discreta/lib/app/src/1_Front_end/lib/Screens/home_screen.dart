@@ -126,6 +126,15 @@ class _HomePageState extends State<HomePage>
       _addButtonAndListen(button);
       // Automatically connect to previously paired buttons
       _flicButtonManager!.connectButton(button.uuid);
+
+      // Check if button is already connected and update state
+      if (button.connectionState ==
+          Flic2ButtonConnectionState.connected_ready) {
+        setState(() {
+          _isFlicConnected = true;
+          _connectedButton = button;
+        });
+      }
     }
   }
 
