@@ -13,11 +13,12 @@ workflows:
         script: keychain initialize
       - name: Fetch signing files
         script: |
+          echo $APP_STORE_CONNECT_PRIVATE_KEY > /tmp/private_key.p8
           app-store-connect fetch-signing-files com.discreta.app \
             --type IOS_APP_STORE \
             --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
             --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
-            --private-key $APP_STORE_CONNECT_PRIVATE_KEY \
+            --private-key @file:/tmp/private_key.p8 \
             --create
       - name: Add certificates to keychain
         script: keychain add-certificates
