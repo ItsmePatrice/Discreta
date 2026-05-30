@@ -13,13 +13,14 @@ workflows:
         script: keychain initialize
       - name: Fetch signing files
         script: |
+          openssl genrsa -out /tmp/certificate_key.pem 2048
           echo $APP_STORE_CONNECT_PRIVATE_KEY > /tmp/private_key.p8
           app-store-connect fetch-signing-files com.discreta.app \
             --type IOS_APP_STORE \
             --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
             --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
             --private-key @file:/tmp/private_key.p8 \
-            --certificate-key @file:/tmp/private_key.p8 \
+            --certificate-key @file:/tmp/certificate_key.pem \
             --create
       - name: Add certificates to keychain
         script: keychain add-certificates
