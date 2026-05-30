@@ -2,6 +2,7 @@ workflows:
   ios-workflow:
     name: iOS Workflow
     max_build_duration: 60
+    working_directory: discreta
     environment:
       groups:
         - ios_credentials
