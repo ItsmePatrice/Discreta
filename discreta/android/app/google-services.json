@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "101220018288-8bep8904mstc9g7nvclvgk7at709e44m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.discreta.app",
+            "certificate_hash": "1052630e579a93a349c2deb260e077662e1d33a3"
+          }
+        },
+        {
           "client_id": "101220018288-doabl3aldej420f75j8i8qvj5c87ifbi.apps.googleusercontent.com",
           "client_type": 3
         }
