@@ -3,19 +3,20 @@ workflows:
     name: iOS Workflow
     max_build_duration: 60
     environment:
+      groups:
+        - ios_credentials
       flutter: stable
       xcode: latest
       cocoapods: default
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.discreta.app
-      vars:
-        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
-        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
     scripts:
       - name: Get Flutter packages
         script: flutter packages pub get
+      - name: Set up provisioning profiles
+        script: |
+          xcode-project use-profiles
       - name: Install pods
         script: find . -name "Podfile" -execdir pod install \;
       - name: Build iOS
@@ -30,4 +31,4 @@ workflows:
         api_key: $APP_STORE_CONNECT_KEY_IDENTIFIER
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true # set false if you don't want auto-submit
+        submit_to_testflight: true
