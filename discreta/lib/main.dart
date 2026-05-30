@@ -5,6 +5,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Services/connectivity_checker.d
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/page_transition_builder.dart';
 import 'package:discreta/l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,58 +93,86 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  bool _hasCheckedConnectivity = false;
+  bool _isConnected = false;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () => initializeApp());
+    _checkConnectivity();
   }
 
-  Future<void> initializeApp() async {
-    bool isConnected = await ConnectivityChecker.hasInternetConnection();
-
-    if (!isConnected) {
-      if (mounted) {
-        MessageService.displayNoConnectionDialog(
-          context: context,
-          title: AppLocalizations.of(context)!.noInternetTitle,
-          message: AppLocalizations.of(context)!.noInternetConnection,
-          buttonText: AppLocalizations.of(context)!.retry,
-          onRetry: () async {
-            initializeApp();
-          },
-        );
-      }
-      return;
-    }
-
-    // Wait for Firebase to restore auth state before checking
-    final user = await AuthService.instance.authStateReady;
-
-    if (user != null) {
-      safePushReplacement(const MainShell());
-    } else {
-      safePushReplacement(const LoginPage());
+  Future<void> _checkConnectivity() async {
+    _isConnected = await ConnectivityChecker.hasInternetConnection();
+    if (mounted) {
+      setState(() {
+        _hasCheckedConnectivity = true;
+      });
     }
   }
 
-  void safePushReplacement(Widget page) {
+  void _showNoConnectionDialog() {
     if (!mounted) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (context) => page));
-    });
+    MessageService.displayNoConnectionDialog(
+      context: context,
+      title: AppLocalizations.of(context)!.noInternetTitle,
+      message: AppLocalizations.of(context)!.noInternetConnection,
+      buttonText: AppLocalizations.of(context)!.retry,
+      onRetry: () async {
+        setState(() {
+          _hasCheckedConnectivity = false;
+        });
+        await _checkConnectivity();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.primary,
+    if (!_hasCheckedConnectivity) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
-      ),
+      );
+    }
+
+    if (!_isConnected) {
+      // Show no connection dialog after build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showNoConnectionDialog();
+      });
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      );
+    }
+
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          );
+        }
+
+        final user = snapshot.data;
+        if (user == null) {
+          return const LoginPage();
+        } else {
+          return const MainShell();
+        }
+      },
     );
   }
 }
