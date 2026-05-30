@@ -19,6 +19,7 @@ workflows:
             --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
             --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
             --private-key @file:/tmp/private_key.p8 \
+            --certificate-key @file:/tmp/private_key.p8 \
             --create
       - name: Add certificates to keychain
         script: keychain add-certificates
