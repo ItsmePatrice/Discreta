@@ -134,11 +134,11 @@ abstract class AppLocalizations {
   /// **'One gesture. One alert. Reliable support,\n in complete discretion.'**
   String get brandMessage;
 
-  /// No description provided for @signInWithGoogle.
+  /// No description provided for @signIn.
   ///
   /// In en, this message translates to:
-  /// **'Sign in with Google'**
-  String get signInWithGoogle;
+  /// **'Sign in'**
+  String get signIn;
 
   /// No description provided for @signInError.
   ///
@@ -553,6 +553,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap to connect'**
   String get tapToConnect;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get firstName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @accessCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Access code'**
+  String get accessCode;
 }
 
 class _AppLocalizationsDelegate

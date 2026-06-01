@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
-import 'package:discreta/app/src/1_Front_end/lib/Components/google_sign_in_button.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
@@ -22,35 +19,53 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _accessCodeController = TextEditingController();
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _emailController.dispose();
+    _accessCodeController.dispose();
+    super.dispose();
+  }
+
   void _setIsLoading(bool isLoading) {
     setState(() {
       _isLoading = isLoading;
     });
   }
 
-  void _changeLanguage(Locale locale) async {
+  void _changeLanguage(Locale locale) {
     myAppKey.currentState?.setLocale(locale);
   }
 
-  Future<dynamic> _signInWithGoogle() async {
+  Future<void> _signIn() async {
+    final firstName = _firstNameController.text.trim();
+    final email = _emailController.text.trim();
+    final accessCode = _accessCodeController.text.trim();
+
+    if (firstName.isEmpty || email.isEmpty || accessCode.isEmpty) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.signInError,
+        message: AppLocalizations.of(context)!.signInErrorMessage,
+      );
+      return;
+    }
+
     _setIsLoading(true);
     try {
-      await AuthService.instance.signInWithGoogle();
-      _setIsLoading(false);
-      String? firebaseUid = AuthService.instance.currentUser?.uid;
-      if (firebaseUid == null) {
-        if (!mounted) return;
-        MessageService.displayAlertDialog(
-          context: context,
-          title: AppLocalizations.of(context)!.signInError,
-          message: AppLocalizations.of(context)!.signInErrorMessage,
-        );
-        return;
-      }
-      await AuthService.instance.fetchOrCreateUser();
-      _setIsLoading(false);
-      _leadUserToHomePage();
-      return;
+      await AuthService.instance.fetchOrCreateUser(
+        firstName,
+        email,
+        accessCode,
+      );
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const MainShell()),
+      );
     } catch (e) {
       if (!mounted) return;
       MessageService.displayAlertDialog(
@@ -58,30 +73,18 @@ class _LoginPageState extends State<LoginPage> {
         title: AppLocalizations.of(context)!.signInFailed,
         message: AppLocalizations.of(context)!.signInFailedMessage,
       );
-      await AuthService.instance.signOutUser();
-      return;
     } finally {
-      if (mounted) {
-        _setIsLoading(false);
-      }
+      if (mounted) _setIsLoading(false);
     }
-  }
-
-  Future<void> _leadUserToHomePage() async {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const MainShell()),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Stack(
         children: [
-          // Main login form
           SingleChildScrollView(
             child: Container(
               height: screenHeight,
@@ -93,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      // Language switcher
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -158,31 +162,69 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
 
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "lib/app/src/1_Front_end/Assets/Images/purple_lady.jpg",
-                            height: 300.h,
-                            width: 300.w,
-                          ),
-                        ],
+                      // Logo
+                      Image.asset(
+                        "lib/app/src/1_Front_end/Assets/Images/purple_lady.jpg",
+                        height: 200.h,
+                        width: 200.w,
                       ),
+
                       DiscretaText(
                         text: AppLocalizations.of(context)!.projectName,
                         size: TextSize.large,
                         fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 8.h),
                       DiscretaText(
                         text: AppLocalizations.of(context)!.brandMessage,
                         size: TextSize.small,
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 24.h),
+
+                      // First name field
+                      TextField(
+                        controller: _firstNameController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.firstName,
+                          border: OutlineInputBorder(),
+                        ),
+                        textCapitalization: TextCapitalization.words,
+                      ),
+                      SizedBox(height: 12.h),
+
+                      // Email field
+                      TextField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.email,
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(height: 12.h),
+
+                      // Access code field
+                      TextField(
+                        controller: _accessCodeController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.accessCode,
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 24.h),
+
                       // Sign in button
-                      GoogleSignInButton(onPressed: _signInWithGoogle),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _signIn,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 14.h),
+                            child: Text(AppLocalizations.of(context)!.signIn),
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 9.h),
                       DiscretaText(
                         text: AppLocalizations.of(context)!.slogan,

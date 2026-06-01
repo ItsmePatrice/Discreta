@@ -35,9 +35,8 @@ dependencies:
 
   flic_button: ^1.2.11
 
-  firebase_core: ^3.14.0
-  firebase_auth: ^5.6.0
-  google_sign_in: ^5.4.2
+  flutter_secure_storage: ^10.3.1
+
   logger: ^2.6.0
   flutter_screenutil: ^5.9.3
   http: ^1.4.0
@@ -79,9 +78,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/app/src/1_Front_end/Assets/Images/android_neutral_sq_ctn.svg
     - lib/app/src/1_Front_end/Assets/Images/purple_lady.jpg
-    - lib/app/src/1_Front_end/Assets/Images/google_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

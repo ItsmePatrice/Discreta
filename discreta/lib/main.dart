@@ -1,3 +1,4 @@
+import 'package:discreta/app/src/1_Front_end/Assets/enum/refresh_result.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/login_screen.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
@@ -5,16 +6,13 @@ import 'package:discreta/app/src/1_Front_end/lib/Services/connectivity_checker.d
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/page_transition_builder.dart';
 import 'package:discreta/l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'firebase_options.dart';
 
-// Global key to control MyApp state (for changing locale)
 GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
 
 final RouteObserver<ModalRoute<void>> routeObserver =
@@ -22,7 +20,6 @@ final RouteObserver<ModalRoute<void>> routeObserver =
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp(key: myAppKey));
 }
@@ -95,6 +92,8 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   bool _hasCheckedConnectivity = false;
   bool _isConnected = false;
+  bool _isCheckingAuth = true;
+  bool _isAuthenticated = false;
 
   @override
   void initState() {
@@ -104,10 +103,56 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> _checkConnectivity() async {
     _isConnected = await ConnectivityChecker.hasInternetConnection();
-    if (mounted) {
+    if (!mounted) return;
+    setState(() {
+      _hasCheckedConnectivity = true;
+    });
+    if (_isConnected) {
+      await _checkAuth();
+    }
+  }
+
+  Future<void> _checkAuth() async {
+    const storage = FlutterSecureStorage();
+    final refreshToken = await storage.read(key: 'refreshToken');
+
+    if (!mounted) return;
+
+    if (refreshToken == null) {
       setState(() {
-        _hasCheckedConnectivity = true;
+        _isAuthenticated = false;
+        _isCheckingAuth = false;
       });
+      return;
+    }
+
+    final RefreshResult refreshResult = await AuthService.instance
+        .refreshTokens();
+
+    switch (refreshResult) {
+      case RefreshResult.success:
+        setState(() {
+          _isAuthenticated = true;
+          _isCheckingAuth = false;
+        });
+        break;
+
+      case RefreshResult.unauthorized:
+        await AuthService.instance.signOutUser();
+        setState(() {
+          _isAuthenticated = false;
+          _isCheckingAuth = false;
+        });
+        break;
+
+      case RefreshResult.networkError:
+      case RefreshResult.serverError:
+        setState(() {
+          _isAuthenticated = false;
+          _isCheckingAuth = false;
+        });
+        _showNoConnectionDialog();
+        break;
     }
   }
 
@@ -129,7 +174,7 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_hasCheckedConnectivity) {
+    if (!_hasCheckedConnectivity || _isCheckingAuth) {
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(
@@ -140,7 +185,6 @@ class _SplashPageState extends State<SplashPage> {
     }
 
     if (!_isConnected) {
-      // Show no connection dialog after build
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showNoConnectionDialog();
       });
@@ -153,26 +197,10 @@ class _SplashPageState extends State<SplashPage> {
       );
     }
 
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          );
-        }
-
-        final user = snapshot.data;
-        if (user == null) {
-          return const LoginPage();
-        } else {
-          return const MainShell();
-        }
-      },
-    );
+    if (_isAuthenticated) {
+      return const MainShell();
+    } else {
+      return const LoginPage();
+    }
   }
 }

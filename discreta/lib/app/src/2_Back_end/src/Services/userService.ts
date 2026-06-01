@@ -61,7 +61,7 @@ const UserService = {
                 INSERT INTO Users (first_name, email)
                 VALUES (
                     ${dto.firstName},
-                    ${encrypt(dto.email)},
+                    ${encrypt(dto.email)}
                 )
                 RETURNING *;
             `;

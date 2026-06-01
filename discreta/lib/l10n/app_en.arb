@@ -5,7 +5,7 @@
   "retry": "Retry",
   "slogan": "Safety in complete discretion",
   "brandMessage": "One gesture. One alert. Reliable support,\n in complete discretion.",
-  "signInWithGoogle": "Sign in with Google",
+  "signIn": "Sign in",
   "signInError": "Sign in error",
   "signInErrorMessage": "We couldn’t complete your sign in. Please try again.",
   "signInFailed": "Sign in failed",
@@ -74,5 +74,8 @@
   "stopScanning": "Stop scanning",
   "scanForButton": "Scan for button",
   "connectionSuccess": "Your button is connected and will trigger an alert when double tapped.",
-  "tapToConnect": "Tap to connect"
+  "tapToConnect": "Tap to connect",
+  "firstName": "First name",
+  "email": "Email",
+  "accessCode": "Access code"
 }

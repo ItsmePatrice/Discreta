@@ -10,8 +10,7 @@ class HttpService {
 
   Future<http.Response> get(String path, [Map<String, dynamic>? data]) async {
     try {
-      final firebaseToken = await AuthService.instance.currentUser
-          ?.getIdToken();
+      final accessToken = await AuthService.instance.getAccessToken();
 
       Uri url = Uri.parse(path);
       if (data != null && data.isNotEmpty) {
@@ -23,7 +22,7 @@ class HttpService {
         url,
         headers: {
           'Content-Type': 'application/json',
-          if (firebaseToken != null) 'Authorization': 'Bearer $firebaseToken',
+          if (accessToken != null) 'Authorization': 'Bearer $accessToken',
         },
       );
       return response;
@@ -34,18 +33,14 @@ class HttpService {
 
   Future<http.Response> post(String path, [Map<String, dynamic>? data]) async {
     try {
-      final firebaseToken = await AuthService.instance.currentUser
-          ?.getIdToken();
-      if (firebaseToken == null) {
-        throw ("Could not process request: Firebase token is null");
-      }
+      final accessToken = await AuthService.instance.getAccessToken();
 
       final url = Uri.parse(path);
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $firebaseToken',
+          'Authorization': 'Bearer $accessToken',
         },
         body: data != null ? jsonEncode(data) : null,
       );
@@ -57,18 +52,13 @@ class HttpService {
 
   Future<http.Response> patch(String path, [Map<String, dynamic>? data]) async {
     try {
-      final firebaseToken = await AuthService.instance.currentUser
-          ?.getIdToken();
-      if (firebaseToken == null) {
-        throw ("Could not process request: Firebase token is null");
-      }
-
+      final accessToken = await AuthService.instance.getAccessToken();
       final url = Uri.parse(path);
       final response = await http.patch(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $firebaseToken',
+          'Authorization': 'Bearer $accessToken',
         },
         body: data != null ? jsonEncode(data) : null,
       );
@@ -80,18 +70,13 @@ class HttpService {
 
   Future<http.Response> put(String path, [Map<String, dynamic>? data]) async {
     try {
-      final firebaseToken = await AuthService.instance.currentUser
-          ?.getIdToken();
-      if (firebaseToken == null) {
-        throw ("Could not process request: Firebase token is null");
-      }
-
+      final accessToken = await AuthService.instance.getAccessToken();
       final url = Uri.parse(path);
       final response = await http.put(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $firebaseToken',
+          'Authorization': 'Bearer $accessToken',
         },
         body: data != null ? jsonEncode(data) : null,
       );
@@ -106,18 +91,13 @@ class HttpService {
     Map<String, dynamic>? data,
   ]) async {
     try {
-      final firebaseToken = await AuthService.instance.currentUser
-          ?.getIdToken();
-      if (firebaseToken == null) {
-        throw ("Could not process request: Firebase token is null");
-      }
-
+      final accessToken = await AuthService.instance.getAccessToken();
       final url = Uri.parse(path);
       final response = await http.delete(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $firebaseToken',
+          'Authorization': 'Bearer $accessToken',
         },
         body: data != null ? jsonEncode(data) : null,
       );

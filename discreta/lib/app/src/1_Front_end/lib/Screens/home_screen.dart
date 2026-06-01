@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
+import 'package:discreta/app/src/1_Front_end/Assets/enum/refresh_result.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
@@ -311,8 +312,7 @@ class _HomePageState extends State<HomePage>
   // ---------------------------------------------------------------------------
 
   void _initializePage() async {
-    _firstName = AuthService.instance.userFirstName;
-    await AuthService.instance.fetchOrCreateUser();
+    _firstName = AuthService.instance.discretaUser?.firstName;
     final Locale userLocale = Locale(
       AuthService.instance.discretaUser?.language ?? 'fr',
     );

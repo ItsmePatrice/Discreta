@@ -5,7 +5,7 @@
   "retry": "Réessayer",
   "slogan": "La sécurité, en toute discretion",
   "brandMessage": "Un geste. Une alerte. Un soutien fiable,\n en toute discrétion.",
-  "signInWithGoogle": "Se connecter avec Google",
+  "signIn": "Se connecter",
   "signInError": "Erreur de connexion",
   "signInErrorMessage": "Nous n’avons pas pu compléter la connexion. Veuillez réessayer.",
   "signInFailed": "Échec de la connexion",
@@ -74,5 +74,8 @@
   "stopScanning": "Arrêter la recherche",
   "scanForButton": "Scanner",
   "connectionSuccess": "Votre bouton est connecté et déclenchera une alerte lorsqu’il sera appuyé deux fois.",
-  "tapToConnect": "Touchez pour connecter"
+  "tapToConnect": "Touchez pour connecter",
+  "firstName": "Prénom",
+  "email": "Email",
+  "accessCode": "Code d'accès"
 }

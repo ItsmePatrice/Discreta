@@ -29,7 +29,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'One gesture. One alert. Reliable support,\n in complete discretion.';
 
   @override
-  String get signInWithGoogle => 'Sign in with Google';
+  String get signIn => 'Sign in';
 
   @override
   String get signInError => 'Sign in error';
@@ -251,4 +251,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tapToConnect => 'Tap to connect';
+
+  @override
+  String get firstName => 'First name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get accessCode => 'Access code';
 }

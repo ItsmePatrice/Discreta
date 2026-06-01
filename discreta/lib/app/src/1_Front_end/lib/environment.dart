@@ -1,4 +1,4 @@
-enum Environment { dev, prod, staging, test }
+enum Environment { dev, prod, staging }
 
 class AppEnvironment {
   static const Environment current = Environment.staging;
@@ -11,8 +11,6 @@ class AppEnvironment {
         return 'https://discreta.ca';
       case Environment.staging:
         return 'https://staging-api.discreta.ca';
-      case Environment.test:
-        return 'https://test-api.discreta.ca';
     }
   }
 }
