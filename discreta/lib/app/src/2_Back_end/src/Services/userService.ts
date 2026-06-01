@@ -33,7 +33,7 @@ const UserService = {
     async findUser(email: string) {
         try {
             const res = await sql`
-                SELECT * FROM Users WHERE email = ${encrypt(email)} LIMIT 1
+                SELECT * FROM Users WHERE email = ${email} LIMIT 1
             `;
             
             const user = res[0];
@@ -43,7 +43,7 @@ const UserService = {
                 uid: user.uid,
                 first_name: user.first_name,
                 language: user.language,
-                email: decrypt(user.email),
+                email: user.email,
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
@@ -61,7 +61,7 @@ const UserService = {
                 INSERT INTO Users (first_name, email)
                 VALUES (
                     ${dto.firstName},
-                    ${encrypt(dto.email)}
+                    ${dto.email}
                 )
                 RETURNING *;
             `;
@@ -70,7 +70,7 @@ const UserService = {
             const decryptedUser = {
                 uid: user.uid,
                 first_name: user.first_name,
-                email: decrypt(user.email),
+                email: user.email,
                 language: user.language,
                 created_at: user.created_at,
                 updated_at: user.updated_at

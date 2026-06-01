@@ -88,7 +88,7 @@ async function createUsersTable() {
         CREATE TABLE IF NOT EXISTS Users (
         uid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         first_name VARCHAR(100) NOT NULL,
-        email JSONB UNIQUE NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
         language TEXT DEFAULT 'fr',
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
