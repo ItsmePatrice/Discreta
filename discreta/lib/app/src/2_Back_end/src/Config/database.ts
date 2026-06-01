@@ -83,8 +83,6 @@ async function createUsersTable() {
     // Enable UUID generation
     await sql`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`;
 
-    await sql`ALTER TABLE Users ALTER COLUMN email TYPE VARCHAR(255) USING email::text;`;
-
     // Users table
     await sql`
         CREATE TABLE IF NOT EXISTS Users (
