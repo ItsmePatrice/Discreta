@@ -17,14 +17,14 @@ const UserService = {
                 uid: user.uid,
                 first_name: user.first_name,
                 language: user.language,
-                email: decrypt(user.email),
+                email: user.email,
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
 
             return decryptedUser;
         } catch (e) {
-            logger.error('Database error while looking for user: ', e);
+            logger.error('Database error while looking for user by calling findUserById: ', e);
             throw e;
         }
     },
@@ -50,7 +50,7 @@ const UserService = {
 
             return decryptedUser;
         } catch (e) {
-            logger.error('Database error while looking for user: ', e);
+            logger.error('Database error while looking for user by calling findUser: ', e);
             throw e;
         }
     },
