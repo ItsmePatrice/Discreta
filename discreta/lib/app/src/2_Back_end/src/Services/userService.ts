@@ -86,12 +86,12 @@ const UserService = {
     },
 
 
-    async saveAlertMessage(firebaseUserId: string, messageContent: string) {
+    async saveAlertMessage(uid: string, messageContent: string) {
         try {
             const res = await sql`
-                INSERT INTO AlertMessages (firebase_user_id, message_content)
-                VALUES (${firebaseUserId}, ${messageContent})
-                ON CONFLICT (firebase_user_id)
+                INSERT INTO AlertMessages (user_id, message_content)
+                VALUES (${uid}, ${messageContent})
+                ON CONFLICT (user_id)
                 DO UPDATE SET
                     message_content = EXCLUDED.message_content
                 RETURNING *;
@@ -105,10 +105,10 @@ const UserService = {
     },
 
 
-    async fetchAlertMessage(firebaseUserId: string) {
+    async fetchAlertMessage(uid: string) {
         try {
             const res = await sql`
-                SELECT * FROM AlertMessages WHERE firebase_user_id = ${firebaseUserId} LIMIT 1
+                SELECT * FROM AlertMessages WHERE user_id = ${uid} LIMIT 1
             `;
             return res[0]?.message_content ?? null;
         }
@@ -118,11 +118,11 @@ const UserService = {
         }
     },
 
-    async addContact(firebaseUserId: string, name: string, phoneNumber: string) {
+    async addContact(uid: string, name: string, phoneNumber: string) {
         try {
             const res = await sql`
-                INSERT INTO Contacts (firebase_user_id, contact_name, contact_phone)
-                VALUES (${firebaseUserId}, ${name}, ${encrypt(phoneNumber)})
+                INSERT INTO Contacts (user_id, contact_name, contact_phone)
+                VALUES (${uid}, ${name}, ${encrypt(phoneNumber)})
                 RETURNING *;
             `;
             return res[0];
@@ -132,10 +132,10 @@ const UserService = {
         }
     },
 
-    async fetchContacts(firebaseUserId: string) {
+    async fetchContacts(uid: string) {
         try {
             const res = await sql`
-                SELECT * FROM Contacts WHERE firebase_user_id = ${firebaseUserId};
+                SELECT * FROM Contacts WHERE user_id = ${uid};
             `;
             return res.map(contact => ({
                 id: contact.id,
@@ -147,11 +147,11 @@ const UserService = {
             throw e;
         }
     },
-    async deleteContact(contactId: string, firebaseUserId: string) {
+    async deleteContact(contactId: string, uid: string) {
         try {
             await sql`
                 DELETE FROM Contacts 
-                WHERE id = ${contactId} AND firebase_user_id = ${firebaseUserId};
+                WHERE id = ${contactId} AND user_id = ${uid};
             `;
         } catch (e) {
             logger.error('Database error while deleting contact: ', e);
@@ -159,12 +159,12 @@ const UserService = {
         }
     },
 
-    async updateContact(contactId: string, firebaseUserId: string, name: string, phoneNumber: string) {
+    async updateContact(contactId: string, uid: string, name: string, phoneNumber: string) {
         try {
             const res = await sql`
                 UPDATE Contacts
                 SET contact_name = ${name}, contact_phone = ${encrypt(phoneNumber)}, updated_at = NOW()
-                WHERE id = ${contactId} AND firebase_user_id = ${firebaseUserId}
+                WHERE id = ${contactId} AND user_id = ${uid}
                 RETURNING *;
             `;
             return res[0];
@@ -174,12 +174,12 @@ const UserService = {
         }   
     },
 
-    async updateLanguagePreference(firebaseUserId: string, language: string) {
+    async updateLanguagePreference(uid: string, language: string) {
         try {
             const res = await sql`
                 UPDATE Users
                 SET language = ${language}, updated_at = NOW()
-                WHERE firebase_user_id = ${firebaseUserId}
+                WHERE uid = ${uid}
                 RETURNING *;
             `;
             return res[0].language;

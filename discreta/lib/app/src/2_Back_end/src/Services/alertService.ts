@@ -5,7 +5,7 @@ import SmsService from "./smsService";
 
 const AlertService = {
 
-    async startTrackingSession(firebaseUserId: string, username: string) {
+    async startTrackingSession(uid: string, username: string) {
         try {
 
             // if the user currently has an active session, end it before starting a new one
@@ -13,21 +13,21 @@ const AlertService = {
                 UPDATE TrackingSessions
                 SET status = 'ENDED',
                     end_time = NOW()
-                WHERE firebase_user_id = ${firebaseUserId}
+                WHERE user_id = ${uid}
                     AND status = 'ACTIVE'
             `;
 
             const result = await sql`
-                INSERT INTO TrackingSessions (firebase_user_id, expires_at, status)
+                INSERT INTO TrackingSessions (user_id, expires_at, status)
                 VALUES (
-                    ${firebaseUserId},
+                    ${uid},
                     NOW() + INTERVAL '2 hours',
                     'ACTIVE'
                 )
                 RETURNING token;
             `;
 
-            await LogService.logEvent(firebaseUserId, `${username} started a tracking session.`);
+            await LogService.logEvent(uid, `${username} started a tracking session.`);
             logger.info(`${username} started a tracking session.`);
 
             return { trackingToken: result[0].token };
@@ -37,18 +37,18 @@ const AlertService = {
         }   
     },
 
-    async stopTrackingSession(username: string, firebaseUserId: string) {
+    async stopTrackingSession(username: string, uid: string) {
         try {
             const result = await sql`
             UPDATE TrackingSessions
             SET status = 'ENDED',
                 end_time = NOW()
-            WHERE firebase_user_id = ${firebaseUserId}
+            WHERE user_id = ${uid}
                 AND status = 'ACTIVE'
             `;
 
             const message = `${username} ended the tracking session`;
-            await LogService.logEvent(firebaseUserId, message);
+            await LogService.logEvent(uid, message);
 
             logger.info(message);
         } catch (e) {
@@ -57,12 +57,12 @@ const AlertService = {
         }
     },
 
-    async hasActiveTrackingSession(firebaseUserId: string) {
+    async hasActiveTrackingSession(uid: string) {
         try {
             const result = await sql`
                 SELECT COUNT(*) AS count
                 FROM TrackingSessions
-                WHERE firebase_user_id = ${firebaseUserId}
+                WHERE user_id = ${uid}
                     AND status = 'ACTIVE'
                     AND expires_at > NOW();
             `;
@@ -73,14 +73,14 @@ const AlertService = {
         }
     },
 
-    async updateLocation(firebaseUserId: string, trackingToken: string, lat: number, lng: number) {
+    async updateLocation(uid: string, trackingToken: string, lat: number, lng: number) {
         try {
             const result = await sql`
             UPDATE TrackingSessions
             SET last_lat = ${lat}, 
             last_lng = ${lng},
             last_updated = NOW()
-            WHERE firebase_user_id = ${firebaseUserId}
+            WHERE user_id = ${uid}
                 AND token = ${trackingToken}
                 AND status = 'ACTIVE'
                 AND expires_at > NOW()
@@ -123,12 +123,12 @@ const AlertService = {
         }
     },
 
-    async getTrackingToken(firebaseUserId: string) {
+    async getTrackingToken(uid: string) {
         try {
             const result = await sql`
                 SELECT token
                 FROM TrackingSessions
-                WHERE firebase_user_id = ${firebaseUserId}
+                WHERE user_id = ${uid}
                     AND status = 'ACTIVE'
                 LIMIT 1;
             `;
@@ -144,13 +144,13 @@ const AlertService = {
         }
     },
 
-    async sendAlertMessage(firebaseUserId: string, username: string) {
+    async sendAlertMessage(uid: string, username: string) {
         try {
-            // find all user contacts for the given firebaseUserId
+            // find all user contacts for the given uid
             const contacts = await sql`
                 SELECT contact_name, contact_phone
                 FROM Contacts
-                WHERE firebase_user_id = ${firebaseUserId}
+                WHERE user_id = ${uid}
                 LIMIT 10;
             `;
 
@@ -163,7 +163,7 @@ const AlertService = {
             const message = await sql`
                 SELECT message_content
                 FROM AlertMessages
-                WHERE firebase_user_id = ${firebaseUserId}
+                WHERE user_id = ${uid}
                 LIMIT 1;
             `;
 
@@ -173,9 +173,9 @@ const AlertService = {
 
             const alertMessage = message[0]?.message_content;
 
-            const public_token = await this.getTrackingToken(firebaseUserId);
+            const public_token = await this.getTrackingToken(uid);
 
-            const locationLink = `${process.env.PUBLIC_BASE_URL}/api/public/track/page/${public_token}`;
+            const locationLink = `${process.env.STAGING_BASE_URL}/api/public/track/page/${public_token}`;
 
             // send SMS to each contact
             for (const contact of decryptedContacts) {
@@ -183,7 +183,7 @@ const AlertService = {
             }
 
             const logMessage = `${username} sent an alert to ${decryptedContacts.length} contacts.`;
-            await LogService.logEvent(firebaseUserId, logMessage);
+            await LogService.logEvent(uid, logMessage);
             return true;
         } catch (e) {
             logger.error('Database error while sending alert message.', e);
