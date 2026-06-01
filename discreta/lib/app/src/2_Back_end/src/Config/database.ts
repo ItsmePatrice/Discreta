@@ -2,12 +2,12 @@ import "dotenv/config";
 import { neon } from "@neondatabase/serverless";
 import crypto from "crypto";
 
-const { DATABASE_URL_PRODUCTION, DATA_ENCRYPTION_KEY } = process.env;
+const { DATABASE_URL_STAGING, DATA_ENCRYPTION_KEY } = process.env;
 
-if (!DATABASE_URL_PRODUCTION) throw new Error("DATABASE_URL is not defined in the environment variables");
+if (!DATABASE_URL_STAGING) throw new Error("DATABASE_URL is not defined in the environment variables");
 if (!DATA_ENCRYPTION_KEY) throw new Error("DATA_ENCRYPTION_KEY is not defined in the environment variables (32 bytes key)");
 
-const sql = neon(DATABASE_URL_PRODUCTION);
+const sql = neon(DATABASE_URL_STAGING);
 
 // ----- Encryption helpers -----
 const algorithm = "aes-256-gcm";
@@ -52,14 +52,12 @@ export function decrypt(payload: {
   return decrypted.toString("utf8");
 }
 
-export function generateToken() {
-  return crypto.randomBytes(24).toString("hex");
-}
-
 export async function initDB() {
   try {
     await testDbConnection();
     await createUsersTable();
+    await createAccessCodesTable();
+    await createRefreshTokensTable();
     await createContactsTable();
     await createAlertMessagesTable();
     await createTrackingSessionsTable();
@@ -89,14 +87,10 @@ async function createUsersTable() {
     await sql`
         CREATE TABLE IF NOT EXISTS Users (
         uid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        firebase_user_id TEXT UNIQUE NOT NULL,
-
-        first_name TEXT,
-        last_name JSONB NOT NULL,
-        email JSONB NOT NULL,
+        first_name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
         language TEXT DEFAULT 'fr',
 
-        is_subscribed BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
@@ -129,12 +123,44 @@ async function createUsersTable() {
   }
 }
 
+async function createAccessCodesTable() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS AccessCodes (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        access_code VARCHAR(255) UNIQUE NOT NULL,
+        max_uses INTEGER NOT NULL,
+        used_count INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
+  } catch (e) {
+    throw new Error(`Failed to initialize AccessCodes table: ${e}`);
+  }
+}
+
+async function createRefreshTokensTable() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS RefreshTokens (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES Users(uid) ON DELETE CASCADE,
+        token TEXT UNIQUE NOT NULL,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
+  } catch (e) {
+    throw new Error(`Failed to initialize RefreshTokens table: ${e}`);
+  }
+}
+
 async function createContactsTable() {
   try {
     await sql`
         CREATE TABLE IF NOT EXISTS Contacts (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        user_id UUID REFERENCES Users(uid) ON DELETE CASCADE,
         contact_name VARCHAR(20) NOT NULL, 
         contact_phone JSONB NOT NULL,
         created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -151,7 +177,7 @@ async function createAlertMessagesTable() {
     await sql`
       CREATE TABLE IF NOT EXISTS AlertMessages (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        user_id UUID REFERENCES Users(uid) ON DELETE CASCADE,
         message_content VARCHAR(160) NOT NULL
       );
     `;
@@ -165,7 +191,7 @@ async function createAlertMessagesTable() {
           WHERE conname = 'unique_alert_per_user'
         ) THEN
           ALTER TABLE AlertMessages
-          ADD CONSTRAINT unique_alert_per_user UNIQUE (firebase_user_id);
+          ADD CONSTRAINT unique_alert_per_user UNIQUE (user_id);
         END IF;
       END
       $$;
@@ -186,7 +212,7 @@ async function createTrackingSessionsTable() {
     await sql`
       CREATE TABLE IF NOT EXISTS TrackingSessions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        user_id UUID REFERENCES Users(uid) ON DELETE CASCADE,
         token TEXT UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(24), 'hex'),
         last_lat DOUBLE PRECISION,
         last_lng DOUBLE PRECISION,
@@ -206,7 +232,7 @@ async function createLogsTable() {
     await sql`
       CREATE TABLE IF NOT EXISTS Logs (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        firebase_user_id TEXT REFERENCES Users(firebase_user_id) ON DELETE CASCADE,
+        user_id UUID REFERENCES Users(uid) ON DELETE CASCADE,
         message TEXT NOT NULL,
         timestamp TIMESTAMPTZ DEFAULT NOW()
       );
