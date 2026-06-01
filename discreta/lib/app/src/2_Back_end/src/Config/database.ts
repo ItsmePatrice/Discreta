@@ -211,6 +211,7 @@ async function createTrackingSessionsTable() {
         token TEXT UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(24), 'hex'),
         last_lat DOUBLE PRECISION,
         last_lng DOUBLE PRECISION,
+        last_updated TIMESTAMPTZ DEFAULT NOW(),
         expires_at TIMESTAMP NOT NULL,
         status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'ENDED')),
         start_time TIMESTAMPTZ DEFAULT NOW(),
