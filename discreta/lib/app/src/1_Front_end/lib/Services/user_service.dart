@@ -237,11 +237,18 @@ class UserService {
   // The user should only be able to use the app if they accept giving location permission.
   Future<bool> sendAlertNow() async {
     try {
-      final trackingToken = await LocationService.instance
-          .startTrackingSession();
+      final firstName = AuthService.instance.discretaUser?.firstName;
+      if (firstName == null) {
+        throw Exception('User first name is null');
+      }
+      final trackingToken = await LocationService.instance.startTrackingSession(
+        firstName,
+      );
       await _startLocationUpdates(trackingToken);
       _startAutoStopTimer();
-      final response = await HttpService.instance.post(ApiRoutes.sendAlert);
+      final response = await HttpService.instance.post(ApiRoutes.sendAlert, {
+        'firstName': firstName,
+      });
       if (response.statusCode != StatusCodes.ok) {
         throw Exception(
           'Failed to send alert now. ${jsonDecode(response.body)['message']}',

@@ -138,10 +138,12 @@ const userController = {
     sendAlert: async (req: Request, res: Response) => {
         try {
             const uid = req.uid;
-            if (!uid || !req.firstName) {
+            const { firstName } = req.body;
+
+            if (!uid) {
                 throw ("uid was null");
             }
-            const sentAlert = await AlertService.sendAlertMessage(uid, req.firstName);
+            const sentAlert = await AlertService.sendAlertMessage(uid, firstName);
             return res.status(StatusCodes.ok).json({ sentAlert });
         } catch (e) {
             logger.error(e);
@@ -152,10 +154,11 @@ const userController = {
     startTrackingSession: async (req: Request, res: Response) => {
         try {
             const uid = req.uid;
-            if (!uid || !req.firstName) {
+            const { firstName } = req.body;
+            if (!uid || !firstName) {
                 throw ("uid was null");
             }
-            const { trackingToken } = await AlertService.startTrackingSession(uid, req.firstName);
+            const { trackingToken } = await AlertService.startTrackingSession(uid, firstName);
             return res.status(StatusCodes.created).json({ trackingToken });
         } catch (e) {
             logger.error(e);
@@ -166,11 +169,11 @@ const userController = {
     stopTrackingSession: async (req: Request, res: Response) => {
         try {
             const uid = req.uid;
-            if (!uid || !req.firstName) {
+            const { firstName } = req.body;
+            if (!uid || !firstName) {
                 throw ("uid was null");
             }
-            const username = req.firstName;
-            await AlertService.stopTrackingSession(username, uid);
+            await AlertService.stopTrackingSession(firstName, uid);
             return res.status(StatusCodes.ok).json({ message: 'Tracking session stopped successfully' });
         } catch (e) {
             logger.error(e);
