@@ -1,8 +1,8 @@
 import express from 'express';
 const router = express.Router();
 import authController from '../Controllers/authController';
-import tokenVerifier from '../Middlewares/verifyToken';
 
-router.post('/login', tokenVerifier.verifyToken, authController.googleSignIn);
+router.post('/login',  authController.signInUser);
+router.post('/refresh-token', authController.refreshToken);
 
 export default router;

@@ -90,7 +90,6 @@ async function createUsersTable() {
         first_name VARCHAR(100) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         language TEXT DEFAULT 'fr',
-
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
@@ -203,12 +202,6 @@ async function createAlertMessagesTable() {
 
 async function createTrackingSessionsTable() {
   try {
-
-    await sql`
-      ALTER TABLE TrackingSessions
-      ALTER COLUMN token SET DEFAULT encode(gen_random_bytes(24), 'hex');
-    `;
-
     await sql`
       CREATE TABLE IF NOT EXISTS TrackingSessions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

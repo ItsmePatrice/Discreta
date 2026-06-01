@@ -4,10 +4,10 @@ import { UserDto } from "../Models/userDTO";
 import LogService from "./logService";
 
 const UserService = {
-    async findUserByFirebaseId(firebaseUserId: string) {
+    async findUserById(uid: string) {
         try {
             const res = await sql`
-                SELECT * FROM Users WHERE firebase_user_id = ${firebaseUserId} LIMIT 1
+                SELECT * FROM Users WHERE uid = ${uid} LIMIT 1
             `;
             
             const user = res[0];
@@ -15,12 +15,35 @@ const UserService = {
 
             const decryptedUser = {
                 uid: user.uid,
-                firebase_user_id: user.firebase_user_id,
                 first_name: user.first_name,
                 language: user.language,
-                last_name: decrypt(user.last_name),
                 email: decrypt(user.email),
-                is_subscribed: user.is_subscribed,
+                created_at: user.created_at,
+                updated_at: user.updated_at
+            };
+
+            return decryptedUser;
+        } catch (e) {
+            logger.error('Database error while looking for user: ', e);
+            throw e;
+        }
+    },
+    
+    
+    async findUser(email: string) {
+        try {
+            const res = await sql`
+                SELECT * FROM Users WHERE email = ${encrypt(email)} LIMIT 1
+            `;
+            
+            const user = res[0];
+            if (!user) return null;
+
+            const decryptedUser = {
+                uid: user.uid,
+                first_name: user.first_name,
+                language: user.language,
+                email: decrypt(user.email),
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
@@ -35,13 +58,10 @@ const UserService = {
     async createUser(dto: UserDto) {
         try {
             const createdUser = await sql`
-                INSERT INTO Users (firebase_user_id, first_name, last_name, email, is_subscribed)
+                INSERT INTO Users (first_name, email)
                 VALUES (
-                    ${dto.firebaseUserId},
                     ${dto.firstName},
-                    ${encrypt(dto.lastName)},
                     ${encrypt(dto.email)},
-                    ${dto.isSubscribed}
                 )
                 RETURNING *;
             `;
@@ -49,17 +69,14 @@ const UserService = {
             const user = createdUser[0];
             const decryptedUser = {
                 uid: user.uid,
-                firebase_user_id: user.firebase_user_id,
                 first_name: user.first_name,
-                last_name: decrypt(user.last_name),
                 email: decrypt(user.email),
                 language: user.language,
-                is_subscribed: user.is_subscribed,
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
             const message = `${decryptedUser.first_name} joined`;
-            await LogService.logEvent(dto.firebaseUserId, message);
+            await LogService.logEvent(decryptedUser.uid, message);
 
             return decryptedUser;
         } catch (e) {
@@ -67,6 +84,7 @@ const UserService = {
             throw e;
         }
     },
+
 
     async saveAlertMessage(firebaseUserId: string, messageContent: string) {
         try {

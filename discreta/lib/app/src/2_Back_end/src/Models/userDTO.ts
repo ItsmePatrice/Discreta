@@ -1,7 +1,5 @@
 export interface UserDto {
-    firebaseUserId: string;
+    user_id?: string;
     firstName: string;
-    lastName: string;
     email: string;
-    isSubscribed: boolean;
 }
