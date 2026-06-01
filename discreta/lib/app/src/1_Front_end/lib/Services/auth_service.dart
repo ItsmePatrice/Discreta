@@ -29,13 +29,6 @@ class AuthService {
       final responseBody = jsonDecode(response.body);
       if (response.statusCode == StatusCodes.created ||
           response.statusCode == StatusCodes.ok) {
-        final userJson = responseBody['user'];
-        print('uid: ${userJson['uid']}');
-        print('first_name: ${userJson['first_name']}');
-        print('email: ${userJson['email']}');
-        print('language: ${userJson['language']}');
-        print('created_at: ${userJson['created_at']}');
-        print('updated_at: ${userJson['updated_at']}');
         DiscretaUser user = DiscretaUser.fromJson(responseBody['user']);
         discretaUser = user;
         final refreshToken = responseBody['refresh_token'] as String;
