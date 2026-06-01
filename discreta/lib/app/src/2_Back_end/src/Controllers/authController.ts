@@ -61,7 +61,9 @@ const authController = {
                     uid: user.uid,
                     first_name: user.first_name,
                     email: user.email,
-                    language: user.language
+                    language: user.language,
+                    created_at: user.created_at,
+                    updated_at: user.updated_at
                 }
             });
 
