@@ -29,7 +29,6 @@ const AccessCodeService = {
                 UPDATE AccessCodes
                 SET used_count = used_count + 1
                 WHERE access_code = ${accessCode}
-                LIMIT 1
             `;
         } catch (e) {
             logger.error('Database error while incrementing access code use count: ', e);
