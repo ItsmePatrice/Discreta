@@ -155,10 +155,12 @@ class UserService {
     }
 
     if (permission == LocationPermission.denied) {
+      await Geolocator.openAppSettings();
       throw Exception('Location permission denied by user.');
     }
 
     if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
       throw Exception(
         'Location permission permanently denied. Please enable it in settings.',
       );
