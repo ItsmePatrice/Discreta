@@ -8,6 +8,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
@@ -15,8 +16,9 @@ import 'package:discreta/main.dart';
 import 'package:flic_button/flic_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:permission_handler/permission_handler.dart' as Geolocator;
+//import 'package:permission_handler/permission_handler.dart' as Geolocator;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -88,8 +90,10 @@ class _HomePageState extends State<HomePage>
       duration: const Duration(milliseconds: 1500),
     );
 
-    _initFlic2();
-    _initializePage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initFlic2();
+      _initializePage();
+    });
   }
 
   @override
@@ -316,18 +320,49 @@ class _HomePageState extends State<HomePage>
       AuthService.instance.discretaUser?.language ?? 'fr',
     );
     myAppKey.currentState?.setLocale(userLocale);
+    LogService.instance.logInfo('_initializePage was called');
     _checkLocationPermission();
     _checkActiveTrackingSession();
   }
 
   Future<void> _checkLocationPermission() async {
-    try {
-      await UserService.instance.ensureLocationPermission();
-    } catch (e) {
-      if (e.toString().contains('background_location_required')) {
-        _showBackgroundLocationDialog();
-      } else {
-        MessageService.showLocationPermissionDialog(context);
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      LogService.instance.logInfo('Location service is disabled');
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    LogService.instance.logInfo('Location service is enabled');
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied) {
+      MessageService.showLocationPermissionDialog(context);
+      return;
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+      return;
+    }
+
+    if (permission == LocationPermission.whileInUse) {
+      await _requestBackgroundPermission();
+    }
+  }
+
+  Future<void> _requestBackgroundPermission() async {
+    if (Platform.isAndroid) {
+      final permission = await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.deniedForever) {
+        await Geolocator.openAppSettings();
       }
     }
   }

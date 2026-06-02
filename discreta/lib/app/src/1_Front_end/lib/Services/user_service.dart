@@ -142,37 +142,6 @@ class UserService {
     }
   }
 
-  Future<void> ensureLocationPermission() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception('Location services are disabled.');
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.denied) {
-      await Geolocator.openAppSettings();
-      throw Exception('Location permission denied by user.');
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openAppSettings();
-      throw Exception(
-        'Location permission permanently denied. Please enable it in settings.',
-      );
-    }
-
-    // Request background location — needed for GPS when screen is locked
-    if (permission == LocationPermission.whileInUse) {
-      permission = await Geolocator.requestPermission();
-      // This triggers "Allow all the time" dialog on Android
-    }
-  }
-
   // Make sure you capture the user's current location first
   Future<void> _startLocationUpdates(String trackingToken) async {
     try {
