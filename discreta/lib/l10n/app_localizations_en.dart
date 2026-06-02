@@ -266,8 +266,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign in failed. Please make sure your name, email, and access code are correct.';
 
   @override
-  String get signInErrorMaxUses =>
-      'This access code has already reached its maximum number of uses. Please contact your administrator.';
+  String get signInErrorMaxUsesOrExpired =>
+      'This access code has already reached its maximum number of uses or is invalid. Please contact your administrator.';
 
   @override
   String get signInErrorInvalidEmail => 'Please enter a valid email address.';

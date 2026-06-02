@@ -266,8 +266,8 @@ class AppLocalizationsFr extends AppLocalizations {
       'Échec de la connexion. Veuillez vérifier que votre prénom, courriel et code d\'accès sont corrects.';
 
   @override
-  String get signInErrorMaxUses =>
-      'Ce code d\'accès a atteint son nombre maximal d\'utilisations. Veuillez contacter votre administrateur.';
+  String get signInErrorMaxUsesOrExpired =>
+      'Ce code d\'accès a atteint son nombre maximal d\'utilisations ou est invalide. Veuillez contacter votre administrateur.';
 
   @override
   String get signInErrorInvalidEmail =>

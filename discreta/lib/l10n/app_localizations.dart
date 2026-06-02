@@ -578,11 +578,11 @@ abstract class AppLocalizations {
   /// **'Sign in failed. Please make sure your name, email, and access code are correct.'**
   String get signInErrorInvalidCredentials;
 
-  /// No description provided for @signInErrorMaxUses.
+  /// No description provided for @signInErrorMaxUsesOrExpired.
   ///
   /// In en, this message translates to:
-  /// **'This access code has already reached its maximum number of uses. Please contact your administrator.'**
-  String get signInErrorMaxUses;
+  /// **'This access code has already reached its maximum number of uses or is invalid. Please contact your administrator.'**
+  String get signInErrorMaxUsesOrExpired;
 
   /// No description provided for @signInErrorInvalidEmail.
   ///
