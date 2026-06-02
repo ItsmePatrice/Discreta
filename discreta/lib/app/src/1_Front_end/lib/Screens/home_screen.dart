@@ -149,11 +149,9 @@ class _HomePageState extends State<HomePage>
   Future<void> _startScan() async {
     if (_flicButtonManager == null) return;
 
-    final bool granted;
-    if (!Platform.isAndroid) {
-      granted = await Permission.bluetooth.request().isGranted;
-    } else {
+    if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
+      bool granted;
       if (androidInfo.version.sdkInt > 30) {
         granted =
             await Permission.bluetoothScan.request().isGranted &&
@@ -163,18 +161,18 @@ class _HomePageState extends State<HomePage>
             await Permission.bluetooth.request().isGranted &&
             await Permission.location.request().isGranted;
       }
-    }
-
-    if (!granted) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Bluetooth permission required to scan.'),
-          ),
-        );
+      if (!granted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Bluetooth permission required to scan.'),
+            ),
+          );
+        }
+        return;
       }
-      return;
     }
+    // On iOS, Core Bluetooth handles the permission prompt automatically
 
     _flicButtonManager!.scanForFlic2();
     _scanController.repeat();
@@ -350,6 +348,15 @@ class _HomePageState extends State<HomePage>
     if (permission == LocationPermission.deniedForever) {
       await Geolocator.openAppSettings();
       return;
+    }
+
+    if (Platform.isIOS) {
+      final accuracy = await Geolocator.getLocationAccuracy();
+      if (accuracy == LocationAccuracyStatus.reduced) {
+        await Geolocator.requestTemporaryFullAccuracy(
+          purposeKey: "DiscreteTracking",
+        );
+      }
     }
 
     if (permission == LocationPermission.whileInUse) {

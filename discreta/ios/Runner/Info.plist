@@ -18,10 +18,6 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Discreta uses your location to protect your safety during visits.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Discreta needs your location to share live safety updates in emergencies.</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -50,18 +46,24 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Need BLE permission</string>
+	<string>Discreta uses Bluetooth to connect to your Flic safety button.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Need BLE permission</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Need Location permission</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need Location permission</string>
+	<string>Discreta uses Bluetooth to connect to your Flic safety button.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need Location permission</string>
+	<string>Discreta uses your location to protect your safety during visits.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Discreta needs your location to share live safety updates in emergencies.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Discreta needs your location to share live safety updates in emergencies.</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>DiscreteTracking</key>
+		<string>Discreta needs your precise location to share with your emergency contacts when you trigger an alert.</string>
+	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
+		<string>location</string>
 	</array>
 </dict>
 </plist>
