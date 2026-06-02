@@ -120,7 +120,6 @@ class _HomePageState extends State<HomePage>
   Future<void> _restorePairedButtons() async {
     if (_flicButtonManager == null) return;
 
-    // Wait for the plugin to finish initializing
     await _flicButtonManager!.invokation;
 
     final buttons = await _flicButtonManager!.getFlic2Buttons();
@@ -128,16 +127,25 @@ class _HomePageState extends State<HomePage>
 
     for (final button in buttons) {
       _addButtonAndListen(button);
-      // Automatically connect to previously paired buttons
       _flicButtonManager!.connectButton(button.uuid);
+    }
 
-      // Check if button is already connected and update state
+    // Give the SDK time to re-establish connections before checking state.
+    // onButtonConnected() will fire and update _isFlicConnected as normal,
+    // but this covers the case where it resolves faster than the callback fires.
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    final freshButtons = await _flicButtonManager!.getFlic2Buttons();
+    for (final button in freshButtons) {
       if (button.connectionState ==
           Flic2ButtonConnectionState.connected_ready) {
         setState(() {
           _isFlicConnected = true;
           _connectedButton = button;
         });
+        break;
       }
     }
   }

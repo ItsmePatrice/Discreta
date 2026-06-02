@@ -91,8 +91,8 @@ class _LoginPageState extends State<LoginPage> {
               context,
             )!.signInErrorInvalidCredentials;
             break;
-          case AuthErrorCode.accessCodeMaxUses:
-            message = AppLocalizations.of(context)!.signInErrorMaxUses;
+          case AuthErrorCode.accessCodeMaxUsesOrInvalid:
+            message = AppLocalizations.of(context)!.signInErrorMaxUsesOrExpired;
             break;
           default:
             message = AppLocalizations.of(context)!.signInFailedMessage;

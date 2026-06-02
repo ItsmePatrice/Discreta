@@ -23,12 +23,6 @@ const authController = {
         }
 
         try {
-            // Validate access code
-            const isValidAccessCode = await AccessCodeService.isValidAccessCode(accessCode);
-            if (!isValidAccessCode) {
-                return res.status(StatusCodes.unauthorized).json({ message: "Invalid access code", code: AUTH_ERROR_CODES.INVALID_CREDENTIALS });
-            }
-
             // Check if user exists
             let user = await UserService.findUser(email);
 
@@ -39,15 +33,26 @@ const authController = {
                 }
             } else {
                 // New user — create account
-                const newUser: UserDto = { firstName, email };
-                user = await UserService.createUser(newUser, accessCode);
                 const incremented = await AccessCodeService.incrementAccessCodeUseCount(accessCode);
                 if (!incremented) {
                     // This means the access code was already used up between the validation and the increment, so we should delete the newly created user and return an error
-                    await UserService.deleteUser(user.uid);
-                    return res.status(StatusCodes.badRequest).json({ message: "Access code has reached its maximum uses",
-                         code: AUTH_ERROR_CODES.ACCESS_CODE_MAX_USES });
+                    return res.status(StatusCodes.badRequest).json({ message: "Access code has reached its maximum uses or is expired",
+                         code: AUTH_ERROR_CODES.ACCESS_CODE_MAX_USES_OR_INVALID });
                 }
+                try {
+                    const newUser: UserDto = { firstName, email };
+                    user = await UserService.createUser(newUser, accessCode);
+
+                } catch (e) {
+                    // Rollback the increment if user creation fails
+                    try {
+                        await AccessCodeService.decrementAccessCodeUseCount(accessCode);
+                    } catch (decrementError) {
+                        logger.error('Failed to rollback access code use count after user creation failure: ', decrementError);
+                    }
+                    throw e;
+                }
+                
             }
 
             // Generate tokens

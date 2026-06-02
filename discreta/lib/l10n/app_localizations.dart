@@ -571,6 +571,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Access code'**
   String get accessCode;
+
+  /// No description provided for @signInErrorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in failed. Please make sure your name, email, and access code are correct.'**
+  String get signInErrorInvalidCredentials;
+
+  /// No description provided for @signInErrorMaxUses.
+  ///
+  /// In en, this message translates to:
+  /// **'This access code has already reached its maximum number of uses. Please contact your administrator.'**
+  String get signInErrorMaxUses;
+
+  /// No description provided for @signInErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get signInErrorInvalidEmail;
+
+  /// No description provided for @unfilledAreas.
+  ///
+  /// In en, this message translates to:
+  /// **'Please make sure to enter a first name, an email address, and an access code.'**
+  String get unfilledAreas;
 }
 
 class _AppLocalizationsDelegate

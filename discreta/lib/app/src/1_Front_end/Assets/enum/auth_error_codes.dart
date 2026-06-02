@@ -1,7 +1,7 @@
 enum AuthErrorCode {
   missingFields,
   invalidCredentials,
-  accessCodeMaxUses,
+  accessCodeMaxUsesOrInvalid,
   serverError,
   unknown,
 }

@@ -45,6 +45,9 @@ class AuthService {
           "The server responded with status code ${response.statusCode} and message: $message",
         );
         final code = responseBody['code'] as String?;
+        LogService.instance.logWarning(
+          "Mapping server error code to AuthErrorCode. Server code: $code",
+        );
         throw AuthException(_mapErrorCode(code));
       }
     } catch (e) {
@@ -119,8 +122,8 @@ class AuthService {
         return AuthErrorCode.missingFields;
       case 'INVALID_CREDENTIALS':
         return AuthErrorCode.invalidCredentials;
-      case 'ACCESS_CODE_MAX_USES':
-        return AuthErrorCode.accessCodeMaxUses;
+      case 'ACCESS_CODE_MAX_USES_OR_INVALID':
+        return AuthErrorCode.accessCodeMaxUsesOrInvalid;
       case 'SERVER_ERROR':
         return AuthErrorCode.serverError;
       default:
