@@ -77,5 +77,7 @@
   "tapToConnect": "Touchez pour connecter",
   "firstName": "Prénom",
   "email": "Email",
-  "accessCode": "Code d'accès"
+  "accessCode": "Code d'accès",
+  "signInErrorInvalidCredentials": "Échec de la connexion. Veuillez vérifier que votre prénom, courriel et code d'accès sont corrects.",
+  "signInErrorMaxUses": "Ce code d'accès a atteint son nombre maximal d'utilisations. Veuillez contacter votre administrateur."
 }

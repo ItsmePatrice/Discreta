@@ -33,7 +33,9 @@ const UserService = {
     async findUser(email: string) {
         try {
             const res = await sql`
-                SELECT * FROM Users WHERE email = ${email} LIMIT 1
+                SELECT *
+                FROM Users
+                 WHERE email = ${email} LIMIT 1
             `;
             
             const user = res[0];
@@ -44,6 +46,7 @@ const UserService = {
                 first_name: user.first_name,
                 language: user.language,
                 email: user.email,
+                access_code: user.access_code,
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
@@ -55,13 +58,14 @@ const UserService = {
         }
     },
 
-    async createUser(dto: UserDto) {
+    async createUser(dto: UserDto, accessCode: string) {
         try {
             const createdUser = await sql`
-                INSERT INTO Users (first_name, email)
+                INSERT INTO Users (first_name, email, access_code)
                 VALUES (
                     ${dto.firstName},
-                    ${dto.email}
+                    ${dto.email},
+                    ${accessCode}
                 )
                 RETURNING *;
             `;
@@ -71,6 +75,7 @@ const UserService = {
                 uid: user.uid,
                 first_name: user.first_name,
                 email: user.email,
+                access_code: user.access_code,
                 language: user.language,
                 created_at: user.created_at,
                 updated_at: user.updated_at
@@ -188,6 +193,17 @@ const UserService = {
             throw e;
         }
     },
+
+    async deleteUser(uid: string) {
+        try {
+            await sql`
+                DELETE FROM Users WHERE uid = ${uid};
+            `;
+        } catch (e) {
+            logger.error('Database error while deleting user: ', e);
+            throw e;
+        }
+    }
 };
 
 export default UserService;

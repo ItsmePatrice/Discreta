@@ -57,6 +57,7 @@ export async function initDB() {
     await testDbConnection();
     await createUsersTable();
     await createAccessCodesTable();
+    await createUserDeleteTrigger();
     await createRefreshTokensTable();
     await createContactsTable();
     await createAlertMessagesTable();
@@ -90,6 +91,7 @@ async function createUsersTable() {
         first_name VARCHAR(100) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         language TEXT DEFAULT 'fr',
+        access_code VARCHAR(255) NOT NULL,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
@@ -138,12 +140,43 @@ async function createAccessCodesTable() {
   }
 }
 
+async function createUserDeleteTrigger() {
+  try {
+    await sql`
+      CREATE OR REPLACE FUNCTION decrement_access_code_used_count_on_user_delete()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        IF OLD.access_code IS NOT NULL THEN
+          UPDATE AccessCodes
+          SET used_count = GREATEST(used_count - 1, 0)
+          WHERE access_code = OLD.access_code;
+        END IF;
+        RETURN OLD;
+      END
+      $$ LANGUAGE plpgsql;
+    `;
+
+    await sql`
+      DROP TRIGGER IF EXISTS trg_after_delete_on_users ON Users;
+    `;
+
+    await sql`
+      CREATE TRIGGER trg_after_delete_on_users
+      AFTER DELETE ON Users
+      FOR EACH ROW
+      EXECUTE FUNCTION decrement_access_code_used_count_on_user_delete();
+    `;
+  } catch (e) {
+    throw new Error(`Failed to initialize user delete trigger: ${e}`);
+  }
+}
+
 async function createRefreshTokensTable() {
   try {
     await sql`
       CREATE TABLE IF NOT EXISTS RefreshTokens (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID REFERENCES Users(uid) ON DELETE CASCADE,
+        user_id UUID UNIQUE REFERENCES Users(uid) ON DELETE CASCADE,
         token TEXT UNIQUE NOT NULL,
         expires_at TIMESTAMP NOT NULL,
         created_at TIMESTAMPTZ DEFAULT NOW()

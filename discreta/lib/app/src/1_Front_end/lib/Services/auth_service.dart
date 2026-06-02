@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:discreta/app/src/1_Front_end/Assets/enum/auth_error_codes.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/refresh_result.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Classes/auth_exception.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Classes/discreta_user.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/http_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
@@ -42,7 +44,8 @@ class AuthService {
         LogService.instance.logWarning(
           "The server responded with status code ${response.statusCode} and message: $message",
         );
-        throw Exception(message);
+        final code = responseBody['code'] as String?;
+        throw AuthException(_mapErrorCode(code));
       }
     } catch (e) {
       LogService.instance.logError('Error while fetching or creating user. $e');
@@ -75,6 +78,7 @@ class AuthService {
         const secureStorage = FlutterSecureStorage();
         await secureStorage.write(key: 'refreshToken', value: refreshToken);
         await secureStorage.write(key: 'accessToken', value: accessToken);
+        discretaUser = DiscretaUser.fromJson(responseBody['user']);
         return RefreshResult.success;
       }
 
@@ -106,6 +110,21 @@ class AuthService {
     } catch (e, stackTrace) {
       LogService.instance.logError('Error during sign out', e, stackTrace);
       rethrow;
+    }
+  }
+
+  AuthErrorCode _mapErrorCode(String? code) {
+    switch (code) {
+      case 'MISSING_FIELDS':
+        return AuthErrorCode.missingFields;
+      case 'INVALID_CREDENTIALS':
+        return AuthErrorCode.invalidCredentials;
+      case 'ACCESS_CODE_MAX_USES':
+        return AuthErrorCode.accessCodeMaxUses;
+      case 'SERVER_ERROR':
+        return AuthErrorCode.serverError;
+      default:
+        return AuthErrorCode.unknown;
     }
   }
 }

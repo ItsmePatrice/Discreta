@@ -8,6 +8,7 @@ import AccessCodeService from '../Services/accessCodeService';
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import AuthService from '../Services/authService';
+import { AUTH_ERROR_CODES } from '../ErrorCodes/errorCodes';
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
@@ -18,23 +19,35 @@ const authController = {
         const { firstName, email, accessCode } = req.body;
 
         if (!firstName || !email || !accessCode) {
-            return res.status(StatusCodes.badRequest).json({ error: "Missing required fields" });
+            return res.status(StatusCodes.badRequest).json({ message: "Missing required fields", code: AUTH_ERROR_CODES.MISSING_FIELDS });
         }
 
         try {
             // Validate access code
             const isValidAccessCode = await AccessCodeService.isValidAccessCode(accessCode);
             if (!isValidAccessCode) {
-                return res.status(StatusCodes.unauthorized).json({ error: "Invalid access code" });
+                return res.status(StatusCodes.unauthorized).json({ message: "Invalid access code", code: AUTH_ERROR_CODES.INVALID_CREDENTIALS });
             }
 
             // Check if user exists
             let user = await UserService.findUser(email);
 
-            if (!user) {
+            if (user) {
+                // Existing user — verify the access code matches their account
+                if (user.access_code !== accessCode) {
+                    return res.status(StatusCodes.unauthorized).json({ message: "Invalid access code", code: AUTH_ERROR_CODES.INVALID_CREDENTIALS });
+                }
+            } else {
+                // New user — create account
                 const newUser: UserDto = { firstName, email };
-                user = await UserService.createUser(newUser);
-                await AccessCodeService.incrementAccessCodeUseCount(accessCode);
+                user = await UserService.createUser(newUser, accessCode);
+                const incremented = await AccessCodeService.incrementAccessCodeUseCount(accessCode);
+                if (!incremented) {
+                    // This means the access code was already used up between the validation and the increment, so we should delete the newly created user and return an error
+                    await UserService.deleteUser(user.uid);
+                    return res.status(StatusCodes.badRequest).json({ message: "Access code has reached its maximum uses",
+                         code: AUTH_ERROR_CODES.ACCESS_CODE_MAX_USES });
+                }
             }
 
             // Generate tokens
@@ -52,7 +65,7 @@ const authController = {
 
             await AuthService.storeRefreshToken(user.uid, refreshToken);
 
-            await LogService.logEvent(user.uid, `${firstName} signed in`);
+            await LogService.logEvent(user.uid, `${user.first_name} signed in`);
 
             return res.status(StatusCodes.ok).json({
                 access_token: accessToken,
@@ -69,7 +82,7 @@ const authController = {
 
         } catch (e) {
             logger.error(e);
-            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}`, code: AUTH_ERROR_CODES.SERVER_ERROR });
         }
     },
 
@@ -78,7 +91,7 @@ const authController = {
         const { refresh_token } = req.body;
 
         if (!refresh_token) {
-            return res.status(StatusCodes.badRequest).json({ error: "Missing refresh token" });
+            return res.status(StatusCodes.badRequest).json({ message: "Missing refresh token", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
         }
 
         try {
@@ -87,19 +100,19 @@ const authController = {
             try {
                 decoded = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
             } catch (e) {
-                return res.status(StatusCodes.unauthorized).json({ error: "Invalid or expired refresh token" });
+                return res.status(StatusCodes.unauthorized).json({ message: "Invalid or expired refresh token", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
             }
 
             // Check if refresh token exists in DB
             const hasValidRefreshToken = await AuthService.hasValidRefreshToken(decoded.uid, refresh_token);
             if (!hasValidRefreshToken) {
-                return res.status(StatusCodes.unauthorized).json({ error: "Refresh token not found or expired" });
+                return res.status(StatusCodes.unauthorized).json({ message: "Refresh token not found or expired", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
             }
 
             // Fetch user
             const user = await UserService.findUserById(decoded.uid);
             if (!user) {
-                return res.status(StatusCodes.unauthorized).json({ error: "User not found" });
+                return res.status(StatusCodes.unauthorized).json({ message: "User not found", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
             }
 
             // Generate new access token
@@ -119,12 +132,20 @@ const authController = {
 
             return res.status(StatusCodes.ok).json({
                 access_token: newAccessToken,
-                refresh_token: newRefreshToken
+                refresh_token: newRefreshToken, 
+                user: {
+                    uid: user.uid,
+                    first_name: user.first_name,
+                    email: user.email,
+                    language: user.language,
+                    created_at: user.created_at,
+                    updated_at: user.updated_at
+                }
             });
 
         } catch (e) {
             logger.error(e);
-            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}`, code: AUTH_ERROR_CODES.SERVER_ERROR });
         }
     }
 }

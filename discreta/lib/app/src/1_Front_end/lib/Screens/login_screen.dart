@@ -1,5 +1,7 @@
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
+import 'package:discreta/app/src/1_Front_end/Assets/enum/auth_error_codes.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Classes/auth_exception.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
@@ -68,10 +70,27 @@ class _LoginPageState extends State<LoginPage> {
       );
     } catch (e) {
       if (!mounted) return;
+      String message;
+      if (e is AuthException) {
+        switch (e.code) {
+          case AuthErrorCode.invalidCredentials:
+            message = AppLocalizations.of(
+              context,
+            )!.signInErrorInvalidCredentials;
+            break;
+          case AuthErrorCode.accessCodeMaxUses:
+            message = AppLocalizations.of(context)!.signInErrorMaxUses;
+            break;
+          default:
+            message = AppLocalizations.of(context)!.signInFailedMessage;
+        }
+      } else {
+        message = AppLocalizations.of(context)!.signInFailedMessage;
+      }
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.signInFailed,
-        message: AppLocalizations.of(context)!.signInFailedMessage,
+        message: message,
       );
     } finally {
       if (mounted) _setIsLoading(false);

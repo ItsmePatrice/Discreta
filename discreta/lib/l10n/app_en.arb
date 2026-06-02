@@ -77,5 +77,7 @@
   "tapToConnect": "Tap to connect",
   "firstName": "First name",
   "email": "Email",
-  "accessCode": "Access code"
+  "accessCode": "Access code",
+  "signInErrorInvalidCredentials": "Sign in failed. Please make sure your name, email, and access code are correct.",
+  "signInErrorMaxUses": "This access code has already reached its maximum number of uses. Please contact your administrator."
 }
