@@ -43,6 +43,10 @@ class _LoginPageState extends State<LoginPage> {
     myAppKey.currentState?.setLocale(locale);
   }
 
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
+  }
+
   Future<void> _signIn() async {
     final firstName = _firstNameController.text.trim();
     final email = _emailController.text.trim();
@@ -52,7 +56,16 @@ class _LoginPageState extends State<LoginPage> {
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.signInError,
-        message: AppLocalizations.of(context)!.signInErrorMessage,
+        message: AppLocalizations.of(context)!.unfilledAreas,
+      );
+      return;
+    }
+
+    if (!_isValidEmail(email)) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.signInError,
+        message: AppLocalizations.of(context)!.signInErrorInvalidEmail,
       );
       return;
     }
