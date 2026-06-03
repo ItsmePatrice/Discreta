@@ -27,7 +27,7 @@ class HttpService {
       );
       return response;
     } catch (e) {
-      throw Exception('GET request failed: $e');
+      throw Exception('GET request failed while calling $path: $e');
     }
   }
 
