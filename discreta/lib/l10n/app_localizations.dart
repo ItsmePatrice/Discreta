@@ -581,7 +581,7 @@ abstract class AppLocalizations {
   /// No description provided for @signInErrorMaxUsesOrExpired.
   ///
   /// In en, this message translates to:
-  /// **'This access code has already reached its maximum number of uses or is invalid. Please contact your administrator.'**
+  /// **'This access code has already reached its maximum number of uses or is invalid'**
   String get signInErrorMaxUsesOrExpired;
 
   /// No description provided for @signInErrorInvalidEmail.

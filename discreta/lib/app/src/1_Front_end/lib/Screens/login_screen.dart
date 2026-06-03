@@ -2,6 +2,7 @@ import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/auth_error_codes.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Classes/auth_exception.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
@@ -196,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
 
                       // Logo
                       Image.asset(
-                        "lib/app/src/1_Front_end/Assets/Images/purple_lady.jpg",
+                        "lib/app/src/1_Front_end/Assets/Images/Discreta_app_icon.png",
                         height: 200.h,
                         width: 200.w,
                       ),
@@ -249,12 +250,10 @@ class _LoginPageState extends State<LoginPage> {
                       // Sign in button
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _isLoading ? null : _signIn,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 14.h),
-                            child: Text(AppLocalizations.of(context)!.signIn),
-                          ),
+                        child: DiscretaButton(
+                          onPressed: _signIn,
+                          text: AppLocalizations.of(context)!.signIn,
+                          backgroundColor: AppColors.primaryColor,
                         ),
                       ),
                       SizedBox(height: 9.h),

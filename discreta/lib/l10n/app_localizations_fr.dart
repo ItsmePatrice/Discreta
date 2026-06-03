@@ -267,7 +267,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signInErrorMaxUsesOrExpired =>
-      'Ce code d\'accès a atteint son nombre maximal d\'utilisations ou est invalide. Veuillez contacter votre administrateur.';
+      'Ce code d\'accès a atteint son nombre maximal d\'utilisations ou est invalide.';
 
   @override
   String get signInErrorInvalidEmail =>
