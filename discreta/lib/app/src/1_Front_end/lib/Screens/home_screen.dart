@@ -544,7 +544,8 @@ class _HomePageState extends State<HomePage>
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.unknownError,
-        message: AppLocalizations.of(context)!.noInternetConnection,
+        message: e
+            .toString() /*AppLocalizations.of(context)!.noInternetConnection*/,
       );
     } finally {
       setState(() => _isLoading = false);
