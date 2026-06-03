@@ -79,7 +79,7 @@
   "email": "Email",
   "accessCode": "Code d'accès",
   "signInErrorInvalidCredentials": "Échec de la connexion. Veuillez vérifier que votre prénom, courriel et code d'accès sont corrects.",
-  "signInErrorMaxUsesOrExpired": "Ce code d'accès a atteint son nombre maximal d'utilisations ou est invalide. Veuillez contacter votre administrateur.",
+  "signInErrorMaxUsesOrExpired": "Ce code d'accès a atteint son nombre maximal d'utilisations ou est invalide.",
   "signInErrorInvalidEmail": "Veuillez entrer une adresse courriel valide.",
   "unfilledAreas": "Veuillez vous assurer d'entrer un prénom, une adresse courriel et un code d'accès."
 }

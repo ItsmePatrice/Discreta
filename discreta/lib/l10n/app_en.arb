@@ -79,7 +79,7 @@
   "email": "Email",
   "accessCode": "Access code",
   "signInErrorInvalidCredentials": "Sign in failed. Please make sure your name, email, and access code are correct.",
-  "signInErrorMaxUsesOrExpired": "This access code has already reached its maximum number of uses or is invalid. Please contact your administrator.",
+  "signInErrorMaxUsesOrExpired": "This access code has already reached its maximum number of uses or is invalid",
   "signInErrorInvalidEmail": "Please enter a valid email address.",
   "unfilledAreas": "Please make sure to enter a first name, an email address, and an access code."
 }
