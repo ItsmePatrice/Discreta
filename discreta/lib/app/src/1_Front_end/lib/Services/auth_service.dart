@@ -38,7 +38,12 @@ class AuthService {
         final refreshToken = responseBody['refresh_token'] as String;
         final accessToken = responseBody['access_token'] as String;
         _accessToken = accessToken;
-        const secureStorage = FlutterSecureStorage();
+        const secureStorage = FlutterSecureStorage(
+          iOptions: IOSOptions(
+            accessibility: KeychainAccessibility.first_unlock,
+            // This is kSecAttrAccessibleAfterFirstUnlock
+          ),
+        );
         await secureStorage.write(key: 'refreshToken', value: refreshToken);
         await secureStorage.write(key: 'accessToken', value: accessToken);
         return user;
@@ -60,7 +65,12 @@ class AuthService {
   }
 
   Future<String?> getRefreshToken() async {
-    const secureStorage = FlutterSecureStorage();
+    const secureStorage = FlutterSecureStorage(
+      iOptions: IOSOptions(
+        accessibility: KeychainAccessibility.first_unlock,
+        // This is kSecAttrAccessibleAfterFirstUnlock
+      ),
+    );
     final refreshToken = await secureStorage.read(key: 'refreshToken');
     return refreshToken;
   }
@@ -75,7 +85,12 @@ class AuthService {
       if (response.statusCode == StatusCodes.ok) {
         final refreshToken = responseBody['refresh_token'] as String;
         final accessToken = responseBody['access_token'] as String;
-        const secureStorage = FlutterSecureStorage();
+        const secureStorage = FlutterSecureStorage(
+          iOptions: IOSOptions(
+            accessibility: KeychainAccessibility.first_unlock,
+            // This is kSecAttrAccessibleAfterFirstUnlock
+          ),
+        );
         await secureStorage.write(key: 'refreshToken', value: refreshToken);
         await secureStorage.write(key: 'accessToken', value: accessToken);
         discretaUser = DiscretaUser.fromJson(responseBody['user']);
@@ -106,7 +121,12 @@ class AuthService {
   Future<void> signOutUser() async {
     try {
       discretaUser = null;
-      const secureStorage = FlutterSecureStorage();
+      const secureStorage = FlutterSecureStorage(
+        iOptions: IOSOptions(
+          accessibility: KeychainAccessibility.first_unlock,
+          // This is kSecAttrAccessibleAfterFirstUnlock
+        ),
+      );
       await secureStorage.deleteAll();
     } catch (e, stackTrace) {
       LogService.instance.logError('Error during sign out', e, stackTrace);

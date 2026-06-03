@@ -113,7 +113,12 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _checkAuth() async {
-    const storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage(
+      iOptions: IOSOptions(
+        accessibility: KeychainAccessibility.first_unlock,
+        // This is kSecAttrAccessibleAfterFirstUnlock
+      ),
+    );
     final refreshToken = await storage.read(key: 'refreshToken');
 
     if (!mounted) return;
