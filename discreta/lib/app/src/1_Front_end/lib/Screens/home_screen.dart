@@ -254,10 +254,27 @@ class _HomePageState extends State<HomePage>
   @override
   void onButtonConnected() {
     debugPrint('Flic button connected');
-    setState(() {
-      _isFlicConnected = true;
-      _connectedButton = _buttonsFound.values.firstOrNull;
-    });
+
+    final alreadyKnown = _buttonsFound.values.firstOrNull;
+
+    if (alreadyKnown != null) {
+      setState(() {
+        _isFlicConnected = true;
+        _connectedButton = alreadyKnown;
+      });
+    } else {
+      // _buttonsFound hasn't been populated yet — fetch directly from SDK
+      _flicButtonManager?.getFlic2Buttons().then((buttons) {
+        if (!mounted) return;
+        final button = buttons.firstOrNull;
+        setState(() {
+          _isFlicConnected = true;
+          _connectedButton = button;
+          if (button != null) _buttonsFound[button.uuid] = button;
+        });
+      });
+    }
+
     _scanController
       ..stop()
       ..reset();
@@ -339,8 +356,6 @@ class _HomePageState extends State<HomePage>
       await Geolocator.openLocationSettings();
       return;
     }
-
-    LogService.instance.logInfo('Location service is enabled');
 
     LocationPermission permission = await Geolocator.checkPermission();
 
