@@ -16,6 +16,8 @@ class AuthService {
   static AuthService get instance => _instance;
 
   DiscretaUser? discretaUser;
+  String? _accessToken;
+  String? get accessToken => _accessToken;
 
   Future<DiscretaUser> fetchOrCreateUser(
     String firstName,
@@ -35,6 +37,7 @@ class AuthService {
         discretaUser = user;
         final refreshToken = responseBody['refresh_token'] as String;
         final accessToken = responseBody['access_token'] as String;
+        _accessToken = accessToken;
         const secureStorage = FlutterSecureStorage();
         await secureStorage.write(key: 'refreshToken', value: refreshToken);
         await secureStorage.write(key: 'accessToken', value: accessToken);
@@ -54,12 +57,6 @@ class AuthService {
       LogService.instance.logError('Error while fetching or creating user. $e');
       rethrow;
     }
-  }
-
-  Future<String?> getAccessToken() async {
-    const secureStorage = FlutterSecureStorage();
-    final accessToken = await secureStorage.read(key: 'accessToken');
-    return accessToken;
   }
 
   Future<String?> getRefreshToken() async {
@@ -82,6 +79,7 @@ class AuthService {
         await secureStorage.write(key: 'refreshToken', value: refreshToken);
         await secureStorage.write(key: 'accessToken', value: accessToken);
         discretaUser = DiscretaUser.fromJson(responseBody['user']);
+        _accessToken = accessToken;
         return RefreshResult.success;
       }
 

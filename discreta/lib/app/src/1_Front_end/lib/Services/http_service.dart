@@ -10,7 +10,7 @@ class HttpService {
 
   Future<http.Response> get(String path, [Map<String, dynamic>? data]) async {
     try {
-      final accessToken = await AuthService.instance.getAccessToken();
+      final accessToken = AuthService.instance.accessToken;
 
       Uri url = Uri.parse(path);
       if (data != null && data.isNotEmpty) {
@@ -33,7 +33,7 @@ class HttpService {
 
   Future<http.Response> post(String path, [Map<String, dynamic>? data]) async {
     try {
-      final accessToken = await AuthService.instance.getAccessToken();
+      final accessToken = AuthService.instance.accessToken;
 
       final url = Uri.parse(path);
       final response = await http.post(
@@ -52,7 +52,7 @@ class HttpService {
 
   Future<http.Response> patch(String path, [Map<String, dynamic>? data]) async {
     try {
-      final accessToken = await AuthService.instance.getAccessToken();
+      final accessToken = AuthService.instance.accessToken;
       final url = Uri.parse(path);
       final response = await http.patch(
         url,
@@ -70,7 +70,7 @@ class HttpService {
 
   Future<http.Response> put(String path, [Map<String, dynamic>? data]) async {
     try {
-      final accessToken = await AuthService.instance.getAccessToken();
+      final accessToken = AuthService.instance.accessToken;
       final url = Uri.parse(path);
       final response = await http.put(
         url,
@@ -91,7 +91,7 @@ class HttpService {
     Map<String, dynamic>? data,
   ]) async {
     try {
-      final accessToken = await AuthService.instance.getAccessToken();
+      final accessToken = AuthService.instance.accessToken;
       final url = Uri.parse(path);
       final response = await http.delete(
         url,
