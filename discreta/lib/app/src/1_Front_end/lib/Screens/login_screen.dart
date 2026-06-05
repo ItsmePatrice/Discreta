@@ -99,7 +99,8 @@ class _LoginPageState extends State<LoginPage> {
             message = AppLocalizations.of(context)!.signInFailedMessage;
         }
       } else {
-        message = AppLocalizations.of(context)!.signInFailedMessage;
+        message = e
+            .toString() /*AppLocalizations.of(context)!.signInFailedMessage*/;
       }
       MessageService.displayAlertDialog(
         context: context,
