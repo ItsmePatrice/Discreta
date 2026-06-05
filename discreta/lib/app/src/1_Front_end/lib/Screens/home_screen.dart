@@ -125,29 +125,21 @@ class _HomePageState extends State<HomePage>
     final buttons = await _flicButtonManager!.getFlic2Buttons();
     if (buttons.isEmpty) return;
 
+    // Register and listen to all buttons first
     for (final button in buttons) {
-      _addButtonAndListen(button);
-      _flicButtonManager!.connectButton(button.uuid);
+      setState(() => _buttonsFound[button.uuid] = button);
+      _flicButtonManager!.listenToFlic2Button(button.uuid);
     }
 
-    // Give the SDK time to re-establish connections before checking state.
-    // onButtonConnected() will fire and update _isFlicConnected as normal,
-    // but this covers the case where it resolves faster than the callback fires.
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-
-    final freshButtons = await _flicButtonManager!.getFlic2Buttons();
-    for (final button in freshButtons) {
-      if (button.connectionState ==
+    // Then connect only those not already connected
+    for (final button in buttons) {
+      if (button.connectionState !=
           Flic2ButtonConnectionState.connected_ready) {
-        setState(() {
-          _isFlicConnected = true;
-          _connectedButton = button;
-        });
-        break;
+        _flicButtonManager!.connectButton(button.uuid);
       }
     }
+
+    // onButtonConnected() handles the UI update — no polling needed
   }
 
   // ---------------------------------------------------------------------------
@@ -156,6 +148,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _startScan() async {
     if (_flicButtonManager == null) return;
+    if (_isFlicScanning) return;
 
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -239,7 +232,12 @@ class _HomePageState extends State<HomePage>
   @override
   void onButtonClicked(Flic2ButtonClick buttonClick) {
     debugPrint('Flic button ${buttonClick.button.uuid} clicked');
-    if (!buttonClick.isDoubleClick) return;
+
+    if (!buttonClick.isDoubleClick) {
+      _showConnectionConfirmation();
+      return;
+    }
+
     final now = DateTime.now();
     if ((_lastAlertTime != null &&
             now.difference(_lastAlertTime!) < _alertCooldown) &&
@@ -249,6 +247,35 @@ class _HomePageState extends State<HomePage>
     }
     _lastAlertTime = now;
     _sendAlertNow();
+  }
+
+  void _showConnectionConfirmation() {
+    if (!mounted) return;
+
+    setState(() {
+      _isFlicConnected = true;
+      _connectedButton = _buttonsFound.values.firstOrNull;
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+            const SizedBox(width: 10),
+            Text(
+              AppLocalizations.of(context)!.connected,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
