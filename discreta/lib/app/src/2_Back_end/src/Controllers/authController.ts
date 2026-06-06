@@ -140,6 +140,8 @@ const authController = {
 
             await AuthService.storeRefreshToken(user.uid, newRefreshToken);
 
+            await LogService.logEvent(user.uid, `${user.first_name} signed in`);
+
             return res.status(StatusCodes.ok).json({
                 access_token: newAccessToken,
                 refresh_token: newRefreshToken, 
