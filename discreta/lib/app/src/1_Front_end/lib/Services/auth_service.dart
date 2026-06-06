@@ -6,6 +6,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Classes/auth_exception.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Classes/discreta_user.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/http_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/notification_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/status_codes.dart';
 import 'package:discreta/app/src/1_Front_end/lib/routes.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,7 @@ class AuthService {
         'accessCode': accessCode,
       });
       final responseBody = jsonDecode(response.body);
+
       if (response.statusCode == StatusCodes.created ||
           response.statusCode == StatusCodes.ok) {
         DiscretaUser user = DiscretaUser.fromJson(responseBody['user']);
@@ -41,6 +43,13 @@ class AuthService {
         _accessToken = accessToken;
         await secureWrite('refreshToken', refreshToken);
         await secureWrite('accessToken', accessToken);
+
+        if (response.statusCode == StatusCodes.created) {
+          await NotificationService.instance.createUserDocumentForNotifications(
+            user.uid,
+            user.firstName,
+          );
+        }
         return user;
       } else {
         String message = responseBody['message'];

@@ -10,6 +10,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/notification_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
@@ -373,6 +374,8 @@ class _HomePageState extends State<HomePage>
     LogService.instance.logInfo('_initializePage was called');
     _checkLocationPermission();
     _checkActiveTrackingSession();
+    NotificationService.instance.initialize();
+    NotificationService.instance.recordAppOpen();
   }
 
   Future<void> _checkLocationPermission() async {

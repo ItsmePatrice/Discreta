@@ -22,6 +22,8 @@ const authController = {
             return res.status(StatusCodes.badRequest).json({ message: "Missing required fields", code: AUTH_ERROR_CODES.MISSING_FIELDS });
         }
 
+        let userExistedBefore = false;
+
         try {
             // Check if user exists
             let user = await UserService.findUser(email);
@@ -31,6 +33,7 @@ const authController = {
                 if (user.access_code !== accessCode) {
                     return res.status(StatusCodes.unauthorized).json({ message: "Invalid access code", code: AUTH_ERROR_CODES.INVALID_CREDENTIALS });
                 }
+                userExistedBefore = true;
             } else {
                 // New user — create account
                 const incremented = await AccessCodeService.incrementAccessCodeUseCount(accessCode);
@@ -72,7 +75,9 @@ const authController = {
 
             await LogService.logEvent(user.uid, `${user.first_name} signed in`);
 
-            return res.status(StatusCodes.ok).json({
+            const statusCode = userExistedBefore ? StatusCodes.ok : StatusCodes.created;
+
+            return res.status(statusCode).json({
                 access_token: accessToken,
                 refresh_token: refreshToken,
                 user: {
