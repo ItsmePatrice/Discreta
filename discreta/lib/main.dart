@@ -5,7 +5,9 @@ import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/connectivity_checker.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/page_transition_builder.dart';
+import 'package:discreta/firebase_options.dart';
 import 'package:discreta/l10n/app_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,6 +22,7 @@ final RouteObserver<ModalRoute<void>> routeObserver =
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp(key: myAppKey));
 }
