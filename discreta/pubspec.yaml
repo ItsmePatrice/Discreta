@@ -35,6 +35,10 @@ dependencies:
 
   flic_button: ^1.2.11
 
+  firebase_messaging: ^16.3.0
+  firebase_core: ^4.10.0
+  flutter_local_notifications: ^17.0.0
+
   flutter_secure_storage: ^10.3.1
 
   logger: ^2.6.0
