@@ -8,6 +8,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Services/http_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/status_codes.dart';
 import 'package:discreta/app/src/1_Front_end/lib/routes.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
@@ -38,14 +39,8 @@ class AuthService {
         final refreshToken = responseBody['refresh_token'] as String;
         final accessToken = responseBody['access_token'] as String;
         _accessToken = accessToken;
-        const secureStorage = FlutterSecureStorage(
-          iOptions: IOSOptions(
-            accessibility: KeychainAccessibility.first_unlock,
-            // This is kSecAttrAccessibleAfterFirstUnlock
-          ),
-        );
-        await secureStorage.write(key: 'refreshToken', value: refreshToken);
-        await secureStorage.write(key: 'accessToken', value: accessToken);
+        await secureWrite('refreshToken', refreshToken);
+        await secureWrite('accessToken', accessToken);
         return user;
       } else {
         String message = responseBody['message'];
@@ -85,14 +80,8 @@ class AuthService {
       if (response.statusCode == StatusCodes.ok) {
         final refreshToken = responseBody['refresh_token'] as String;
         final accessToken = responseBody['access_token'] as String;
-        const secureStorage = FlutterSecureStorage(
-          iOptions: IOSOptions(
-            accessibility: KeychainAccessibility.first_unlock,
-            // This is kSecAttrAccessibleAfterFirstUnlock
-          ),
-        );
-        await secureStorage.write(key: 'refreshToken', value: refreshToken);
-        await secureStorage.write(key: 'accessToken', value: accessToken);
+        await secureWrite('refreshToken', refreshToken);
+        await secureWrite('accessToken', accessToken);
         discretaUser = DiscretaUser.fromJson(responseBody['user']);
         _accessToken = accessToken;
         return RefreshResult.success;
@@ -146,6 +135,25 @@ class AuthService {
         return AuthErrorCode.serverError;
       default:
         return AuthErrorCode.unknown;
+    }
+  }
+
+  Future<void> secureWrite(String key, String value) async {
+    const secureStorage = FlutterSecureStorage(
+      iOptions: IOSOptions(
+        accessibility: KeychainAccessibility.first_unlock,
+        // This is kSecAttrAccessibleAfterFirstUnlock
+      ),
+    );
+    try {
+      await secureStorage.write(key: key, value: value);
+    } on PlatformException catch (e) {
+      if (e.code == '-25299' || e.message?.contains('already exists') == true) {
+        await secureStorage.delete(key: key);
+        await secureStorage.write(key: key, value: value);
+      } else {
+        rethrow;
+      }
     }
   }
 }
