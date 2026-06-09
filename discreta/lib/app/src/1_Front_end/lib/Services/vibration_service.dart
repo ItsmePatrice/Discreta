@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:vibration/vibration.dart';
+import 'package:flutter/services.dart';
 
 class VibrationService {
   static Future<void> confirmation() async {
@@ -7,10 +8,9 @@ class VibrationService {
     if (hasVibrator != true) return;
 
     if (Platform.isIOS) {
-      // iOS only supports single vibration — trigger twice manually
-      await Vibration.vibrate();
-      await Future.delayed(const Duration(milliseconds: 600));
-      await Vibration.vibrate();
+      await HapticFeedback.heavyImpact();
+      await Future.delayed(const Duration(milliseconds: 400));
+      await HapticFeedback.heavyImpact();
     } else {
       await Vibration.vibrate(pattern: [0, 500, 100, 500]);
     }
