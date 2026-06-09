@@ -12,6 +12,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/notification_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/vibration_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
 import 'package:flic_button/flic_button.dart';
@@ -564,6 +565,9 @@ class _HomePageState extends State<HomePage>
         );
         return;
       }
+
+      await VibrationService.confirmation();
+
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.success,
