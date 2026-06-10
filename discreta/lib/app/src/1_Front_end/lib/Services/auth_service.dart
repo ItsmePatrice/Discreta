@@ -116,6 +116,41 @@ class AuthService {
     }
   }
 
+  Future<RefreshResult> refreshAccessToken() async {
+    try {
+      final response = await HttpService.instance.post(
+        ApiRoutes.refreshAccessToken,
+        {'refresh_token': await getRefreshToken()},
+      );
+      final responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == StatusCodes.ok) {
+        final accessToken = responseBody['access_token'] as String;
+        await secureWrite('accessToken', accessToken);
+        _accessToken = accessToken;
+        return RefreshResult.success;
+      }
+
+      if (response.statusCode == StatusCodes.unauthorized) {
+        LogService.instance.logWarning(
+          "Refresh token is invalid or expired. Server responded with status code ${response.statusCode}.",
+        );
+        await signOutUser();
+        return RefreshResult.unauthorized;
+      }
+
+      String message = responseBody['message'];
+      LogService.instance.logWarning(
+        "Failed to refresh tokens. Server responded with status code ${response.statusCode} and message: $message",
+      );
+
+      return RefreshResult.serverError;
+    } catch (e) {
+      LogService.instance.logError('Error while refreshing tokens. $e');
+      return RefreshResult.networkError;
+    }
+  }
+
   Future<void> signOutUser() async {
     try {
       discretaUser = null;

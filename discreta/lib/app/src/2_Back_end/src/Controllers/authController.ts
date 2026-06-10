@@ -96,8 +96,8 @@ const authController = {
         }
     },
 
-    // return an access token if the provided refresh token is valid
-    refreshToken: async (req: Request, res: Response) => {
+    // return new refresh token and access token (used when client app starts)
+    refreshTokens: async (req: Request, res: Response) => {
         const { refresh_token } = req.body;
 
         if (!refresh_token) {
@@ -159,7 +159,53 @@ const authController = {
             logger.error(e);
             return res.status(StatusCodes.internalServerError).json({ message: `${e}`, code: AUTH_ERROR_CODES.SERVER_ERROR });
         }
+    },
+
+    refreshAccessToken: async (req: Request, res: Response) => {
+        const { refresh_token } = req.body;
+
+        if (!refresh_token) {
+            return res.status(StatusCodes.badRequest).json({ message: "Missing refresh token", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
+        }
+
+        try {
+            // Verify the refresh token signature
+            let decoded: any;
+            try {
+                decoded = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
+            } catch (e) {
+                return res.status(StatusCodes.unauthorized).json({ message: "Invalid or expired refresh token", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
+            }
+
+            // Check if refresh token exists in DB
+            const hasValidRefreshToken = await AuthService.hasValidRefreshToken(decoded.uid, refresh_token);
+            if (!hasValidRefreshToken) {
+                return res.status(StatusCodes.unauthorized).json({ message: "Refresh token not found or expired", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
+            }
+
+            // Fetch user
+            const user = await UserService.findUserById(decoded.uid);
+            if (!user) {
+                return res.status(StatusCodes.unauthorized).json({ message: "User not found", code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN });
+            }
+
+            const newAccessToken = jwt.sign(
+                { uid: user.uid, email: user.email },
+                ACCESS_TOKEN_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            return res.status(StatusCodes.ok).json({
+                access_token: newAccessToken,
+            });
+
+        } catch (e) {
+            logger.error(e);
+            return res.status(StatusCodes.internalServerError).json({ message: `${e}`, code: AUTH_ERROR_CODES.SERVER_ERROR });
+        }
     }
+
+
 }
 
 export default authController;
