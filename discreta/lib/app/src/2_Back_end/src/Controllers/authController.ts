@@ -62,7 +62,7 @@ const authController = {
             const accessToken = jwt.sign(
                 { uid: user.uid, email: user.email },
                 ACCESS_TOKEN_SECRET,
-                { expiresIn: '24h' }
+                { expiresIn: '15m' }
             );
 
             const refreshToken = jwt.sign(
@@ -129,7 +129,7 @@ const authController = {
             const newAccessToken = jwt.sign(
                 { uid: user.uid, email: user.email },
                 ACCESS_TOKEN_SECRET,
-                { expiresIn: '24h' }
+                { expiresIn: '15m' }
             );
 
             const newRefreshToken = jwt.sign(
@@ -192,7 +192,7 @@ const authController = {
             const newAccessToken = jwt.sign(
                 { uid: user.uid, email: user.email },
                 ACCESS_TOKEN_SECRET,
-                { expiresIn: '24h' }
+                { expiresIn: '15m' }
             );
 
             return res.status(StatusCodes.ok).json({
