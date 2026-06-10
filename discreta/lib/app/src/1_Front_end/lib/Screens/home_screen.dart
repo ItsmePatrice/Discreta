@@ -236,6 +236,7 @@ class _HomePageState extends State<HomePage>
     debugPrint('Flic button ${buttonClick.button.uuid} clicked');
 
     if (!buttonClick.isDoubleClick) {
+      VibrationService.appRunningconfirmation();
       _showConnectionConfirmation();
       return;
     }
