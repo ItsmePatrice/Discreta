@@ -159,8 +159,13 @@ const userController = {
                 throw ("uid, firstName, latitude or longitude was null");
             }
 
+            // start a tracking session for the user here
+            
             const user = await UserService.findUserById(uid);
             if (!user) throw ("The user with the provided id doesn't exit");
+            
+            const token = await AlertService.startTrackingSession(uid, user.first_name);
+            await AlertService.updateLocation(uid, token.trackingToken, latitude, longitude);
 
             const sentAlert = await AlertService.sendAlertMessage(uid, user.first_name);
             return res.status(StatusCodes.ok).json({ sentAlert });

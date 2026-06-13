@@ -6,35 +6,23 @@ import SmsService from "./smsService";
 const AlertService = {
 
     async startTrackingSession(uid: string, username: string) {
-        try {
+        
+        const existing = await sql`
+            SELECT token FROM TrackingSessions
+            WHERE user_id = ${uid} AND status = 'ACTIVE' AND expires_at > NOW()
+            LIMIT 1;
+        `;
+        if (existing.length > 0) {
+            return { trackingToken: existing[0].token };
+        }
 
-            // if the user currently has an active session, end it before starting a new one
-            await sql`
-                UPDATE TrackingSessions
-                SET status = 'ENDED',
-                    end_time = NOW()
-                WHERE user_id = ${uid}
-                    AND status = 'ACTIVE'
-            `;
-
-            const result = await sql`
-                INSERT INTO TrackingSessions (user_id, expires_at, status)
-                VALUES (
-                    ${uid},
-                    NOW() + INTERVAL '2 hours',
-                    'ACTIVE'
-                )
-                RETURNING token;
-            `;
-
-            await LogService.logEvent(uid, `${username} started a tracking session.`);
-            logger.info(`${username} started a tracking session.`);
-
-            return { trackingToken: result[0].token };
-        } catch (e) {
-            logger.error('Database error while starting tracking session', e);
-            throw e;
-        }   
+        const result = await sql`
+            INSERT INTO TrackingSessions (user_id, expires_at, status)
+            VALUES (${uid}, NOW() + INTERVAL '2 hours', 'ACTIVE')
+            RETURNING token;
+        `;
+        await LogService.logEvent(uid, `${username} started a tracking session.`);
+        return { trackingToken: result[0].token };
     },
 
     async stopTrackingSession(username: string, uid: string) {
