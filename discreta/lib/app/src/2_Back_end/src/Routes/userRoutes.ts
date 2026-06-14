@@ -7,7 +7,6 @@ import tokenVerifier from '../Middlewares/verifyToken';
 router.put('/alert-message', tokenVerifier.verifyToken, userController.saveAlertMessage);
 router.get('/alert-message', tokenVerifier.verifyToken, userController.fetchAlertMessage);
 router.post('/send-alert', tokenVerifier.verifyToken, userController.sendAlert);
-router.post('/send-alert-android', userController.sendAlertFromAndroid);
 router.post('/start-tracking-session', tokenVerifier.verifyToken, userController.startTrackingSession);
 router.post('/end-tracking-session', tokenVerifier.verifyToken, userController.stopTrackingSession);
 router.patch('/location-update', tokenVerifier.verifyToken, userController.updateLocation);

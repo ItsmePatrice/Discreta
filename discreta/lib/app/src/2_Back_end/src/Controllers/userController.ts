@@ -151,30 +151,6 @@ const userController = {
         }
     },
 
-    sendAlertFromAndroid: async (req: Request, res: Response) => {
-        try {
-            const {uid, latitude, longitude } = req.body;
-
-            if (!uid || !latitude || !longitude) {
-                throw ("uid, firstName, latitude or longitude was null");
-            }
-
-            // start a tracking session for the user here
-            
-            const user = await UserService.findUserById(uid);
-            if (!user) throw ("The user with the provided id doesn't exit");
-            
-            const token = await AlertService.startTrackingSession(uid, user.first_name);
-            await AlertService.updateLocation(uid, token.trackingToken, latitude, longitude);
-
-            const sentAlert = await AlertService.sendAlertMessage(uid, user.first_name);
-            return res.status(StatusCodes.ok).json({ sentAlert });
-        } catch (e) {
-            logger.error(e);
-            return res.status(StatusCodes.internalServerError).json({ message: `${e}` });
-        }
-    },
-
     startTrackingSession: async (req: Request, res: Response) => {
         try {
             const uid = req.uid;
