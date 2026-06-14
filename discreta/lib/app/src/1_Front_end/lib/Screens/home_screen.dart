@@ -374,83 +374,25 @@ class _HomePageState extends State<HomePage>
     );
     myAppKey.currentState?.setLocale(userLocale);
     LogService.instance.logInfo('_initializePage was called');
-    _checkLocationPermission();
     _checkActiveTrackingSession();
     NotificationService.instance.initialize();
     NotificationService.instance.recordAppOpen();
-  }
-
-  Future<void> _checkLocationPermission() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnabled) {
-      LogService.instance.logInfo('Location service is disabled');
-      await Geolocator.openLocationSettings();
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.denied) {
-      MessageService.showLocationPermissionDialog(context);
-      return;
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openAppSettings();
-      return;
-    }
-
-    if (Platform.isIOS) {
-      final accuracy = await Geolocator.getLocationAccuracy();
-      if (accuracy == LocationAccuracyStatus.reduced) {
-        await Geolocator.requestTemporaryFullAccuracy(
-          purposeKey: "DiscreteTracking",
-        );
-      }
-    }
-
-    if (permission == LocationPermission.whileInUse) {
-      await _requestBackgroundPermission();
-    }
-  }
-
-  Future<void> _requestBackgroundPermission() async {
-    if (Platform.isAndroid) {
-      final permission = await Geolocator.requestPermission();
-
-      if (permission == LocationPermission.deniedForever) {
-        await Geolocator.openAppSettings();
-      }
-    }
+    _showBackgroundLocationDialog();
   }
 
   void _showBackgroundLocationDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (_) => AlertDialog(
-        title: const Text('Background location required'),
-        content: const Text(
-          'Discreta needs to access your location at all times to send '
-          'your position when you trigger an alert, even when your screen is locked.\n\n'
-          'In the next screen: tap Location → select "Allow all the time".',
+        title: const Text('Location access required'),
+        content: Text(
+          AppLocalizations.of(context)!.locationAlwaysRequiredMessage,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Not now'),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Geolocator.openAppSettings();
-            },
-            child: const Text('Open Settings'),
+            child: const Text('Ok'),
           ),
         ],
       ),

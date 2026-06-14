@@ -416,6 +416,12 @@ abstract class AppLocalizations {
   /// **'Even if your screen is off, make sure that the app is opened and that your phone is always connected to the internet and the button.'**
   String get step7;
 
+  /// No description provided for @step8.
+  ///
+  /// In en, this message translates to:
+  /// **'If you\'re on Android, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".'**
+  String get step8;
+
   /// No description provided for @step9.
   ///
   /// In en, this message translates to:
@@ -461,8 +467,20 @@ abstract class AppLocalizations {
   /// No description provided for @locationRequired.
   ///
   /// In en, this message translates to:
-  /// **'Location required'**
+  /// **'Precise location required'**
   String get locationRequired;
+
+  /// No description provided for @locationRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We need access to your precise location to allow Discreta to function properly and send alerts when needed. You can enable location access at any time in your device settings.'**
+  String get locationRequiredMessage;
+
+  /// No description provided for @locationPermanentlyDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Precise location access has been disabled. To use Discreta, please enable location permission in your device settings.'**
+  String get locationPermanentlyDeniedMessage;
 
   /// No description provided for @locationAccessReason.
   ///
@@ -487,6 +505,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No trusted contact found'**
   String get noTrustedContact;
+
+  /// No description provided for @enableLocationServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Location services are turned off. Please enable location services in your device settings to continue using Discreta.'**
+  String get enableLocationServices;
 
   /// No description provided for @pleaseAddContacts.
   ///
@@ -595,6 +619,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please make sure to enter a first name, an email address, and an access code.'**
   String get unfilledAreas;
+
+  /// No description provided for @locationAlwaysRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Discreta requires \"Always allow\" location access to function properly. Please open your settings and select: Location → Always allow.'**
+  String get locationAlwaysRequiredMessage;
 }
 
 class _AppLocalizationsDelegate

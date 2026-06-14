@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:discreta/app/src/1_Front_end/Assets/colors.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/auth_error_codes.dart';
 import 'package:discreta/app/src/1_Front_end/Assets/enum/text_size.dart';
@@ -7,10 +9,12 @@ import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:discreta/main.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,7 +52,90 @@ class _LoginPageState extends State<LoginPage> {
     return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
   }
 
+  Future<bool> _checkLocationPermission() async {
+    // 1. Check if location services are enabled
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.locationRequired,
+        message: AppLocalizations.of(context)!.enableLocationServices,
+      );
+      return false;
+    }
+
+    // 2. Check current permission state
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    // 3. If not determined, request permission (this is the ONLY place you prompt)
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    // 4. If still denied → STOP (do NOT send to settings automatically)
+    if (permission == LocationPermission.denied) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.locationRequired,
+        message: AppLocalizations.of(context)!.locationRequiredMessage,
+      );
+      return false;
+    }
+
+    // 5. If permanently denied → show explanation + optional manual button
+    if (permission == LocationPermission.deniedForever) {
+      MessageService.displayAlertDialog(
+        context: context,
+        title: AppLocalizations.of(context)!.locationRequired,
+        message: AppLocalizations.of(context)!.locationPermanentlyDeniedMessage,
+      );
+      return false;
+    }
+
+    // 6. iOS precise location handling (optional but good practice)
+    if (Platform.isIOS) {
+      final accuracy = await Geolocator.getLocationAccuracy();
+      if (accuracy == LocationAccuracyStatus.reduced) {
+        await Geolocator.requestTemporaryFullAccuracy(
+          purposeKey: "DiscreteTracking",
+        );
+      }
+    }
+
+    // 7. Background permission request (Android only, after success)
+    if (permission == LocationPermission.whileInUse && Platform.isAndroid) {
+      await _requestBackgroundPermission();
+    }
+
+    return true;
+  }
+
+  Future<void> _requestBackgroundPermission() async {
+    if (Platform.isAndroid) {
+      final permission = await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.deniedForever) {
+        await Geolocator.openAppSettings();
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> _signIn() async {
+    // check if the user gave access to their precise location
+    // If not, tell them to go to their settings and activate it
+
+    // If they gave access to their precise location, then they may move to
+    // the next plan
+
+    final grantedPermision = await _checkLocationPermission();
+
+    if (!grantedPermision) return;
+
     final firstName = _firstNameController.text.trim();
     final email = _emailController.text.trim();
     final accessCode = _accessCodeController.text.trim();

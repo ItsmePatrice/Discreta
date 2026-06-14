@@ -179,6 +179,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Même si votre écran est fermé, assurez-vous que l\'application est ouverte et que votre téléphone est toujours connecté à Internet et au bouton.';
 
   @override
+  String get step8 =>
+      'Si vous utilisez Android, accédez à Paramètres → Applications → Discreta → Batterie et sélectionnez \"Sans restriction\".';
+
+  @override
   String get step9 => 'Vous êtes prête.';
 
   @override
@@ -201,7 +205,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get error => 'Erreur';
 
   @override
-  String get locationRequired => 'Localisation requise';
+  String get locationRequired => 'Localisation précise requise';
+
+  @override
+  String get locationRequiredMessage =>
+      'Nous avons besoin de votre localisation précise pour permettre à Discreta de fonctionner correctement et d’envoyer des alertes si nécessaire. Vous pouvez activer l’accès à la localisation à tout moment dans les paramètres de votre appareil.';
+
+  @override
+  String get locationPermanentlyDeniedMessage =>
+      'L’accès à la localisation précise a été désactivé. Pour utiliser Discreta, veuillez activer l’autorisation de localisation dans les paramètres de votre appareil.';
 
   @override
   String get locationAccessReason =>
@@ -216,6 +228,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noTrustedContact => 'Aucun contact de confiance trouvé';
+
+  @override
+  String get enableLocationServices =>
+      'Les services de localisation sont désactivés. Veuillez activer la localisation dans les paramètres de votre appareil pour continuer à utiliser Discreta.';
 
   @override
   String get pleaseAddContacts => 'Veuillez ajouter un contact de confiance';
@@ -276,4 +292,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get unfilledAreas =>
       'Veuillez vous assurer d\'entrer un prénom, une adresse courriel et un code d\'accès.';
+
+  @override
+  String get locationAlwaysRequiredMessage =>
+      'Discreta nécessite l’accès à la localisation « Toujours autoriser » pour fonctionner correctement. Veuillez ouvrir les réglages et sélectionner : Localisation → Toujours autoriser.';
 }

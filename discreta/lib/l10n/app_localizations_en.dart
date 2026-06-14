@@ -178,6 +178,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Even if your screen is off, make sure that the app is opened and that your phone is always connected to the internet and the button.';
 
   @override
+  String get step8 =>
+      'If you\'re on Android, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".';
+
+  @override
   String get step9 => 'You\'re good to go.';
 
   @override
@@ -201,7 +205,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error => 'Error';
 
   @override
-  String get locationRequired => 'Location required';
+  String get locationRequired => 'Precise location required';
+
+  @override
+  String get locationRequiredMessage =>
+      'We need access to your precise location to allow Discreta to function properly and send alerts when needed. You can enable location access at any time in your device settings.';
+
+  @override
+  String get locationPermanentlyDeniedMessage =>
+      'Precise location access has been disabled. To use Discreta, please enable location permission in your device settings.';
 
   @override
   String get locationAccessReason =>
@@ -216,6 +228,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noTrustedContact => 'No trusted contact found';
+
+  @override
+  String get enableLocationServices =>
+      'Location services are turned off. Please enable location services in your device settings to continue using Discreta.';
 
   @override
   String get pleaseAddContacts => 'Please add a trusted contact';
@@ -275,4 +291,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get unfilledAreas =>
       'Please make sure to enter a first name, an email address, and an access code.';
+
+  @override
+  String get locationAlwaysRequiredMessage =>
+      'Discreta requires \"Always allow\" location access to function properly. Please open your settings and select: Location → Always allow.';
 }

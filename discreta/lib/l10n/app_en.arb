@@ -52,6 +52,7 @@
   "step6": "Double tap the button to send an alert immediately when it's on.",
   "step6Observation": "Your contacts should receive your alert message with your real-time location. Don't forget to confirm your safety on the Home tab to end location sharing if the situation de-escalates.",
   "step7": "Even if your screen is off, make sure that the app is opened and that your phone is always connected to the internet and the button.",
+  "step8": "If you're on Android, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".",
   "step9": "You're good to go.",
   "safetyAlerts": "Safety & Alerts",
   "sendAlert": "Send alert",
@@ -59,11 +60,14 @@
   "confirmSendAlert": "Are you sure you want to send an alert to your contacts?",
   "alertNoSent": "The alert wasn't sent. Please make sure you have at least 1 saved contact.",
   "error": "Error",
-  "locationRequired": "Location required",
+  "locationRequired": "Precise location required",
+  "locationRequiredMessage": "We need access to your precise location to allow Discreta to function properly and send alerts when needed. You can enable location access at any time in your device settings.",
+  "locationPermanentlyDeniedMessage": "Precise location access has been disabled. To use Discreta, please enable location permission in your device settings.",
   "locationAccessReason": "Discreta requires access to your location to share your real-time position with trusted contacts in case of danger.",
   "noLocationConsequence": "Without location access, Discreta cannot function.",
   "enableLocation": "Enable Location",
   "noTrustedContact": "No trusted contact found",
+  "enableLocationServices": "Location services are turned off. Please enable location services in your device settings to continue using Discreta.",
   "pleaseAddContacts": "Please add a trusted contact",
   "safetyConfirmed": "I'm safe",
   "initializing": "initializing...",
@@ -81,5 +85,6 @@
   "signInErrorInvalidCredentials": "Sign in failed. Please make sure your name, email, and access code are correct.",
   "signInErrorMaxUsesOrExpired": "This access code has already reached its maximum number of uses or is invalid",
   "signInErrorInvalidEmail": "Please enter a valid email address.",
-  "unfilledAreas": "Please make sure to enter a first name, an email address, and an access code."
+  "unfilledAreas": "Please make sure to enter a first name, an email address, and an access code.",
+  "locationAlwaysRequiredMessage": "Discreta requires \"Always allow\" location access to function properly. Please open your settings and select: Location → Always allow."
 }

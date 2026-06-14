@@ -52,6 +52,7 @@
   "step6": "Appuyez deux fois sur le bouton pour envoyer une alerte immédiatement lorsqu'il est allumé.",
   "step6Observation": "Vos contacts devraient recevoir votre message d’alerte avec votre position en temps réel. N’oubliez pas de confirmer que vous êtes en sécurité dans l’onglet Accueil pour arrêter le partage de votre position si la situation se calme.",
   "step7": "Même si votre écran est fermé, assurez-vous que l'application est ouverte et que votre téléphone est toujours connecté à Internet et au bouton.",
+  "step8": "Si vous utilisez Android, accédez à Paramètres → Applications → Discreta → Batterie et sélectionnez \"Sans restriction\".",
   "step9": "Vous êtes prête.",
   "safetyAlerts": "Sécurité et alertes",
   "sendAlert": "Envoyer une alerte",
@@ -59,10 +60,13 @@
   "confirmSendAlert": "Êtes-vous sûr de vouloir envoyer une alerte?",
   "alertNoSent": "L’alerte n’a pas été envoyée. Ajoutez au moins un contact pour continuer.",
   "error": "Erreur",
-  "locationRequired": "Localisation requise",
+  "locationRequired": "Localisation précise requise",
+  "locationRequiredMessage": "Nous avons besoin de votre localisation précise pour permettre à Discreta de fonctionner correctement et d’envoyer des alertes si nécessaire. Vous pouvez activer l’accès à la localisation à tout moment dans les paramètres de votre appareil.",
+  "locationPermanentlyDeniedMessage": "L’accès à la localisation précise a été désactivé. Pour utiliser Discreta, veuillez activer l’autorisation de localisation dans les paramètres de votre appareil.",
   "locationAccessReason": "Discreta a besoin d’accéder à votre position afin de partager votre localisation en temps réel avec vos contacts de confiance en cas de danger.",
   "noLocationConsequence": "Sans l’accès à la localisation, Discreta ne peut pas fonctionner.",
   "enableLocation": "Activer la localisation",
+  "enableLocationServices": "Les services de localisation sont désactivés. Veuillez activer la localisation dans les paramètres de votre appareil pour continuer à utiliser Discreta.",
   "noTrustedContact": "Aucun contact de confiance trouvé",
   "pleaseAddContacts": "Veuillez ajouter un contact de confiance",
   "safetyConfirmed": "Tout va bien",
@@ -81,5 +85,6 @@
   "signInErrorInvalidCredentials": "Échec de la connexion. Veuillez vérifier que votre prénom, courriel et code d'accès sont corrects.",
   "signInErrorMaxUsesOrExpired": "Ce code d'accès a atteint son nombre maximal d'utilisations ou est invalide.",
   "signInErrorInvalidEmail": "Veuillez entrer une adresse courriel valide.",
-  "unfilledAreas": "Veuillez vous assurer d'entrer un prénom, une adresse courriel et un code d'accès."
+  "unfilledAreas": "Veuillez vous assurer d'entrer un prénom, une adresse courriel et un code d'accès.",
+  "locationAlwaysRequiredMessage": "Discreta nécessite l’accès à la localisation « Toujours autoriser » pour fonctionner correctement. Veuillez ouvrir les réglages et sélectionner : Localisation → Toujours autoriser."
 }
