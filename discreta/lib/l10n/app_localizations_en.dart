@@ -294,5 +294,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationAlwaysRequiredMessage =>
-      'Discreta requires \"Always allow\" location access to function properly. Please open your settings and select: Location → Always allow.';
+      'Discreta requires \"Always allow\" location access to function properly. If not yet done, Please open your settings and select: Location → Always allow for Discreta.';
+
+  @override
+  String get reminder => 'Reminder';
 }

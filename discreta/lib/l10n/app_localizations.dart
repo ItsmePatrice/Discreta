@@ -623,8 +623,14 @@ abstract class AppLocalizations {
   /// No description provided for @locationAlwaysRequiredMessage.
   ///
   /// In en, this message translates to:
-  /// **'Discreta requires \"Always allow\" location access to function properly. Please open your settings and select: Location → Always allow.'**
+  /// **'Discreta requires \"Always allow\" location access to function properly. If not yet done, Please open your settings and select: Location → Always allow for Discreta.'**
   String get locationAlwaysRequiredMessage;
+
+  /// No description provided for @reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get reminder;
 }
 
 class _AppLocalizationsDelegate

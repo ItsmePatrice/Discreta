@@ -385,7 +385,7 @@ class _HomePageState extends State<HomePage>
       context: context,
       barrierDismissible: true,
       builder: (_) => AlertDialog(
-        title: const Text('Location access required'),
+        title: Text(AppLocalizations.of(context)!.reminder),
         content: Text(
           AppLocalizations.of(context)!.locationAlwaysRequiredMessage,
         ),

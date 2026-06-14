@@ -86,5 +86,6 @@
   "signInErrorMaxUsesOrExpired": "Ce code d'accès a atteint son nombre maximal d'utilisations ou est invalide.",
   "signInErrorInvalidEmail": "Veuillez entrer une adresse courriel valide.",
   "unfilledAreas": "Veuillez vous assurer d'entrer un prénom, une adresse courriel et un code d'accès.",
-  "locationAlwaysRequiredMessage": "Discreta nécessite l’accès à la localisation « Toujours autoriser » pour fonctionner correctement. Veuillez ouvrir les réglages et sélectionner : Localisation → Toujours autoriser."
+  "locationAlwaysRequiredMessage": "Discreta nécessite l’accès à la localisation « Toujours autoriser » pour fonctionner correctement. Si ce n'est pas déja fait, Veuillez ouvrir les réglages et sélectionner : Localisation → Toujours autoriser pour Discreta.",
+  "reminder": "Rappel"
 }
