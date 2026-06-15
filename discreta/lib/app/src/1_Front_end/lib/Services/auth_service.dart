@@ -11,6 +11,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/status_codes.
 import 'package:discreta/app/src/1_Front_end/lib/routes.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
   AuthService._privateConstructor();
@@ -81,9 +82,13 @@ class AuthService {
 
   Future<RefreshResult> refreshTokens() async {
     try {
-      final response = await HttpService.instance.post(ApiRoutes.refreshToken, {
-        'refresh_token': await getRefreshToken(),
-      });
+      final response = await http
+          .post(
+            Uri.parse(ApiRoutes.refreshToken),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'refresh_token': await getRefreshToken()}),
+          )
+          .timeout(const Duration(seconds: 10));
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == StatusCodes.ok) {
@@ -118,10 +123,13 @@ class AuthService {
 
   Future<RefreshResult> refreshAccessToken() async {
     try {
-      final response = await HttpService.instance.post(
-        ApiRoutes.refreshAccessToken,
-        {'refresh_token': await getRefreshToken()},
-      );
+      final response = await http
+          .post(
+            Uri.parse(ApiRoutes.refreshAccessToken),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'refresh_token': await getRefreshToken()}),
+          )
+          .timeout(const Duration(seconds: 10));
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == StatusCodes.ok) {
