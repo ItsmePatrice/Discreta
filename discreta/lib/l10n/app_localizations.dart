@@ -428,6 +428,12 @@ abstract class AppLocalizations {
   /// **'You\'re good to go.'**
   String get step9;
 
+  /// No description provided for @batteryManagmentDirectives.
+  ///
+  /// In en, this message translates to:
+  /// **'To allow Discreta to run when your screen is locked, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".'**
+  String get batteryManagmentDirectives;
+
   /// No description provided for @safetyAlerts.
   ///
   /// In en, this message translates to:

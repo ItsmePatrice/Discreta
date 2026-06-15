@@ -54,6 +54,7 @@
   "step7": "Even if your screen is off, make sure that the app is opened and that your phone is always connected to the internet and the button.",
   "step8": "If you're on Android, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".",
   "step9": "You're good to go.",
+  "batteryManagmentDirectives": "To allow Discreta to run when your screen is locked, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".",
   "safetyAlerts": "Safety & Alerts",
   "sendAlert": "Send alert",
   "alertSent": "Alert has been sent.",

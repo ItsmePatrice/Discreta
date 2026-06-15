@@ -186,6 +186,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get step9 => 'Vous êtes prête.';
 
   @override
+  String get batteryManagmentDirectives =>
+      'Pour permettre Discreta de fonctionner quand votre écran est fermé, accédez à Paramètres → Applications → Discreta → Batterie et sélectionnez \"Sans restriction\".';
+
+  @override
   String get safetyAlerts => 'Sécurité et alertes';
 
   @override

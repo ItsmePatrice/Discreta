@@ -185,6 +185,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get step9 => 'You\'re good to go.';
 
   @override
+  String get batteryManagmentDirectives =>
+      'To allow Discreta to run when your screen is locked, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".';
+
+  @override
   String get safetyAlerts => 'Safety & Alerts';
 
   @override

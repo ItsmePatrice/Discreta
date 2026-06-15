@@ -381,13 +381,34 @@ class _HomePageState extends State<HomePage>
   }
 
   void _showBackgroundLocationDialog() {
+    if (!Platform.isAndroid) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => AlertDialog(
+          title: Text(AppLocalizations.of(context)!.reminder),
+          content: Text(
+            AppLocalizations.of(context)!.locationAlwaysRequiredMessage,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Ok'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (_) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.reminder),
         content: Text(
-          AppLocalizations.of(context)!.locationAlwaysRequiredMessage,
+          AppLocalizations.of(context)!.locationAlwaysRequiredMessage +
+              AppLocalizations.of(context)!.batteryManagmentDirectives,
         ),
         actions: [
           TextButton(
