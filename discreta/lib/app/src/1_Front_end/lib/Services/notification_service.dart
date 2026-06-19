@@ -11,15 +11,23 @@ class NotificationService {
   final _firestore = FirebaseFirestore.instance;
 
   Future<void> initialize() async {
-    // Request permission (critical for iOS)
     await _messaging.requestPermission(alert: true, sound: true, badge: true);
 
-    // Save FCM token to Firestore
+    // Required for iOS background notifications
+    await _messaging.setForegroundNotificationPresentationOptions(
+      alert: false,
+      badge: false,
+      sound: false,
+    );
+
     final token = await _messaging.getToken();
     await _saveToken(token);
-
-    // Handle token refresh
     _messaging.onTokenRefresh.listen(_saveToken);
+
+    // Handle silent push when app is in foreground
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Silent push received while app is open — Flic is already connected, no action needed
+    });
   }
 
   Future<void> _saveToken(String? token) async {

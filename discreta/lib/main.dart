@@ -8,6 +8,8 @@ import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/page_transiti
 import 'package:discreta/firebase_options.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flic_button/flic_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,9 +22,53 @@ GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 
+// ── Background Flic listener (no UI, just satisfies the SDK) ──────────────────
+class _BackgroundFlicListener implements Flic2Listener {
+  @override
+  void onButtonClicked(Flic2ButtonClick b) {}
+  @override
+  void onButtonConnected() {}
+  @override
+  void onButtonDiscovered(String a) {}
+  @override
+  void onButtonFound(Flic2Button b) {}
+  @override
+  void onButtonUpOrDown(Flic2ButtonUpOrDown b) {}
+  @override
+  void onFlic2Error(String e) {}
+  @override
+  void onPairedButtonDiscovered(Flic2Button b) {}
+  @override
+  void onScanCompleted() {}
+  @override
+  void onScanStarted() {}
+}
+
+// ── Top-level background message handler ─────────────────────────────────────
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  final plugin = FlicButtonPlugin(flic2listener: _BackgroundFlicListener());
+  await plugin.invokation;
+
+  final buttons = await plugin.getFlic2Buttons();
+  for (final button in buttons) {
+    plugin.listenToFlic2Button(button.uuid);
+    if (button.connectionState != Flic2ButtonConnectionState.connected_ready) {
+      plugin.connectButton(button.uuid);
+    }
+  }
+}
+
+// ── main() ────────────────────────────────────────────────────────────────────
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Register background handler BEFORE runApp
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp(key: myAppKey));
 }
