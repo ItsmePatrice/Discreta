@@ -107,8 +107,14 @@ cron.schedule("0 9,12,15,18 * * *", () => {
   sendSilentPushToAllActiveUsers();
 });
 
-// Visible push notification — hourly for testing, will move to 9am daily
-cron.schedule("0 * * * *", () => {
-  logger.info("Cron fired — sending visible push notification");
-  sendVisiblePushToAllActiveUsers();
-});
+// Visible push notification at 9 am everyday
+cron.schedule(
+  "0 9 * * *",
+  () => {
+    logger.info("Cron fired — sending visible push notification");
+    sendVisiblePushToAllActiveUsers();
+  },
+  {
+    timezone: "America/Toronto",
+  }
+);
