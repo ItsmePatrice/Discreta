@@ -2,6 +2,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   NotificationService._privateConstructor();
@@ -10,6 +11,7 @@ class NotificationService {
 
   final _messaging = FirebaseMessaging.instance;
   final _firestore = FirebaseFirestore.instance;
+  final _localNotifications = FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
     await _messaging.requestPermission(alert: true, sound: true, badge: true);
@@ -21,14 +23,68 @@ class NotificationService {
       sound: false,
     );
 
+    // Initialize local notifications
+    await _localNotifications.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(),
+      ),
+    );
+
+    // Create Android notification channel
+    const channel = AndroidNotificationChannel(
+      'discreta_reminders',
+      'Daily Reminders',
+      description: 'Reminds you to open Discreta',
+      importance: Importance.high,
+    );
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(channel);
+
     final token = await _messaging.getToken();
     await _saveToken(token);
     _messaging.onTokenRefresh.listen(_saveToken);
 
-    // Handle silent push when app is in foreground
+    // App in FOREGROUND — show notification manually via local notifications
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Silent push received while app is open — Flic is already connected, no action needed
+      if (message.notification == null) return; // silent push, ignore
+
+      final notification = message.notification!;
+      _localNotifications.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'discreta_reminders',
+            'Daily Reminders',
+            channelDescription: 'Reminds you to open Discreta',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(
+            sound: 'default',
+            presentAlert: true,
+            presentSound: true,
+          ),
+        ),
+      );
     });
+
+    // App in BACKGROUND — user tapped the notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Add navigation logic here later if needed
+    });
+
+    // App TERMINATED — launched via notification tap
+    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      // Add navigation logic here later if needed
+    }
+
     LogService.instance.logInfo("FCM well initialized");
   }
 
@@ -38,6 +94,11 @@ class NotificationService {
     if (uid == null) return;
 
     await _firestore.collection('users').doc(uid).update({'fcmToken': token});
+  }
+
+  Future<void> saveTokenForCurrentUser() async {
+    final token = await _messaging.getToken();
+    await _saveToken(token);
   }
 
   // Call this every time the app is foregrounded
@@ -53,11 +114,16 @@ class NotificationService {
 
     // Increment streak only if this is the first open of a new day
     if (lastOpenStr != todayStr) {
+      final yesterday = today.subtract(const Duration(days: 1));
+      final yesterdayStr =
+          '${yesterday.year}-${yesterday.month}-${yesterday.day}';
       final currentStreak = userDoc.data()?['streakCount'] as int? ?? 0;
+      final newStreak = (lastOpenStr == yesterdayStr) ? currentStreak + 1 : 1;
+
       await _firestore.collection('users').doc(uid).update({
         'lastAppOpen': FieldValue.serverTimestamp(),
         'lastOpenDate': todayStr,
-        'streakCount': currentStreak + 1,
+        'streakCount': newStreak,
       });
     }
   }
@@ -73,6 +139,6 @@ class NotificationService {
       'streakCount': 0,
       'notificationTime': '09:00',
       'firstName': firstName,
-    });
+    }, SetOptions(merge: true));
   }
 }

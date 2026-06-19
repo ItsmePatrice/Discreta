@@ -88,5 +88,6 @@
   "signInErrorInvalidEmail": "Please enter a valid email address.",
   "unfilledAreas": "Please make sure to enter a first name, an email address, and an access code.",
   "locationAlwaysRequiredMessage": "Discreta requires \"Always allow\" location access to function properly. If not yet done, Please open your settings and select: Location → Always allow for Discreta.",
-  "reminder": "Reminder"
+  "reminder": "Reminder",
+  "connectionReruirments": "Please ensure that the app is not force closed, and make sure you are always connected to the internet with Bluetooth enabled."
 }

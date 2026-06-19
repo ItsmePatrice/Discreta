@@ -637,6 +637,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reminder'**
   String get reminder;
+
+  /// No description provided for @connectionReruirments.
+  ///
+  /// In en, this message translates to:
+  /// **'Please ensure that the app is not force closed, and make sure you are always connected to the internet with Bluetooth enabled.'**
+  String get connectionReruirments;
 }
 
 class _AppLocalizationsDelegate

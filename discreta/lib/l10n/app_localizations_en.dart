@@ -302,4 +302,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminder => 'Reminder';
+
+  @override
+  String get connectionReruirments =>
+      'Please ensure that the app is not force closed, and make sure you are always connected to the internet with Bluetooth enabled.';
 }

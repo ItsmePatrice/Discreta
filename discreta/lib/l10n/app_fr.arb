@@ -88,5 +88,6 @@
   "unfilledAreas": "Veuillez vous assurer d'entrer un prénom, une adresse courriel et un code d'accès.",
   "locationAlwaysRequiredMessage": "Discreta nécessite l’accès à la localisation « Toujours autoriser » pour fonctionner correctement. Si ce n'est pas déja fait, Veuillez ouvrir les réglages et sélectionner : Localisation → Toujours autoriser pour Discreta.",
   "reminder": "Rappel",
-  "batteryManagmentDirectives": "Pour permettre Discreta de fonctionner quand votre écran est fermé, accédez à Paramètres → Applications → Discreta → Batterie et sélectionnez \"Sans restriction\"."
+  "batteryManagmentDirectives": "Pour permettre Discreta de fonctionner quand votre écran est fermé, accédez à Paramètres → Applications → Discreta → Batterie et sélectionnez \"Sans restriction\".",
+  "connectionReruirments": "Veuillez vous assurer de ne pas fermer l’application et de rester toujours connecté à Internet, avec le Bluetooth activé."
 }

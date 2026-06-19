@@ -378,6 +378,24 @@ class _HomePageState extends State<HomePage>
     NotificationService.instance.initialize();
     NotificationService.instance.recordAppOpen();
     _showBackgroundLocationDialog();
+    _showBluetoothAndInternertRequirment();
+  }
+
+  void _showBluetoothAndInternertRequirment() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.reminder),
+        content: Text(AppLocalizations.of(context)!.connectionReruirments),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showBackgroundLocationDialog() {

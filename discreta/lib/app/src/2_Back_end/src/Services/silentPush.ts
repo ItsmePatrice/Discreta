@@ -50,8 +50,65 @@ async function sendSilentPushToAllActiveUsers(): Promise<void> {
   }
 }
 
+async function sendVisiblePushToAllActiveUsers(): Promise<void> {
+  try {
+    const usersSnapshot = await db
+      .collection("users")
+      .where("fcmToken", "!=", null)
+      .get();
+
+    const promises = usersSnapshot.docs.map((doc) => {
+      const token = doc.data().fcmToken;
+      const firstName = doc.data().firstName;
+
+      if (!token || !firstName) return Promise.resolve();
+
+      return admin.messaging().send({
+        token,
+        notification: {
+          title: "Discreta",
+          body: `Hey ${firstName}, heading out for a showing? Open Discreta before you go 🔒`,
+        },
+        apns: {
+          headers: {
+            "apns-priority": "10",
+            "apns-push-type": "alert",
+          },
+          payload: {
+            aps: {
+              "content-available": 1,
+              sound: "default",
+            },
+          },
+        },
+        android: {
+          priority: "high",
+          notification: {
+            sound: "default",
+            channelId: "discreta_reminders",
+          },
+        },
+      }).catch((err) => {
+        logger.error(`Visible push failed for ${doc.id}: ${err.message}`);
+      });
+    });
+
+    await Promise.all(promises);
+    logger.info(`Visible push sent to ${usersSnapshot.docs.length} users`);
+
+  } catch (err: any) {
+    logger.error(`sendVisiblePushToAllActiveUsers error: ${err.message}`);
+  }
+}
+
 // 4x daily during business hours — stays under Apple's ~5/day throttle limit
 cron.schedule("0 9,12,15,18 * * *", () => {
   logger.info("Cron fired — sending silent push");
   sendSilentPushToAllActiveUsers();
+});
+
+// Visible push notification — hourly for testing, will move to 9am daily
+cron.schedule("0 * * * *", () => {
+  logger.info("Cron fired — sending visible push notification");
+  sendVisiblePushToAllActiveUsers();
 });

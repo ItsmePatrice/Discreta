@@ -303,4 +303,8 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reminder => 'Rappel';
+
+  @override
+  String get connectionReruirments =>
+      'Veuillez vous assurer de ne pas fermer l’application et de rester toujours connecté à Internet, avec le Bluetooth activé.';
 }
