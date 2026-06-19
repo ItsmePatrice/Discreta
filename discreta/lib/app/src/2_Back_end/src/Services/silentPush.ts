@@ -1,4 +1,3 @@
-import { sql } from "../Config/database";
 import logger from "../logs";
 import * as admin from "firebase-admin";
 import * as cron from "node-cron";
@@ -56,10 +55,3 @@ cron.schedule("0 9,12,15,18 * * *", () => {
   logger.info("Cron fired — sending silent push");
   sendSilentPushToAllActiveUsers();
 });
-
-const NotificationService = {
-  // Placeholder for any future notification methods
-  // e.g. sendAlertToContacts, sendTestPush, etc.
-};
-
-export default NotificationService;
