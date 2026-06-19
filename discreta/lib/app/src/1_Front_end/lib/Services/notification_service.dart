@@ -1,4 +1,5 @@
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -28,6 +29,7 @@ class NotificationService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Silent push received while app is open — Flic is already connected, no action needed
     });
+    LogService.instance.logInfo("FCM well initialized");
   }
 
   Future<void> _saveToken(String? token) async {
