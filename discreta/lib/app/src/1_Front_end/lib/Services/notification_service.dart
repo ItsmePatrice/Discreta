@@ -141,4 +141,15 @@ class NotificationService {
       'firstName': firstName,
     }, SetOptions(merge: true));
   }
+
+  Future<void> signOut() async {
+    final uid = AuthService.instance.discretaUser?.uid;
+    if (uid != null) {
+      // Remove token from Firestore before signing out
+      await _firestore.collection('users').doc(uid).update({'fcmToken': null});
+    }
+
+    // Delete the token from FCM so it gets regenerated fresh on next login
+    await _messaging.deleteToken();
+  }
 }

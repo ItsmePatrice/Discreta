@@ -161,6 +161,7 @@ class AuthService {
 
   Future<void> signOutUser() async {
     try {
+      await NotificationService.instance.signOut();
       discretaUser = null;
       const secureStorage = FlutterSecureStorage(
         iOptions: IOSOptions(
