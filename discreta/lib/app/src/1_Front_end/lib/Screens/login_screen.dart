@@ -11,6 +11,7 @@ import 'package:discreta/app/src/1_Front_end/lib/Screens/main_shell.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/notification_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -165,6 +166,7 @@ class _LoginPageState extends State<LoginPage> {
         email,
         accessCode,
       );
+      await NotificationService.instance.saveTokenForCurrentUser();
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const MainShell()),
