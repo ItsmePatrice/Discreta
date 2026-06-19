@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -97,8 +99,24 @@ class NotificationService {
   }
 
   Future<void> saveTokenForCurrentUser() async {
-    final token = await _messaging.getToken();
-    await _saveToken(token);
+    try {
+      // iOS requires APNs token to be ready before FCM token can be retrieved
+      if (Platform.isIOS) {
+        final apnsToken = await _messaging.getAPNSToken();
+        if (apnsToken == null) {
+          LogService.instance.logInfo(
+            'APNs token not ready yet — skipping token save',
+          );
+          return;
+        }
+      }
+
+      final token = await _messaging.getToken();
+      await _saveToken(token);
+      LogService.instance.logInfo('FCM token saved successfully');
+    } catch (e) {
+      LogService.instance.logInfo('Failed to save FCM token: $e');
+    }
   }
 
   // Call this every time the app is foregrounded
