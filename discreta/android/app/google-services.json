@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "101220018288-d9631ldi35juoktuvv2uvjuqdq91p6no.apps.googleusercontent.com",
+              "client_id": "101220018288-cq3nr2ii7o5cmopomnvu8rncmp451rbo.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.discreta"
+                "bundle_id": "com.discreta.app"
               }
             }
           ]
@@ -83,10 +83,10 @@
               "client_type": 3
             },
             {
-              "client_id": "101220018288-d9631ldi35juoktuvv2uvjuqdq91p6no.apps.googleusercontent.com",
+              "client_id": "101220018288-cq3nr2ii7o5cmopomnvu8rncmp451rbo.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.discreta"
+                "bundle_id": "com.discreta.app"
               }
             }
           ]
