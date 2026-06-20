@@ -373,7 +373,6 @@ class _HomePageState extends State<HomePage>
       AuthService.instance.discretaUser?.language ?? 'fr',
     );
     myAppKey.currentState?.setLocale(userLocale);
-    LogService.instance.logInfo('_initializePage was called');
     _checkActiveTrackingSession();
     NotificationService.instance.initialize();
     NotificationService.instance.recordAppOpen();
