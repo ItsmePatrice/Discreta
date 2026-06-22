@@ -52,9 +52,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Discreta uses your location to protect your safety during visits.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Discreta needs your location to share live safety updates in emergencies.</string>
+	<string>Discreta needs your location in the background to share live safety updates in emergencies.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Discreta needs your location to share live safety updates in emergencies.</string>
+	<string>Discreta needs your location in the background to share live safety updates in emergencies.</string>
 	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
 	<dict>
 		<key>DiscreteTracking</key>
