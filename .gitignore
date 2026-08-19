@@ -26,3 +26,8 @@ github_actions_key.pub
 node_modules/
 dist/
 serviceAccountKey.json
+
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
