@@ -69,3 +69,5 @@ nginx -t && systemctl reload nginx
 
 # Install NodeJS
 dnf install nodejs -y
+
+mkdir -p /home/ec2-user/app
