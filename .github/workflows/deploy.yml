@@ -8,16 +8,15 @@ on:
       - "v*"
 
 jobs:
-  deploy:
+  deploy-staging:
     runs-on: ubuntu-latest
-
+    if: github.ref == 'refs/heads/staging'
+    environment: staging
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Deploy to Staging
-        if: github.ref == 'refs/heads/staging'
-        environment: staging
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -45,7 +44,7 @@ jobs:
 
             cat > serviceAccountKey.json << 'EOF'
             ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-            EOF 
+            EOF
 
             npm install
             npm run build
@@ -53,9 +52,15 @@ jobs:
             docker compose build app
             docker compose up -d app
 
+  deploy-production:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Deploy Production
-        if: startsWith(github.ref, 'refs/tags/v')
-        environment: production
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -87,7 +92,6 @@ jobs:
 
             npm install
             npm run build
-
             docker stop discreta_app || true
             docker compose build app
             docker compose up -d app
