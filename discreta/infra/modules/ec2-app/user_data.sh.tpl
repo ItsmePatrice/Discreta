@@ -70,4 +70,7 @@ nginx -t && systemctl reload nginx
 # Install NodeJS
 dnf install nodejs -y
 
+# Install Git
+dnf install git -y
+
 mkdir -p /home/ec2-user/app

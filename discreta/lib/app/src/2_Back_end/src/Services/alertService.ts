@@ -163,7 +163,7 @@ const AlertService = {
 
             const public_token = await this.getTrackingToken(uid);
 
-            const locationLink = `${process.env.STAGING_BASE_URL}/api/public/track/page/${public_token}`;
+            const locationLink = `${process.env.BASE_URL}/api/public/track/page/${public_token}`;
 
             // send SMS to each contact
             for (const contact of decryptedContacts) {

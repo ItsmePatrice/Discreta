@@ -2,14 +2,14 @@ import "dotenv/config";
 import { neon } from "@neondatabase/serverless";
 import crypto from "crypto";
 
-const { DATABASE_URL_STAGING, DATA_ENCRYPTION_KEY } = process.env;
+const { DATABASE_URL, DATA_ENCRYPTION_KEY } = process.env;
 
-if (!DATABASE_URL_STAGING) throw new Error("DATABASE_URL is not defined in the environment variables");
+if (!DATABASE_URL) throw new Error("DATABASE_URL is not defined in the environment variables");
 if (!DATA_ENCRYPTION_KEY) throw new Error("DATA_ENCRYPTION_KEY is not defined in the environment variables (32 bytes key)");
 
-const sql = neon(DATABASE_URL_STAGING);
+const sql = neon(DATABASE_URL);
 
-// ----- Encryption helpers -----
+// Encryption helpers
 const algorithm = "aes-256-gcm";
 const key = Buffer.from(DATA_ENCRYPTION_KEY, "hex");
 
@@ -62,7 +62,7 @@ export async function initDB() {
     await createAlertMessagesTable();
     await createTrackingSessionsTable();
     await createLogsTable();
-    console.log("Database initialization complete ✅");
+    console.log("Database initialization complete");
   } catch (e) {
     console.error("Database initialization failed:", e);
     throw e;

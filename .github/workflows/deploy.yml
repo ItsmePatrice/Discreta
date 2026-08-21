@@ -17,6 +17,7 @@ jobs:
 
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
+        environment: staging
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -24,21 +25,37 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ec2-user/app/Discreta/discreta/lib/app/src/2_Back_end
-            git reset --hard
             git checkout staging
             git pull origin staging
-            cat << 'EOF' > .env
-            ${{ secrets.ENV_FILE_STAGING }}
+            cat > .env << 'EOF'
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            SERVER_PORT=${{ secrets.SERVER_PORT }}
+            FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+            FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}
+            FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}
+            DATA_ENCRYPTION_KEY=${{ secrets.DATA_ENCRYPTION_KEY }}
+            TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}
+            TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}
+            TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }}
+            BASE_URL=${{ secrets.BASE_URL }}
+            WEB_BASE_URL=${{ secrets.WEB_BASE_URL }}
+            ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
+            REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}
             EOF
+
+            cat > serviceAccountKey.json << 'EOF'
+            ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+            EOF 
 
             npm install
             npm run build
-            docker stop discreta_staging || true
-            docker compose build staging --no-cache
-            docker compose up -d staging
+            docker stop discreta_app || true
+            docker compose build app
+            docker compose up -d app
 
       - name: Deploy Production
         if: startsWith(github.ref, 'refs/tags/v')
+        environment: production
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -46,14 +63,31 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ec2-user/app/Discreta/discreta/lib/app/src/2_Back_end
-            git reset --hard
-            git checkout main
-            git pull origin main
-            cat << 'EOF' > .env
-            ${{ secrets.ENV_FILE_PRODUCTION }}
+            git fetch --all --tags
+            git checkout ${{ github.ref_name }}
+            cat > .env << 'EOF'
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            SERVER_PORT=${{ secrets.SERVER_PORT }}
+            FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+            FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}
+            FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}
+            DATA_ENCRYPTION_KEY=${{ secrets.DATA_ENCRYPTION_KEY }}
+            TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}
+            TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}
+            TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }}
+            BASE_URL=${{ secrets.BASE_URL }}
+            WEB_BASE_URL=${{ secrets.WEB_BASE_URL }}
+            ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
+            REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}
             EOF
+
+            cat > serviceAccountKey.json << 'EOF'
+            ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+            EOF
+
             npm install
             npm run build
-            docker stop discreta_production || true
-            docker compose build production --no-cache
-            docker compose up -d production
+
+            docker stop discreta_app || true
+            docker compose build app
+            docker compose up -d app

@@ -1,20 +1,9 @@
 services:
-  production:
+  app:
     build: .
-    container_name: discreta_production
+    container_name: discreta_app
     ports:
       - "127.0.0.1:3000:3000"
-    env_file:
-      - .env
-    volumes:
-      - /home/ec2-user/app/Discreta/discreta/lib/app/src/2_Back_end/serviceAccountKey.json:/app/serviceAccountKey.json:ro
-    restart: unless-stopped
-
-  staging:
-    build: .
-    container_name: discreta_staging
-    ports:
-      - "127.0.0.1:3001:3000"
     env_file:
       - .env
     volumes:

@@ -8,7 +8,7 @@ class AppEnvironment {
       case Environment.dev:
         return 'http://10.0.0.14:3000';
       case Environment.prod:
-        return 'https://discreta.ca';
+        return 'https://prod-api.discreta.ca';
       case Environment.staging:
         return 'https://staging-api.discreta.ca';
     }
