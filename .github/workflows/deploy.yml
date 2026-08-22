@@ -23,7 +23,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd /home/ec2-user/app/Discreta/discreta/lib/app/src/2_Back_end
+            cd /app/Discreta/discreta/lib/app/src/2_Back_end
             git checkout staging
             git pull origin staging
             cat > .env << 'EOF'
@@ -67,7 +67,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd /home/ec2-user/app/Discreta/discreta/lib/app/src/2_Back_end
+            cd /app/Discreta/discreta/lib/app/src/2_Back_end
             git fetch --all --tags
             git checkout ${{ github.ref_name }}
             cat > .env << 'EOF'
