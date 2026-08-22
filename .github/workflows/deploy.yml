@@ -47,6 +47,7 @@ jobs:
             ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
             EOF
 
+            
             npm install
             npm run build
             docker stop discreta_app || true
