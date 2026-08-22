@@ -30,4 +30,4 @@ serviceAccountKey.json
 *.tfstate
 *.tfstate.*
 *.tfvars
-.terraform/
+.terraform/ 
