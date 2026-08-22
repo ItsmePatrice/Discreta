@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/http_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Utils/StatusCodes/status_codes.dart';
 import 'package:discreta/app/src/1_Front_end/lib/routes.dart';
@@ -11,10 +12,11 @@ class LocationService {
       LocationService._privateConstructor();
   static LocationService get instance => _instance;
 
-  Future<String> startTrackingSession() async {
+  Future<String> startTrackingSession(String firstName) async {
     try {
       final response = await HttpService.instance.post(
         ApiRoutes.startTrackingSession,
+        {'firstName': firstName},
       );
       if (response.statusCode == StatusCodes.created) {
         final token = jsonDecode(response.body)['trackingToken'];
@@ -54,7 +56,13 @@ class LocationService {
 
   Future<void> endTracking() async {
     try {
-      await HttpService.instance.post(ApiRoutes.endTrackingSessions);
+      final firstName = AuthService.instance.discretaUser?.firstName;
+      if (firstName == null) {
+        throw Exception('User first name is null');
+      }
+      await HttpService.instance.post(ApiRoutes.endTrackingSessions, {
+        'firstName': firstName,
+      });
     } catch (e) {
       throw Exception('Error ending tracking session: $e');
     }

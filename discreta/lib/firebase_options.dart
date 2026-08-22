@@ -52,27 +52,31 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBcVey8ZovirOreZLjyZXIgPS2Wm8wQJno',
-    appId: '1:101220018288:android:2aa891da6a6f477676ecb5',
+    appId: '1:101220018288:android:d053a3c04a3e793276ecb5',
     messagingSenderId: '101220018288',
     projectId: 'discreta-277d3',
     storageBucket: 'discreta-277d3.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCX1hwMrgzByiTWsUgkMD7Oux2YOHYzM1I',
-    appId: '1:101220018288:ios:2951c015e6c5df9c76ecb5',
+    appId: '1:101220018288:ios:a2949550aa68d1d676ecb5',
     messagingSenderId: '101220018288',
     projectId: 'discreta-277d3',
     storageBucket: 'discreta-277d3.firebasestorage.app',
-    iosBundleId: 'com.example.discreta',
+    androidClientId: '101220018288-8bep8904mstc9g7nvclvgk7at709e44m.apps.googleusercontent.com',
+    iosClientId: '101220018288-cq3nr2ii7o5cmopomnvu8rncmp451rbo.apps.googleusercontent.com',
+    iosBundleId: 'com.discreta.app',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCX1hwMrgzByiTWsUgkMD7Oux2YOHYzM1I',
     appId: '1:101220018288:ios:2951c015e6c5df9c76ecb5',
     messagingSenderId: '101220018288',
     projectId: 'discreta-277d3',
     storageBucket: 'discreta-277d3.firebasestorage.app',
+    androidClientId:
+        '101220018288-8bep8904mstc9g7nvclvgk7at709e44m.apps.googleusercontent.com',
+    iosClientId:
+        '101220018288-d9631ldi35juoktuvv2uvjuqdq91p6no.apps.googleusercontent.com',
     iosBundleId: 'com.example.discreta',
   );
 

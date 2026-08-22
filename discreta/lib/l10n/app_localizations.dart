@@ -134,11 +134,11 @@ abstract class AppLocalizations {
   /// **'One gesture. One alert. Reliable support,\n in complete discretion.'**
   String get brandMessage;
 
-  /// No description provided for @signInWithGoogle.
+  /// No description provided for @signIn.
   ///
   /// In en, this message translates to:
-  /// **'Sign in with Google'**
-  String get signInWithGoogle;
+  /// **'Sign in'**
+  String get signIn;
 
   /// No description provided for @signInError.
   ///
@@ -416,11 +416,23 @@ abstract class AppLocalizations {
   /// **'Even if your screen is off, make sure that the app is opened and that your phone is always connected to the internet and the button.'**
   String get step7;
 
+  /// No description provided for @step8.
+  ///
+  /// In en, this message translates to:
+  /// **'If you\'re on Android, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".'**
+  String get step8;
+
   /// No description provided for @step9.
   ///
   /// In en, this message translates to:
   /// **'You\'re good to go.'**
   String get step9;
+
+  /// No description provided for @batteryManagmentDirectives.
+  ///
+  /// In en, this message translates to:
+  /// **'To allow Discreta to run when your screen is locked, make sure to open Settings → Apps → Discreta → Battery and select \"Unrestricted\".'**
+  String get batteryManagmentDirectives;
 
   /// No description provided for @safetyAlerts.
   ///
@@ -461,8 +473,20 @@ abstract class AppLocalizations {
   /// No description provided for @locationRequired.
   ///
   /// In en, this message translates to:
-  /// **'Location required'**
+  /// **'Precise location required'**
   String get locationRequired;
+
+  /// No description provided for @locationRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We need access to your precise location to allow Discreta to function properly and send alerts when needed. You can enable location access at any time in your device settings.'**
+  String get locationRequiredMessage;
+
+  /// No description provided for @locationPermanentlyDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Precise location access has been disabled. To use Discreta, please enable location permission in your device settings.'**
+  String get locationPermanentlyDeniedMessage;
 
   /// No description provided for @locationAccessReason.
   ///
@@ -487,6 +511,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No trusted contact found'**
   String get noTrustedContact;
+
+  /// No description provided for @enableLocationServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Location services are turned off. Please enable location services in your device settings to continue using Discreta.'**
+  String get enableLocationServices;
 
   /// No description provided for @pleaseAddContacts.
   ///
@@ -553,6 +583,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap to connect'**
   String get tapToConnect;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get firstName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @accessCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Access code'**
+  String get accessCode;
+
+  /// No description provided for @signInErrorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in failed. Please make sure your name, email, and access code are correct.'**
+  String get signInErrorInvalidCredentials;
+
+  /// No description provided for @signInErrorMaxUsesOrExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This access code has already reached its maximum number of uses or is invalid'**
+  String get signInErrorMaxUsesOrExpired;
+
+  /// No description provided for @signInErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get signInErrorInvalidEmail;
+
+  /// No description provided for @unfilledAreas.
+  ///
+  /// In en, this message translates to:
+  /// **'Please make sure to enter a first name, an email address, and an access code.'**
+  String get unfilledAreas;
+
+  /// No description provided for @locationAlwaysRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Discreta requires \"Always allow\" location access to function properly. If not yet done, Please open your settings and select: Location → Always allow for Discreta.'**
+  String get locationAlwaysRequiredMessage;
+
+  /// No description provided for @reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get reminder;
+
+  /// No description provided for @connectionReruirments.
+  ///
+  /// In en, this message translates to:
+  /// **'Please ensure that the app is not force closed, and make sure you are always connected to the internet with Bluetooth enabled.'**
+  String get connectionReruirments;
 }
 
 class _AppLocalizationsDelegate

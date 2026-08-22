@@ -23,11 +23,14 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:label="Discreta"
-        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:name=".DiscretaApplication"
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -53,14 +56,13 @@
             android:exported="false" />
 
         <service
-            android:name=".FlicKeepaliveService"
-            android:foregroundServiceType="connectedDevice"
-            android:exported="false" />
-
-
-        <service
             android:name="com.discreta.LocationForegroundService"
             android:foregroundServiceType="location"
+            android:exported="false" />
+
+        <service
+            android:name=".FlicKeepaliveService"
+            android:foregroundServiceType="connectedDevice"
             android:exported="false" />
 
         <meta-data

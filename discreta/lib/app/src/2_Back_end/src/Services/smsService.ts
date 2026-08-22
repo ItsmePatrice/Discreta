@@ -13,14 +13,14 @@ const SmsService = {
             let body: string;
             if (!message || message.trim() === "") {
                  body = `🚨 DISCRETA SAFETY ALERT 
-Hey ${contactName}, this message was sent by Discreta. ${from} may be unsafe. If this is an emergency, please call local authorities immediately and share her live location with them. "${locationLink}"
+Hey ${contactName}, this message was sent by Discreta. ${from} may be unsafe. If this is an emergency, please call local authorities immediately and share his/her live location with them. "${locationLink}"
 
                 — Discreta Safety System`;
             ; 
 
             } else {
                  body = `🚨 DISCRETA SAFETY ALERT 
-Hey ${contactName}, this message was sent by Discreta. ${from} may be unsafe. Her message to you: "${message}" If this is an emergency, please call local authorities immediately and share her live location with them. "${locationLink}" 
+Hey ${contactName}, this message was sent by Discreta. ${from} may be unsafe. His/her message to you: "${message}" If this is an emergency, please call local authorities immediately and share his/her live location with them. "${locationLink}" 
 
                 — Discreta Safety System`;
             ; 

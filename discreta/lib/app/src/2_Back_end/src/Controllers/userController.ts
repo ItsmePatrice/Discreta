@@ -10,16 +10,16 @@ const userController = {
 
     saveAlertMessage: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
 
             const messageContent: string = req.body.message;
             if (!messageContent || messageContent.length === 0) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Message content is required' });
             }
-            await UserService.saveAlertMessage(firebaseUid, messageContent);
+            await UserService.saveAlertMessage(uid, messageContent);
             return res.status(StatusCodes.ok).json({ message: 'Alert message saved successfully' });
             
         } catch (e) {
@@ -30,12 +30,12 @@ const userController = {
 
     fetchAlertMessage: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
 
-            const message = await UserService.fetchAlertMessage(firebaseUid);
+            const message = await UserService.fetchAlertMessage(uid);
             if (message === null) {
                 return res.status(StatusCodes.notFound).json({ message: 'No alert message found' });
             }
@@ -49,11 +49,11 @@ const userController = {
 
     fetchContacts: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
-            const contacts = await UserService.fetchContacts(firebaseUid);
+            const contacts = await UserService.fetchContacts(uid);
             return res.status(StatusCodes.ok).json({ contacts: contacts });
         } catch (e) {
             logger.error(e);
@@ -63,15 +63,15 @@ const userController = {
 
     addContact: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
             const { name, phoneNumber } = req.body;
             if (!name || !phoneNumber) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Name and phone number are required' });
             }
-            const newContact = await UserService.addContact(firebaseUid, name, phoneNumber);
+            const newContact = await UserService.addContact(uid, name, phoneNumber);
             return res.status(StatusCodes.created).json({ contact: newContact });
         } catch (e) {
             logger.error(e);
@@ -81,15 +81,15 @@ const userController = {
 
     deleteContact: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
             const contactId = req.params.contactId;
             if (!contactId) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Contact ID is required' });
             }
-            await UserService.deleteContact(contactId, firebaseUid);
+            await UserService.deleteContact(contactId, uid);
             return res.status(StatusCodes.ok).json({ message: 'Contact deleted successfully' });
         }
         catch (e) {
@@ -100,16 +100,16 @@ const userController = {
 
     updateContact: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
             const contactId = req.params.contactId;
             const { name, phoneNumber } = req.body;
             if (!contactId || !name || !phoneNumber) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Contact ID, name, and phone number are required' });
             }
-            const updatedContact = await UserService.updateContact(contactId, firebaseUid, name, phoneNumber);
+            const updatedContact = await UserService.updateContact(contactId, uid, name, phoneNumber);
             return res.status(StatusCodes.ok).json({ contact: updatedContact });
         }
         catch (e) {
@@ -120,15 +120,15 @@ const userController = {
 
     updateLanguagePreference: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
             const { language } = req.body;
             if (!language || (language !== 'fr' && language !== 'en')) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Language is required' });
             }
-            const newLanguage = await UserService.updateLanguagePreference(firebaseUid, language);
+            const newLanguage = await UserService.updateLanguagePreference(uid, language);
             return res.status(StatusCodes.ok).json({ language: newLanguage });
         } catch (e) {
             logger.error(e);
@@ -137,11 +137,13 @@ const userController = {
     },
     sendAlert: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid || !req.firstName) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            const { firstName } = req.body;
+
+            if (!uid) {
+                throw ("uid was null");
             }
-            const sentAlert = await AlertService.sendAlertMessage(firebaseUid, req.firstName);
+            const sentAlert = await AlertService.sendAlertMessage(uid, firstName);
             return res.status(StatusCodes.ok).json({ sentAlert });
         } catch (e) {
             logger.error(e);
@@ -151,11 +153,12 @@ const userController = {
 
     startTrackingSession: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid || !req.firstName) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            const { firstName } = req.body;
+            if (!uid || !firstName) {
+                throw ("uid was null");
             }
-            const { trackingToken } = await AlertService.startTrackingSession(firebaseUid, req.firstName);
+            const { trackingToken } = await AlertService.startTrackingSession(uid, firstName);
             return res.status(StatusCodes.created).json({ trackingToken });
         } catch (e) {
             logger.error(e);
@@ -165,12 +168,12 @@ const userController = {
 
     stopTrackingSession: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid || !req.firstName) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            const { firstName } = req.body;
+            if (!uid || !firstName) {
+                throw ("uid was null");
             }
-            const username = req.firstName;
-            await AlertService.stopTrackingSession(username, firebaseUid);
+            await AlertService.stopTrackingSession(firstName, uid);
             return res.status(StatusCodes.ok).json({ message: 'Tracking session stopped successfully' });
         } catch (e) {
             logger.error(e);
@@ -180,15 +183,15 @@ const userController = {
 
     updateLocation: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
             const { trackingToken, lat, lng } = req.body;
             if (!trackingToken || lat === undefined || lng === undefined) {
                 return res.status(StatusCodes.badRequest).json({ message: 'Tracking token, latitude, and longitude are required' });
             }
-            await AlertService.updateLocation(firebaseUid, trackingToken, lat, lng);
+            await AlertService.updateLocation(uid, trackingToken, lat, lng);
             return res.status(StatusCodes.ok).json({ message: 'Location updated successfully' });
         }
         catch (e) {
@@ -199,11 +202,11 @@ const userController = {
 
     hasActiveTrackingSession: async (req: Request, res: Response) => {
         try {
-            const firebaseUid = req.firebaseUid;
-            if (!firebaseUid) {
-                throw ("firebaseUid was null");
+            const uid = req.uid;
+            if (!uid) {
+                throw ("uid was null");
             }
-            const hasActiveSession = await AlertService.hasActiveTrackingSession(firebaseUid);
+            const hasActiveSession = await AlertService.hasActiveTrackingSession(uid);
             return res.status(StatusCodes.ok).json({ "hasActiveTrackingSession": hasActiveSession });
         } catch (e) {
             logger.error(e);

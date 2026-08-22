@@ -4,10 +4,10 @@ import { UserDto } from "../Models/userDTO";
 import LogService from "./logService";
 
 const UserService = {
-    async findUserByFirebaseId(firebaseUserId: string) {
+    async findUserById(uid: string) {
         try {
             const res = await sql`
-                SELECT * FROM Users WHERE firebase_user_id = ${firebaseUserId} LIMIT 1
+                SELECT * FROM Users WHERE uid = ${uid} LIMIT 1
             `;
             
             const user = res[0];
@@ -15,33 +15,57 @@ const UserService = {
 
             const decryptedUser = {
                 uid: user.uid,
-                firebase_user_id: user.firebase_user_id,
                 first_name: user.first_name,
                 language: user.language,
-                last_name: decrypt(user.last_name),
-                email: decrypt(user.email),
-                is_subscribed: user.is_subscribed,
+                email: user.email,
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
 
             return decryptedUser;
         } catch (e) {
-            logger.error('Database error while looking for user: ', e);
+            logger.error('Database error while looking for user by calling findUserById: ', e);
+            throw e;
+        }
+    },
+    
+    
+    async findUser(email: string) {
+        try {
+            const res = await sql`
+                SELECT *
+                FROM Users
+                 WHERE email = ${email} LIMIT 1
+            `;
+            
+            const user = res[0];
+            if (!user) return null;
+
+            const decryptedUser = {
+                uid: user.uid,
+                first_name: user.first_name,
+                language: user.language,
+                email: user.email,
+                access_code: user.access_code,
+                created_at: user.created_at,
+                updated_at: user.updated_at
+            };
+
+            return decryptedUser;
+        } catch (e) {
+            logger.error('Database error while looking for user by calling findUser: ', e);
             throw e;
         }
     },
 
-    async createUser(dto: UserDto) {
+    async createUser(dto: UserDto, accessCode: string) {
         try {
             const createdUser = await sql`
-                INSERT INTO Users (firebase_user_id, first_name, last_name, email, is_subscribed)
+                INSERT INTO Users (first_name, email, access_code)
                 VALUES (
-                    ${dto.firebaseUserId},
                     ${dto.firstName},
-                    ${encrypt(dto.lastName)},
-                    ${encrypt(dto.email)},
-                    ${dto.isSubscribed}
+                    ${dto.email},
+                    ${accessCode}
                 )
                 RETURNING *;
             `;
@@ -49,17 +73,15 @@ const UserService = {
             const user = createdUser[0];
             const decryptedUser = {
                 uid: user.uid,
-                firebase_user_id: user.firebase_user_id,
                 first_name: user.first_name,
-                last_name: decrypt(user.last_name),
-                email: decrypt(user.email),
+                email: user.email,
+                access_code: user.access_code,
                 language: user.language,
-                is_subscribed: user.is_subscribed,
                 created_at: user.created_at,
                 updated_at: user.updated_at
             };
             const message = `${decryptedUser.first_name} joined`;
-            await LogService.logEvent(dto.firebaseUserId, message);
+            await LogService.logEvent(decryptedUser.uid, message);
 
             return decryptedUser;
         } catch (e) {
@@ -68,12 +90,13 @@ const UserService = {
         }
     },
 
-    async saveAlertMessage(firebaseUserId: string, messageContent: string) {
+
+    async saveAlertMessage(uid: string, messageContent: string) {
         try {
             const res = await sql`
-                INSERT INTO AlertMessages (firebase_user_id, message_content)
-                VALUES (${firebaseUserId}, ${messageContent})
-                ON CONFLICT (firebase_user_id)
+                INSERT INTO AlertMessages (user_id, message_content)
+                VALUES (${uid}, ${messageContent})
+                ON CONFLICT (user_id)
                 DO UPDATE SET
                     message_content = EXCLUDED.message_content
                 RETURNING *;
@@ -87,10 +110,10 @@ const UserService = {
     },
 
 
-    async fetchAlertMessage(firebaseUserId: string) {
+    async fetchAlertMessage(uid: string) {
         try {
             const res = await sql`
-                SELECT * FROM AlertMessages WHERE firebase_user_id = ${firebaseUserId} LIMIT 1
+                SELECT * FROM AlertMessages WHERE user_id = ${uid} LIMIT 1
             `;
             return res[0]?.message_content ?? null;
         }
@@ -100,11 +123,11 @@ const UserService = {
         }
     },
 
-    async addContact(firebaseUserId: string, name: string, phoneNumber: string) {
+    async addContact(uid: string, name: string, phoneNumber: string) {
         try {
             const res = await sql`
-                INSERT INTO Contacts (firebase_user_id, contact_name, contact_phone)
-                VALUES (${firebaseUserId}, ${name}, ${encrypt(phoneNumber)})
+                INSERT INTO Contacts (user_id, contact_name, contact_phone)
+                VALUES (${uid}, ${name}, ${encrypt(phoneNumber)})
                 RETURNING *;
             `;
             return res[0];
@@ -114,10 +137,10 @@ const UserService = {
         }
     },
 
-    async fetchContacts(firebaseUserId: string) {
+    async fetchContacts(uid: string) {
         try {
             const res = await sql`
-                SELECT * FROM Contacts WHERE firebase_user_id = ${firebaseUserId};
+                SELECT * FROM Contacts WHERE user_id = ${uid};
             `;
             return res.map(contact => ({
                 id: contact.id,
@@ -129,11 +152,11 @@ const UserService = {
             throw e;
         }
     },
-    async deleteContact(contactId: string, firebaseUserId: string) {
+    async deleteContact(contactId: string, uid: string) {
         try {
             await sql`
                 DELETE FROM Contacts 
-                WHERE id = ${contactId} AND firebase_user_id = ${firebaseUserId};
+                WHERE id = ${contactId} AND user_id = ${uid};
             `;
         } catch (e) {
             logger.error('Database error while deleting contact: ', e);
@@ -141,12 +164,12 @@ const UserService = {
         }
     },
 
-    async updateContact(contactId: string, firebaseUserId: string, name: string, phoneNumber: string) {
+    async updateContact(contactId: string, uid: string, name: string, phoneNumber: string) {
         try {
             const res = await sql`
                 UPDATE Contacts
                 SET contact_name = ${name}, contact_phone = ${encrypt(phoneNumber)}, updated_at = NOW()
-                WHERE id = ${contactId} AND firebase_user_id = ${firebaseUserId}
+                WHERE id = ${contactId} AND user_id = ${uid}
                 RETURNING *;
             `;
             return res[0];
@@ -156,12 +179,12 @@ const UserService = {
         }   
     },
 
-    async updateLanguagePreference(firebaseUserId: string, language: string) {
+    async updateLanguagePreference(uid: string, language: string) {
         try {
             const res = await sql`
                 UPDATE Users
                 SET language = ${language}, updated_at = NOW()
-                WHERE firebase_user_id = ${firebaseUserId}
+                WHERE uid = ${uid}
                 RETURNING *;
             `;
             return res[0].language;
@@ -170,6 +193,17 @@ const UserService = {
             throw e;
         }
     },
+
+    async deleteUser(uid: string) {
+        try {
+            await sql`
+                DELETE FROM Users WHERE uid = ${uid};
+            `;
+        } catch (e) {
+            logger.error('Database error while deleting user: ', e);
+            throw e;
+        }
+    }
 };
 
 export default UserService;

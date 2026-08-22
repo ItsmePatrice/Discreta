@@ -27,6 +27,10 @@ workflows:
         script: keychain add-certificates
       - name: Set up provisioning profiles
         script: xcode-project use-profiles
+      - name: Add GoogleService-Info.plist
+        script: |
+          mkdir -p "/Users/builder/clone/discreta/ios/Runner"
+          echo $GOOGLE_SERVICE_INFO_PLIST > "/Users/builder/clone/discreta/ios/Runner/GoogleService-Info.plist"
       - name: Get Flutter packages
         script: flutter packages pub get
       - name: Install pods

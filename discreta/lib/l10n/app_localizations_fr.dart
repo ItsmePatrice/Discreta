@@ -29,7 +29,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Un geste. Une alerte. Un soutien fiable,\n en toute discrétion.';
 
   @override
-  String get signInWithGoogle => 'Se connecter avec Google';
+  String get signIn => 'Se connecter';
 
   @override
   String get signInError => 'Erreur de connexion';
@@ -179,7 +179,15 @@ class AppLocalizationsFr extends AppLocalizations {
       'Même si votre écran est fermé, assurez-vous que l\'application est ouverte et que votre téléphone est toujours connecté à Internet et au bouton.';
 
   @override
+  String get step8 =>
+      'Si vous utilisez Android, accédez à Paramètres → Applications → Discreta → Batterie et sélectionnez \"Sans restriction\".';
+
+  @override
   String get step9 => 'Vous êtes prête.';
+
+  @override
+  String get batteryManagmentDirectives =>
+      'Pour permettre Discreta de fonctionner quand votre écran est fermé, accédez à Paramètres → Applications → Discreta → Batterie et sélectionnez \"Sans restriction\".';
 
   @override
   String get safetyAlerts => 'Sécurité et alertes';
@@ -201,7 +209,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get error => 'Erreur';
 
   @override
-  String get locationRequired => 'Localisation requise';
+  String get locationRequired => 'Localisation précise requise';
+
+  @override
+  String get locationRequiredMessage =>
+      'Nous avons besoin de votre localisation précise pour permettre à Discreta de fonctionner correctement et d’envoyer des alertes si nécessaire. Vous pouvez activer l’accès à la localisation à tout moment dans les paramètres de votre appareil.';
+
+  @override
+  String get locationPermanentlyDeniedMessage =>
+      'L’accès à la localisation précise a été désactivé. Pour utiliser Discreta, veuillez activer l’autorisation de localisation dans les paramètres de votre appareil.';
 
   @override
   String get locationAccessReason =>
@@ -216,6 +232,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noTrustedContact => 'Aucun contact de confiance trouvé';
+
+  @override
+  String get enableLocationServices =>
+      'Les services de localisation sont désactivés. Veuillez activer la localisation dans les paramètres de votre appareil pour continuer à utiliser Discreta.';
 
   @override
   String get pleaseAddContacts => 'Veuillez ajouter un contact de confiance';
@@ -251,4 +271,40 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tapToConnect => 'Touchez pour connecter';
+
+  @override
+  String get firstName => 'Prénom';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get accessCode => 'Code d\'accès';
+
+  @override
+  String get signInErrorInvalidCredentials =>
+      'Échec de la connexion. Veuillez vérifier que votre prénom, courriel et code d\'accès sont corrects.';
+
+  @override
+  String get signInErrorMaxUsesOrExpired =>
+      'Ce code d\'accès a atteint son nombre maximal d\'utilisations ou est invalide.';
+
+  @override
+  String get signInErrorInvalidEmail =>
+      'Veuillez entrer une adresse courriel valide.';
+
+  @override
+  String get unfilledAreas =>
+      'Veuillez vous assurer d\'entrer un prénom, une adresse courriel et un code d\'accès.';
+
+  @override
+  String get locationAlwaysRequiredMessage =>
+      'Discreta nécessite l’accès à la localisation « Toujours autoriser » pour fonctionner correctement. Si ce n\'est pas déja fait, Veuillez ouvrir les réglages et sélectionner : Localisation → Toujours autoriser pour Discreta.';
+
+  @override
+  String get reminder => 'Rappel';
+
+  @override
+  String get connectionReruirments =>
+      'Veuillez vous assurer de ne pas fermer l’application et de rester toujours connecté à Internet, avec le Bluetooth activé.';
 }

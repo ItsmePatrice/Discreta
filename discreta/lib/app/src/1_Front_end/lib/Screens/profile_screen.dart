@@ -43,7 +43,7 @@ class _ProfileScreenState extends State<ProfilePage> {
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.unknownError,
-        message: AppLocalizations.of(context)!.noInternetConnection,
+        message: e.toString(),
       );
     }
   }

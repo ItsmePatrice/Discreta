@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+3
+version: 1.0.1+14
 
 environment:
   sdk: ^3.8.1
@@ -35,9 +35,14 @@ dependencies:
 
   flic_button: ^1.2.11
 
-  firebase_core: ^3.14.0
-  firebase_auth: ^5.6.0
-  google_sign_in: ^5.4.2
+  firebase_messaging: ^16.3.0
+  firebase_core: ^4.10.0
+  flutter_local_notifications: ^17.0.0
+  cloud_firestore: ^6.5.0
+  firebase_auth: ^6.5.2
+
+  flutter_secure_storage: ^10.3.1
+
   logger: ^2.6.0
   flutter_screenutil: ^5.9.3
   http: ^1.4.0
@@ -49,6 +54,7 @@ dependencies:
   flutter_gen: ^4.2.1
   geolocator: ^11.0.0
   permission_handler: ^11.3.0
+  vibration: ^3.1.8
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -57,6 +63,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -64,6 +71,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "lib/app/src/1_Front_end/Assets/Images/Discreta_app_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -79,9 +91,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/app/src/1_Front_end/Assets/Images/android_neutral_sq_ctn.svg
-    - lib/app/src/1_Front_end/Assets/Images/purple_lady.jpg
-    - lib/app/src/1_Front_end/Assets/Images/google_logo.png
+    - lib/app/src/1_Front_end/Assets/Images/Discreta_app_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

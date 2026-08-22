@@ -1,13 +1,15 @@
+import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import dotenv from "dotenv";
 import { initDB } from "./Config/database";
 import authRoutes from './Routes/authRoutes';
 import userRoutes from './Routes/userRoutes';
 import preferenceRoutes from './Routes/preferenceRoutes';
 import publicLocationRoutes from './Routes/publicLocationRoutes';
+import "./Services/silentPush";
 import path from "path";
+
 
 dotenv.config();
 

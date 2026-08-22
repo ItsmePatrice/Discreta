@@ -142,35 +142,6 @@ class UserService {
     }
   }
 
-  Future<void> ensureLocationPermission() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception('Location services are disabled.');
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.denied) {
-      throw Exception('Location permission denied by user.');
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      throw Exception(
-        'Location permission permanently denied. Please enable it in settings.',
-      );
-    }
-
-    // Request background location — needed for GPS when screen is locked
-    if (permission == LocationPermission.whileInUse) {
-      permission = await Geolocator.requestPermission();
-      // This triggers "Allow all the time" dialog on Android
-    }
-  }
-
   // Make sure you capture the user's current location first
   Future<void> _startLocationUpdates(String trackingToken) async {
     try {
@@ -237,11 +208,18 @@ class UserService {
   // The user should only be able to use the app if they accept giving location permission.
   Future<bool> sendAlertNow() async {
     try {
-      final trackingToken = await LocationService.instance
-          .startTrackingSession();
+      final firstName = AuthService.instance.discretaUser?.firstName;
+      if (firstName == null) {
+        throw Exception('User first name is null');
+      }
+      final trackingToken = await LocationService.instance.startTrackingSession(
+        firstName,
+      );
       await _startLocationUpdates(trackingToken);
       _startAutoStopTimer();
-      final response = await HttpService.instance.post(ApiRoutes.sendAlert);
+      final response = await HttpService.instance.post(ApiRoutes.sendAlert, {
+        'firstName': firstName,
+      });
       if (response.statusCode != StatusCodes.ok) {
         throw Exception(
           'Failed to send alert now. ${jsonDecode(response.body)['message']}',

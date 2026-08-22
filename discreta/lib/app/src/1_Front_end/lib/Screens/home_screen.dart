@@ -8,15 +8,19 @@ import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_button.dart
 import 'package:discreta/app/src/1_Front_end/lib/Components/discreta_text.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Components/loading_overlay.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/auth_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/log_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/message_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/notification_service.dart';
 import 'package:discreta/app/src/1_Front_end/lib/Services/user_service.dart';
+import 'package:discreta/app/src/1_Front_end/lib/Services/vibration_service.dart';
 import 'package:discreta/l10n/app_localizations.dart';
 import 'package:discreta/main.dart';
 import 'package:flic_button/flic_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:permission_handler/permission_handler.dart' as Geolocator;
+//import 'package:permission_handler/permission_handler.dart' as Geolocator;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -88,8 +92,10 @@ class _HomePageState extends State<HomePage>
       duration: const Duration(milliseconds: 1500),
     );
 
-    _initFlic2();
-    _initializePage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initFlic2();
+      _initializePage();
+    });
   }
 
   @override
@@ -116,26 +122,26 @@ class _HomePageState extends State<HomePage>
   Future<void> _restorePairedButtons() async {
     if (_flicButtonManager == null) return;
 
-    // Wait for the plugin to finish initializing
     await _flicButtonManager!.invokation;
 
     final buttons = await _flicButtonManager!.getFlic2Buttons();
     if (buttons.isEmpty) return;
 
+    // Register and listen to all buttons first
     for (final button in buttons) {
-      _addButtonAndListen(button);
-      // Automatically connect to previously paired buttons
-      _flicButtonManager!.connectButton(button.uuid);
+      setState(() => _buttonsFound[button.uuid] = button);
+      _flicButtonManager!.listenToFlic2Button(button.uuid);
+    }
 
-      // Check if button is already connected and update state
-      if (button.connectionState ==
+    // Then connect only those not already connected
+    for (final button in buttons) {
+      if (button.connectionState !=
           Flic2ButtonConnectionState.connected_ready) {
-        setState(() {
-          _isFlicConnected = true;
-          _connectedButton = button;
-        });
+        _flicButtonManager!.connectButton(button.uuid);
       }
     }
+
+    // onButtonConnected() handles the UI update — no polling needed
   }
 
   // ---------------------------------------------------------------------------
@@ -144,12 +150,11 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _startScan() async {
     if (_flicButtonManager == null) return;
+    if (_isFlicScanning) return;
 
-    final bool granted;
-    if (!Platform.isAndroid) {
-      granted = await Permission.bluetooth.request().isGranted;
-    } else {
+    if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
+      bool granted;
       if (androidInfo.version.sdkInt > 30) {
         granted =
             await Permission.bluetoothScan.request().isGranted &&
@@ -159,18 +164,18 @@ class _HomePageState extends State<HomePage>
             await Permission.bluetooth.request().isGranted &&
             await Permission.location.request().isGranted;
       }
-    }
-
-    if (!granted) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Bluetooth permission required to scan.'),
-          ),
-        );
+      if (!granted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Bluetooth permission required to scan.'),
+            ),
+          );
+        }
+        return;
       }
-      return;
     }
+    // On iOS, Core Bluetooth handles the permission prompt automatically
 
     _flicButtonManager!.scanForFlic2();
     _scanController.repeat();
@@ -229,7 +234,13 @@ class _HomePageState extends State<HomePage>
   @override
   void onButtonClicked(Flic2ButtonClick buttonClick) {
     debugPrint('Flic button ${buttonClick.button.uuid} clicked');
-    if (!buttonClick.isDoubleClick) return;
+
+    if (!buttonClick.isDoubleClick) {
+      VibrationService.appRunningconfirmation();
+      _showConnectionConfirmation();
+      return;
+    }
+
     final now = DateTime.now();
     if ((_lastAlertTime != null &&
             now.difference(_lastAlertTime!) < _alertCooldown) &&
@@ -241,13 +252,59 @@ class _HomePageState extends State<HomePage>
     _sendAlertNow();
   }
 
-  @override
-  void onButtonConnected() {
-    debugPrint('Flic button connected');
+  void _showConnectionConfirmation() {
+    if (!mounted) return;
+
     setState(() {
       _isFlicConnected = true;
       _connectedButton = _buttonsFound.values.firstOrNull;
     });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+            const SizedBox(width: 10),
+            Text(
+              AppLocalizations.of(context)!.connected,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  @override
+  void onButtonConnected() {
+    debugPrint('Flic button connected');
+
+    final alreadyKnown = _buttonsFound.values.firstOrNull;
+
+    if (alreadyKnown != null) {
+      setState(() {
+        _isFlicConnected = true;
+        _connectedButton = alreadyKnown;
+      });
+    } else {
+      // _buttonsFound hasn't been populated yet — fetch directly from SDK
+      _flicButtonManager?.getFlic2Buttons().then((buttons) {
+        if (!mounted) return;
+        final button = buttons.firstOrNull;
+        setState(() {
+          _isFlicConnected = true;
+          _connectedButton = button;
+          if (button != null) _buttonsFound[button.uuid] = button;
+        });
+      });
+    }
+
     _scanController
       ..stop()
       ..reset();
@@ -311,50 +368,69 @@ class _HomePageState extends State<HomePage>
   // ---------------------------------------------------------------------------
 
   void _initializePage() async {
-    _firstName = AuthService.instance.userFirstName;
-    await AuthService.instance.fetchOrCreateUser();
+    _firstName = AuthService.instance.discretaUser?.firstName;
     final Locale userLocale = Locale(
       AuthService.instance.discretaUser?.language ?? 'fr',
     );
     myAppKey.currentState?.setLocale(userLocale);
-    _checkLocationPermission();
     _checkActiveTrackingSession();
+    NotificationService.instance.initialize();
+    NotificationService.instance.recordAppOpen();
+    _showBackgroundLocationDialog();
+    _showBluetoothAndInternertRequirment();
   }
 
-  Future<void> _checkLocationPermission() async {
-    try {
-      await UserService.instance.ensureLocationPermission();
-    } catch (e) {
-      if (e.toString().contains('background_location_required')) {
-        _showBackgroundLocationDialog();
-      } else {
-        MessageService.showLocationPermissionDialog(context);
-      }
-    }
+  void _showBluetoothAndInternertRequirment() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.reminder),
+        content: Text(AppLocalizations.of(context)!.connectionReruirments),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showBackgroundLocationDialog() {
+    if (!Platform.isAndroid) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => AlertDialog(
+          title: Text(AppLocalizations.of(context)!.reminder),
+          content: Text(
+            AppLocalizations.of(context)!.locationAlwaysRequiredMessage,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Ok'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (_) => AlertDialog(
-        title: const Text('Background location required'),
-        content: const Text(
-          'Discreta needs to access your location at all times to send '
-          'your position when you trigger an alert, even when your screen is locked.\n\n'
-          'In the next screen: tap Location → select "Allow all the time".',
+        title: Text(AppLocalizations.of(context)!.reminder),
+        content: Text(
+          AppLocalizations.of(context)!.locationAlwaysRequiredMessage +
+              AppLocalizations.of(context)!.batteryManagmentDirectives,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Not now'),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Geolocator.openAppSettings();
-            },
-            child: const Text('Open Settings'),
+            child: const Text('Ok'),
           ),
         ],
       ),
@@ -470,6 +546,9 @@ class _HomePageState extends State<HomePage>
         );
         return;
       }
+
+      await VibrationService.confirmation();
+
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.success,
@@ -480,7 +559,8 @@ class _HomePageState extends State<HomePage>
       MessageService.displayAlertDialog(
         context: context,
         title: AppLocalizations.of(context)!.unknownError,
-        message: AppLocalizations.of(context)!.noInternetConnection,
+        message: e
+            .toString() /*AppLocalizations.of(context)!.noInternetConnection*/,
       );
     } finally {
       setState(() => _isLoading = false);

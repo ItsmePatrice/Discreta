@@ -5,6 +5,8 @@ class ApiRoutes {
 
   // Auth routes
   static String login = '$baseUrl/api/auth/login';
+  static String refreshToken = '$baseUrl/api/auth/refresh-token';
+  static String refreshAccessToken = '$baseUrl/api/auth/refresh-access-token';
 
   // Alert flow
   static String alertMessage = '$baseUrl/api/alert-flow/alert-message';
