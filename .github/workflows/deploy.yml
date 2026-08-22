@@ -71,9 +71,9 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             set -euo pipefail
-            cd app
+            cd app/Discreta
             git fetch --all --tags
-            cd Discreta/discreta/lib/app/src/2_Back_end
+            cd discreta/lib/app/src/2_Back_end
             git checkout ${{ github.ref_name }}
             cat > .env << 'EOF'
             DATABASE_URL=${{ secrets.DATABASE_URL }}
