@@ -23,6 +23,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            set -euo pipefail
             cd app/Discreta
             git checkout staging
             git pull origin staging
@@ -48,7 +49,7 @@ jobs:
             EOF
 
             
-            npm install
+            npm ci
             npm run build
             docker stop discreta_app || true
             docker compose build app
@@ -69,6 +70,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            set -euo pipefail
             cd app
             git fetch --all --tags
             cd Discreta/discreta/lib/app/src/2_Back_end
@@ -93,7 +95,7 @@ jobs:
             ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
             EOF
 
-            npm install
+            npm ci
             npm run build
             docker stop discreta_app || true
             docker compose build app
