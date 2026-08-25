@@ -35,3 +35,7 @@ module "discreta_server" {
   ssh_key_name           = aws_key_pair.deployer.key_name
   domain_name            = var.domain_name
 }
+
+module "discreta_ecr" {
+  source = "../../modules/ecr"
+}
