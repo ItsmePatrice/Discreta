@@ -39,3 +39,9 @@ module "discreta_server" {
 module "discreta_ecr" {
   source = "../../modules/ecr"
 }
+
+module "github_oidc" {
+  source         = "../../modules/github-oidc"
+  repository_arn = module.discreta_ecr.repository_arn
+  github_repo    = "ItsmePatrice/Discreta"
+}
