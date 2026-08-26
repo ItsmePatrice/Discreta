@@ -23,3 +23,8 @@ variable "domain_name" {
   description = "Domain name for the EC2 instance"
   type        = string
 }
+
+variable "ecr_repository_arn" {
+  description = "ARN of the ECR repository"
+  type        = string
+}

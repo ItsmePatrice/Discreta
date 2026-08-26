@@ -29,25 +29,25 @@ resource "aws_iam_role_policy" "ecr_push" {
   role = aws_iam_role.github_actions_ecr.id
 
   policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        Sid    = "PushLayers"
-        Effect = "Allow"
-        Action = [
+        "Action" : [
           "ecr:CompleteLayerUpload",
           "ecr:UploadLayerPart",
           "ecr:InitiateLayerUpload",
           "ecr:BatchCheckLayerAvailability",
           "ecr:PutImage"
-        ]
-        Resource = var.repository_arn
+        ],
+        "Effect" : "Allow",
+        "Resource" : var.repository_arn,
+        "Sid" : "PushLayers"
       },
       {
-        Sid      = "AuthToken"
-        Effect   = "Allow"
-        Action   = "ecr:GetAuthorizationToken"
-        Resource = "*"
+        "Action" : "ecr:GetAuthorizationToken",
+        "Effect" : "Allow",
+        "Resource" : "*",
+        "Sid" : "AuthToken"
       }
     ]
   })
