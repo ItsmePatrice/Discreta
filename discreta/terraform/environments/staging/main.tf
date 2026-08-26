@@ -34,4 +34,5 @@ module "discreta_server" {
   vpc_security_group_ids = [data.terraform_remote_state.network.outputs.sg_id]
   ssh_key_name           = aws_key_pair.deployer.key_name
   domain_name            = var.domain_name
+  repository_arn         = var.ecr_repository_arn
 }

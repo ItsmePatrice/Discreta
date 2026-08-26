@@ -29,3 +29,8 @@ variable "domain_name" {
   type        = string
 }
 
+variable "repository_arn" {
+  description = "ARN of the ECR repository"
+  type        = string
+}
+
