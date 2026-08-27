@@ -85,10 +85,10 @@ jobs:
               --from-literal=serviceAccountKey.json='${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' \
               --dry-run=client -o yaml | kubectl apply -f -
 
-            kubectl set image deployment/discreta \
-              app=590183781247.dkr.ecr.ca-central-1.amazonaws.com/discreta:staging-${{ github.sha }}
+            kubectl set image deployment/discreta-staging-deployment \
+              discreta-staging=590183781247.dkr.ecr.ca-central-1.amazonaws.com/discreta:staging-${{ github.sha }}
 
-            kubectl rollout status deployment/discreta
+            kubectl rollout status deployment/discreta-staging-deployment
 
   deploy-production:
     runs-on: ubuntu-latest
