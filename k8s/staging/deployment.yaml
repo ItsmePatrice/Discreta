@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: discreta-staging-deployment
+  labels:
+    app: discreta-staging
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: discreta-staging
+
+  template:
+    metadata:
+      labels:
+        app: discreta-staging
+
+    spec:
+      containers:
+        - name: discreta-staging
+
+          image: 590183781247.dkr.ecr.ca-central-1.amazonaws.com/discreta:staging
+
+          ports:
+            - containerPort: 3000
+            
+          envFrom:
+            - secretRef:
+                name: discreta-secrets
+
+          volumeMounts:
+            - name: firebase-service-account
+              mountPath: /app/serviceAccountKey.json
+              subPath: serviceAccountKey.json
+              readOnly: true
+
+      volumes:
+        - name: firebase-service-account
+          secret:
+            secretName: firebase-service-account

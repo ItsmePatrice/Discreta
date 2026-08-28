@@ -82,3 +82,10 @@ resource "aws_iam_role_policy" "ecr_read_only_policy" {
     ]
   })
 }
+
+// Create an IAM role for GitHub Actions to push to ECR
+module "github_oidc" {
+  source             = "../modules/github-oidc"
+  ecr_repository_arn = data.terraform_remote_state.prod.outputs.ecr_repo_arn
+  github_repo        = "ItsmePatrice/Discreta"
+}

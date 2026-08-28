@@ -40,7 +40,7 @@ resource "aws_iam_role_policy" "ecr_push" {
           "ecr:PutImage"
         ],
         "Effect" : "Allow",
-        "Resource" : var.repository_arn,
+        "Resource" : var.ecr_repository_arn,
         "Sid" : "PushLayers"
       },
       {
