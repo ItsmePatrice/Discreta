@@ -7,6 +7,11 @@ on:
     tags:
       - "v*"
 
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
@@ -19,7 +24,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '24'
       
       - name: Install dependencies
         working-directory: discreta/lib/app/src/2_Back_end
