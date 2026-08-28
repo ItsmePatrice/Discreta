@@ -61,7 +61,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${domain_name}/privkey.pem;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:30000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -84,5 +84,56 @@ mkdir -p /home/ec2-user/app
 cd /home/ec2-user/app
 
 git clone https://github.com/ItsmePatrice/Discreta.git
+
+# Install Kubernetes client
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+# Install conteinerd for Kubernetes
+sudo dnf install -y containerd
+
+# configure containerd for Kubernetes
+sudo mkdir -p /etc/containerd
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+
+# Kubernetes should use the systemd cgroup driver with containerd
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+
+# restart containerd to apply the new configuration
+sudo systemctl restart containerd
+
+# make sure containerd starts automatically after rebout
+sudo systemctl enable containerd
+
+# add Kubernetes package repo
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.34/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.34/rpm/repodata/repomd.xml.key
+EOF
+
+# install Kubeadm
+sudo dnf install -y kubelet kubeadm
+
+# enable kubelet
+sudo systemctl enable --now kubelet
+
+# initialize the kubernetes cluster
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+# configure kubectl so kubectl can communicate with the cluster as ec2-user
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# use Flannel as the CNI
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+# remove the restriction that prevents from scheduling pods on the controll plane node
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
 chown -R ec2-user:ec2-user /home/ec2-user/app
