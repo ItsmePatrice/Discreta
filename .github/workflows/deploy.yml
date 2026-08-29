@@ -88,15 +88,14 @@ jobs:
 
             # 1. Create/update ECR pull secret
 
-            aws ecr get-login-password \
-              --region ca-central-1 \
-              | kubectl create secret docker-registry ecr-secret \
-                  --docker-server="$ECR_REGISTRY" \
-                  --docker-username=AWS \
-                  --docker-password-stdin \
-                  --dry-run=client \
-                  -o yaml \
-              | kubectl apply -f -
+            ECR_PASSWORD=$(aws ecr get-login-password --region ca-central-1)
+
+            kubectl create secret docker-registry ecr-secret \
+              --docker-server="$ECR_REGISTRY" \
+              --docker-username=AWS \
+              --docker-password="$ECR_PASSWORD" \
+              --dry-run=client \
+              -o yaml | kubectl apply -f -
 
 
             # 2. Create/update application secrets
