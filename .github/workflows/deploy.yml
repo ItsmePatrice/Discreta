@@ -152,7 +152,7 @@ jobs:
 
             kubectl rollout status \
               deployment/discreta-deployment \
-              --timeout=180s
+              --timeout=300s
 
 
             # 8. Show final state
