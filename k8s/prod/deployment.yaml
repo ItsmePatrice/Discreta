@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: discreta-deployment
+  labels:
+    app: discreta
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: discreta
+
+  template:
+    metadata:
+      labels:
+        app: discreta
+
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+
+      containers:
+        - name: discreta
+
+          image: 590183781247.dkr.ecr.ca-central-1.amazonaws.com/discreta:staging
+
+          ports:
+            - containerPort: 3000
+
+          envFrom:
+            - secretRef:
+                name: discreta-secrets
+
+          volumeMounts:
+            - name: firebase-service-account
+              mountPath: /app/serviceAccountKey.json
+              subPath: serviceAccountKey.json
+              readOnly: true
+
+      volumes:
+        - name: firebase-service-account
+          secret:
+            secretName: firebase-service-account
+
