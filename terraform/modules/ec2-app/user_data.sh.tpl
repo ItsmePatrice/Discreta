@@ -139,4 +139,33 @@ kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/
 # remove the restriction that prevents from scheduling pods on the controll plane node
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
+# Create Kubernetes secret used to pull private images from Amazon ECR
+aws ecr get-login-password --region ca-central-1 | \
+  kubectl create secret docker-registry ecr-secret \
+    --docker-server=590183781247.dkr.ecr.ca-central-1.amazonaws.com \
+    --docker-username=AWS \
+    --docker-password=-
+
+# Create Kubernetes Service
+cat > /home/ec2-user/app/discreta-service.yaml << 'EOF'
+apiVersion: v1
+kind: Service
+metadata:
+  name: discreta
+
+spec:
+  type: NodePort
+
+  selector:
+    app: discreta
+
+  ports:
+    - protocol: TCP
+      port: 30000
+      targetPort: 3000
+      nodePort: 30000
+EOF
+
+kubectl apply -f /home/ec2-user/app/discreta-service.yaml
+
 chown -R ec2-user:ec2-user /home/ec2-user/app

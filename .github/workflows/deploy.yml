@@ -7,17 +7,19 @@ on:
     tags:
       - "v*"
 
-
 permissions:
   id-token: write
   contents: read
 
 jobs:
+
   deploy-staging:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/staging'
     environment: staging
+
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -25,7 +27,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '24'
-      
+
       - name: Install dependencies
         working-directory: discreta/lib/app/src/2_Back_end
         run: npm ci
@@ -39,21 +41,37 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::590183781247:role/github-actions-ecr-push
           aws-region: ca-central-1
-      
+
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push Docker image
+
+      - name: Build and push Docker image to the ECR repository
         working-directory: discreta/lib/app/src/2_Back_end
         env:
           ECR_REGISTRY: 590183781247.dkr.ecr.ca-central-1.amazonaws.com
           ECR_REPOSITORY: discreta
           IMAGE_TAG: staging-${{ github.sha }}
+
         run: |
           docker build \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          docker push \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+
+      - name: Copy Kubernetes manifests
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: "k8s/staging/deployment.yaml,k8s/staging/service.yaml"
+          target: "/home/ec2-user/app/k8s/staging"
+          strip_components: 2
+          overwrite: true
 
       - name: Deploy to Staging with Kubernetes
         uses: appleboy/ssh-action@v1.0.3
@@ -61,14 +79,28 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
+
           script: |
             set -euo pipefail
 
-            aws ecr get-login-password --region ca-central-1 | \
-              docker login \
-              --username AWS \
-              --password-stdin \
-              590183781247.dkr.ecr.ca-central-1.amazonaws.com
+            ECR_REGISTRY="590183781247.dkr.ecr.ca-central-1.amazonaws.com"
+            ECR_REPOSITORY="discreta"
+            IMAGE_TAG="staging-${{ github.sha }}"
+
+
+            # 1. Create/update ECR pull secret
+
+            ECR_PASSWORD=$(aws ecr get-login-password --region ca-central-1)
+
+            kubectl create secret docker-registry ecr-secret \
+              --docker-server="$ECR_REGISTRY" \
+              --docker-username=AWS \
+              --docker-password="$ECR_PASSWORD" \
+              --dry-run=client \
+              -o yaml | kubectl apply -f -
+
+
+            # 2. Create/update application secrets
 
             kubectl create secret generic discreta-secrets \
               --from-literal=DATABASE_URL='${{ secrets.DATABASE_URL }}' \
@@ -84,59 +116,196 @@ jobs:
               --from-literal=WEB_BASE_URL='${{ secrets.WEB_BASE_URL }}' \
               --from-literal=ACCESS_TOKEN_SECRET='${{ secrets.ACCESS_TOKEN_SECRET }}' \
               --from-literal=REFRESH_TOKEN_SECRET='${{ secrets.REFRESH_TOKEN_SECRET }}' \
-              --dry-run=client -o yaml | kubectl apply -f -
+              --dry-run=client \
+              -o yaml \
+              | kubectl apply -f -
+
+
+            # 3. Create/update Firebase service account secret
 
             kubectl create secret generic firebase-service-account \
               --from-literal=serviceAccountKey.json='${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' \
-              --dry-run=client -o yaml | kubectl apply -f -
+              --dry-run=client \
+              -o yaml \
+              | kubectl apply -f -
 
-            kubectl set image deployment/discreta-staging-deployment \
-              discreta-staging=590183781247.dkr.ecr.ca-central-1.amazonaws.com/discreta:staging-${{ github.sha }}
 
-            kubectl rollout status deployment/discreta-staging-deployment
+            # 4. Apply Kubernetes Deployment
+
+            kubectl apply \
+              -f /home/ec2-user/app/k8s/staging/deployment.yaml
+
+
+            # 5. Apply Kubernetes Service
+
+            kubectl apply \
+              -f /home/ec2-user/app/k8s/staging/service.yaml
+
+
+            # 6. Tell deployment which image to run
+
+            kubectl set image deployment/discreta-deployment \
+              discreta="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+
+            # 7. Wait for rollout
+
+            kubectl rollout status \
+              deployment/discreta-deployment \
+              --timeout=300s
+
+
+            # 8. Show final state
+
+            kubectl get pods -o wide
+            kubectl get service discreta
+            kubectl get endpoints discreta
+
 
   deploy-production:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     environment: production
+
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy Production
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        working-directory: discreta/lib/app/src/2_Back_end
+        run: npm ci
+
+      - name: Build project
+        working-directory: discreta/lib/app/src/2_Back_end
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::590183781247:role/github-actions-ecr-push
+          aws-region: ca-central-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+
+      - name: Build and push Docker image to the ECR repository
+        working-directory: discreta/lib/app/src/2_Back_end
+        env:
+          ECR_REGISTRY: 590183781247.dkr.ecr.ca-central-1.amazonaws.com
+          ECR_REPOSITORY: discreta
+          IMAGE_TAG: prod-${{ github.sha }}
+
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            .
+
+          docker push \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+
+      - name: Copy Kubernetes manifests
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: "k8s/prod/deployment.yaml,k8s/prod/service.yaml"
+          target: "/home/ec2-user/app/k8s/prod"
+          strip_components: 2
+          overwrite: true
+
+      - name: Deploy to Production with Kubernetes
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
+
           script: |
             set -euo pipefail
-            cd app/Discreta
-            git fetch --all --tags
-            cd discreta/lib/app/src/2_Back_end
-            git checkout ${{ github.ref_name }}
-            cat > .env << 'EOF'
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            SERVER_PORT=${{ secrets.SERVER_PORT }}
-            FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
-            FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}
-            FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}
-            DATA_ENCRYPTION_KEY=${{ secrets.DATA_ENCRYPTION_KEY }}
-            TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}
-            TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}
-            TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }}
-            BASE_URL=${{ secrets.BASE_URL }}
-            WEB_BASE_URL=${{ secrets.WEB_BASE_URL }}
-            ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
-            REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}
-            EOF
 
-            cat > serviceAccountKey.json << 'EOF'
-            ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
-            EOF
+            ECR_REGISTRY="590183781247.dkr.ecr.ca-central-1.amazonaws.com"
+            ECR_REPOSITORY="discreta"
+            IMAGE_TAG="prod-${{ github.sha }}"
 
-            npm ci
-            npm run build
-            docker stop discreta_app || true
-            docker compose build app
-            docker compose up -d app
+
+            # 1. Create/update ECR pull secret
+
+            ECR_PASSWORD=$(aws ecr get-login-password --region ca-central-1)
+
+            kubectl create secret docker-registry ecr-secret \
+              --docker-server="$ECR_REGISTRY" \
+              --docker-username=AWS \
+              --docker-password="$ECR_PASSWORD" \
+              --dry-run=client \
+              -o yaml | kubectl apply -f -
+
+
+            # 2. Create/update application secrets
+
+            kubectl create secret generic discreta-secrets \
+              --from-literal=DATABASE_URL='${{ secrets.DATABASE_URL }}' \
+              --from-literal=SERVER_PORT='${{ secrets.SERVER_PORT }}' \
+              --from-literal=FIREBASE_PROJECT_ID='${{ secrets.FIREBASE_PROJECT_ID }}' \
+              --from-literal=FIREBASE_CLIENT_EMAIL='${{ secrets.FIREBASE_CLIENT_EMAIL }}' \
+              --from-literal=FIREBASE_PRIVATE_KEY='${{ secrets.FIREBASE_PRIVATE_KEY }}' \
+              --from-literal=DATA_ENCRYPTION_KEY='${{ secrets.DATA_ENCRYPTION_KEY }}' \
+              --from-literal=TWILIO_ACCOUNT_SID='${{ secrets.TWILIO_ACCOUNT_SID }}' \
+              --from-literal=TWILIO_AUTH_TOKEN='${{ secrets.TWILIO_AUTH_TOKEN }}' \
+              --from-literal=TWILIO_PHONE_NUMBER='${{ secrets.TWILIO_PHONE_NUMBER }}' \
+              --from-literal=BASE_URL='${{ secrets.BASE_URL }}' \
+              --from-literal=WEB_BASE_URL='${{ secrets.WEB_BASE_URL }}' \
+              --from-literal=ACCESS_TOKEN_SECRET='${{ secrets.ACCESS_TOKEN_SECRET }}' \
+              --from-literal=REFRESH_TOKEN_SECRET='${{ secrets.REFRESH_TOKEN_SECRET }}' \
+              --dry-run=client \
+              -o yaml \
+              | kubectl apply -f -
+
+
+            # 3. Create/update Firebase service account secret
+
+            kubectl create secret generic firebase-service-account \
+              --from-literal=serviceAccountKey.json='${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}' \
+              --dry-run=client \
+              -o yaml \
+              | kubectl apply -f -
+
+
+            # 4. Apply Kubernetes Deployment
+
+            kubectl apply \
+              -f /home/ec2-user/app/k8s/prod/deployment.yaml
+
+
+            # 5. Apply Kubernetes Service
+
+            kubectl apply \
+              -f /home/ec2-user/app/k8s/prod/service.yaml
+
+
+            # 6. Tell deployment which image to run
+
+            kubectl set image deployment/discreta-deployment \
+              discreta="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+
+            # 7. Wait for rollout
+
+            kubectl rollout status \
+              deployment/discreta-deployment \
+              --timeout=300s
+
+
+            # 8. Show final state
+
+            kubectl get pods -o wide
+            kubectl get service discreta
+            kubectl get endpoints discreta
