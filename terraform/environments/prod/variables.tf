@@ -23,3 +23,8 @@ variable "domain_name" {
   description = "Domain name for the EC2 instance"
   type        = string
 }
+
+variable "website_domain_name" {
+  description = "website domain name"
+  type        = string
+}
