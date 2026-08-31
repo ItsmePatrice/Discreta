@@ -83,9 +83,23 @@ resource "aws_iam_role_policy" "ecr_read_only_policy" {
   })
 }
 
+resource "aws_iam_openid_connect_provider" "github" {
+  url            = "https://token.actions.githubusercontent.com"
+  client_id_list = ["sts.amazonaws.com"]
+}
+
 // Create an IAM role for GitHub Actions to push to ECR
 module "github_oidc" {
-  source             = "../modules/github-oidc"
-  ecr_repository_arn = data.terraform_remote_state.prod.outputs.ecr_repo_arn
-  github_repo        = "ItsmePatrice/Discreta"
+  source                              = "../modules/github-oidc"
+  ecr_repository_arn                  = data.terraform_remote_state.prod.outputs.ecr_repo_arn
+  github_repo                         = "ItsmePatrice/Discreta"
+  aws_iam_openid_connect_provider_arn = aws_iam_openid_connect_provider.github.arn
+}
+
+// Create an IAM role for Github Actions to update website in S3
+module "github_oidc_web" {
+  source                              = "../modules/github-oidc-web"
+  s3_bucket_arn                       = data.terraform_remote_state.prod.outputs.s3_bucket_arn
+  github_repo                         = "ItsmePatrice/panic-necklace"
+  aws_iam_openid_connect_provider_arn = aws_iam_openid_connect_provider.github.arn
 }
