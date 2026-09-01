@@ -31,7 +31,7 @@ Discreta is built as a distributed system combining hardware, mobile software, b
 ```text
                     ┌─────────────────────┐
                     │   Discreet Device   │
-                    │      (Flic)          │
+                    │      (Flic)         │
                     └──────────┬──────────┘
                                │
                                │ Bluetooth
@@ -90,8 +90,8 @@ I worked across the application, backend, cloud infrastructure, and deployment p
 * Implemented emergency alert workflows
 * Implemented real-time location handling
 * Implemented notification services
-* Added protections around sensitive API routes
-* Designed backend services to support multiple running instances
+* Added authentication middleware and protected API routes
+* Structured backend services to support multiple application instances
 
 ### Cloud & Infrastructure
 
@@ -101,18 +101,18 @@ I worked across the application, backend, cloud infrastructure, and deployment p
 * Created an **Amazon ECR** repository for application images
 * Configured **NGINX** as a reverse proxy
 * Configured TLS certificates using **AWS Certificate Manager**
-* Built and managed a Kubernetes cluster on EC2
+* Built and managed a Kubernetes cluster directly on EC2
 * Deployed backend workloads using Kubernetes Deployments and Services
-* Configured multiple backend replicas for improved availability
+* Configured multiple Kubernetes replicas for the backend
 
 ### CI/CD & DevOps
 
 * Built CI/CD pipelines using **GitHub Actions**
-* Automated Node.js builds and testing
+* Automated application builds
 * Automated Docker image creation
 * Automated image publishing to Amazon ECR
 * Implemented GitHub Actions authentication to AWS using **OIDC**
-* Avoided storing long-lived AWS access keys in GitHub
+* Avoided storing long-lived AWS credentials in GitHub
 * Automated deployment of containerized backend workloads
 * Separated development, staging, and production infrastructure
 * Managed infrastructure as code using Terraform
@@ -167,7 +167,7 @@ This allows the infrastructure to be version controlled, reproducible, and consi
 
 Security is an important part of the architecture because the application handles authentication, emergency alerts, and location data.
 
-### AWS authentication
+### AWS Authentication
 
 GitHub Actions authenticates with AWS using **OpenID Connect (OIDC)**.
 
@@ -187,9 +187,9 @@ Temporary AWS credentials
 
 IAM permissions are scoped according to the resources required by each workflow.
 
-### Application security
+### Application Security
 
-The backend uses protected API routes and authentication middleware to prevent unauthorized access to application resources.
+The backend uses authentication middleware and protected API routes to prevent unauthorized access to application resources.
 
 Sensitive configuration such as API credentials and database credentials is kept outside of the source code.
 
@@ -246,7 +246,6 @@ This removes the need to manually build and deploy backend releases.
 * **Express**
 * **TypeScript**
 * **PostgreSQL**
-* Socket.IO
 * Firebase
 * Stripe
 
@@ -316,6 +315,40 @@ It contains the landing page used to present the product, its features, and the 
 
 ---
 
+## 🚧 Open Items - Documented, Not Hidden
+
+Discreta is an evolving production project. Some infrastructure decisions are intentionally kept simple while the project is still at its current scale.
+
+Being transparent about these tradeoffs is part of documenting the engineering decisions behind the system.
+
+Current known limitations and areas for improvement:
+
+* **Terraform state is currently stored locally per environment.** A remote backend using Amazon S3 with state locking would be the next step for safer collaboration and centralized state management.
+
+* **The backend currently runs on a Kubernetes cluster hosted directly on EC2 rather than Amazon EKS.** This keeps infrastructure costs and operational complexity lower while providing hands-on experience managing Kubernetes directly.
+
+* **The EC2/Kubernetes layer is not yet backed by an Application Load Balancer or Auto Scaling Group.** The current architecture is sufficient for the project's present scale. Introducing these components would make sense as traffic and availability requirements increase.
+
+* **Observability is still an area for improvement.** Centralized logging, metrics, dashboards, and alerting would be added as the system moves toward higher production usage.
+
+* **The CI/CD pipeline can be expanded with additional deployment safeguards.** The current pipelines automate builds, container image publishing, and deployments, while automated testing and stronger deployment gates can be added as the project grows.
+
+## Scaling Path - Not Built, Deliberately Deferred
+
+If usage and availability requirements increase, the infrastructure can evolve without fundamentally changing the application architecture.
+
+1. Introduce an **Application Load Balancer** in front of the Kubernetes workloads.
+2. Add an **Auto Scaling Group** to provide additional EC2 capacity.
+3. Move Terraform state to a centralized **Amazon S3 backend with state locking**.
+4. Expand automated testing and add deployment gates to the CI/CD pipeline.
+5. Introduce centralized logging and monitoring using services such as **Amazon CloudWatch**, Prometheus, and Grafana.
+6. Evaluate **Amazon EKS** if the operational benefits justify moving Kubernetes management to AWS.
+7. Add additional redundancy and multi-instance infrastructure as availability requirements increase.
+
+The goal is to scale the infrastructure when the product requires it, rather than introducing operational complexity before it provides meaningful value.
+
+---
+
 ## 🛠️ Local Development
 
 Clone the repository:
@@ -354,7 +387,7 @@ It involved working across:
 * AWS security and IAM
 * Production deployment
 
-The project gave me practical experience designing and operating a system across the entire software delivery lifecycle - from a physical hardware interaction all the way to a production cloud environment.
+The project provided practical experience designing and operating a system across the entire software delivery lifecycle - from a physical hardware interaction all the way to a production cloud environment.
 
 ---
 
