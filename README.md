@@ -18,7 +18,7 @@ The product presentation page is maintained in a separate repository:
 
 **Mobile:** Flutter · Dart · Firebase · Bluetooth
 
-**Backend:** Node.js · Express · TypeScript · PostgreSQL · Socket.IO
+**Backend:** Node.js · Express · TypeScript · PostgreSQL ·
 
 **Cloud:** AWS EC2 · ECR · IAM · S3 · CloudFront · ACM
 
