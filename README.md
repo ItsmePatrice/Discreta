@@ -14,6 +14,20 @@ The product presentation page is maintained in a separate repository:
 
 ---
 
+## 🛠️ Tech Stack
+
+**Mobile:** Flutter · Dart · Firebase · Bluetooth
+
+**Backend:** Node.js · Express · TypeScript · PostgreSQL · Socket.IO
+
+**Cloud:** AWS EC2 · ECR · IAM · S3 · CloudFront · ACM
+
+**Infrastructure:** Terraform · Docker · Kubernetes · NGINX
+
+**CI/CD:** GitHub Actions · GitHub OIDC
+
+---
+
 ## 🎯 The Problem
 
 Professionals who work alone can find themselves in situations where reaching for a phone or making a visible emergency call is not practical.
@@ -191,7 +205,7 @@ IAM permissions are scoped according to the resources required by each workflow.
 
 The backend uses authentication middleware and protected API routes to prevent unauthorized access to application resources.
 
-Sensitive configuration such as API credentials and database credentials is kept outside of the source code.
+Sensitive configuration such as API credentials and database credentials is kept outside the source code.
 
 ---
 
@@ -227,45 +241,6 @@ Kubernetes
 ```
 
 This removes the need to manually build and deploy backend releases.
-
----
-
-## 🧱 Technology Stack
-
-### Mobile
-
-* **Flutter**
-* **Dart**
-* Bluetooth / Flic SDK
-* Background location services
-* Firebase
-
-### Backend
-
-* **Node.js**
-* **Express**
-* **TypeScript**
-* **PostgreSQL**
-* Firebase
-* Stripe
-
-### Cloud
-
-* **Amazon EC2**
-* **Amazon ECR**
-* **AWS IAM**
-* **AWS ACM**
-* **Amazon S3**
-* **Amazon CloudFront**
-
-### Infrastructure & DevOps
-
-* **Terraform**
-* **Docker**
-* **Kubernetes**
-* **NGINX**
-* **GitHub Actions**
-* GitHub OIDC
 
 ---
 
@@ -333,7 +308,7 @@ Current known limitations and areas for improvement:
 
 * **The CI/CD pipeline can be expanded with additional deployment safeguards.** The current pipelines automate builds, container image publishing, and deployments, while automated testing and stronger deployment gates can be added as the project grows.
 
-## Scaling Path - Not Built, Deliberately Deferred
+### Scaling Path - Not Built, Deliberately Deferred
 
 If usage and availability requirements increase, the infrastructure can evolve without fundamentally changing the application architecture.
 
