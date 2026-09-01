@@ -6,7 +6,7 @@ The system combines a discreet physical device, a mobile application, and a clou
 
 This repository contains the **core Discreta application and backend infrastructure**.
 
-The product presentation page are maintained in a separate repository:
+The product presentation page is maintained in a separate repository:
 
 **[Discreta Website](https://github.com/ItsmePatrice/panic-necklace)**
 
