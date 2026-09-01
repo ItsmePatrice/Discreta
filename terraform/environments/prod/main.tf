@@ -46,12 +46,6 @@ module "discreta_ecr" {
   source = "../../modules/ecr"
 }
 
-module "github_oidc" {
-  source             = "../../modules/github-oidc"
-  ecr_repository_arn = module.discreta_ecr.repository_arn
-  github_repo        = "ItsmePatrice/Discreta"
-}
-
 module "website_s3" {
   source = "../../modules/s3"
 
