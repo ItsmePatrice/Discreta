@@ -44,6 +44,11 @@ resource "aws_cloudfront_distribution" "website" {
         forward = "none"
       }
     }
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.website_routing.arn
+    }
   }
 
   restrictions {
@@ -62,4 +67,26 @@ resource "aws_cloudfront_distribution" "website" {
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
+}
+
+resource "aws_cloudfront_function" "website_routing" {
+  name    = "discreta-website-routing"
+  runtime = "cloudfront-js-2.0"
+  comment = "Rewrite Next.js static export routes to index.html"
+  publish = true
+
+  code = <<-EOT
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+      } else if (!uri.includes('.')) {
+        request.uri += '/index.html';
+      }
+
+      return request;
+    }
+  EOT
 }
