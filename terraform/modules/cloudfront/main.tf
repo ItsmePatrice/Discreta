@@ -86,7 +86,7 @@ resource "aws_cloudfront_function" "website_routing" {
             request.uri = uri + '.html';
         }
 
-        return request;
+        return request; 
       }
   EOT
 }
