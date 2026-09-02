@@ -59,7 +59,9 @@ resource "aws_iam_role_policy" "send_to_cloudwatch_policy" {
         Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:PutLogEvents",
+          "logs:FilterLogEvents",
+          "logs:GetLogEvents"
         ]
         Resource = [
           "arn:aws:logs:ca-central-1:*:log-group:/discreta/prod/app:*",
