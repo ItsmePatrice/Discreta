@@ -77,9 +77,7 @@ Planned next steps as the project scales beyond its current stage:
 
 1. Move Terraform state to a centralized S3 backend with state locking
 2. Introduce an Application Load Balancer and Auto Scaling Group
-3. Add centralized logging and monitoring (CloudWatch, Prometheus/Grafana)
-4. Expand CI/CD with automated testing and deployment gates
-5. Evaluate Amazon EKS if operational needs outgrow self-managed Kubernetes
+3. Evaluate Amazon EKS if operational needs outgrow self-managed Kubernetes
 
 ---
 
