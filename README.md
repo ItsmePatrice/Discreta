@@ -28,7 +28,7 @@ The product presentation page is maintained in a separate repository:
 
 ---
 
-## 🎯 The Problem
+## The Problem
 
 Professionals who work alone can find themselves in situations where reaching for a phone or making a visible emergency call is not practical.
 
@@ -38,7 +38,7 @@ A user can trigger an alert using a small physical device. The system then notif
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 Discreta is built as a distributed system combining hardware, mobile software, backend services, and cloud infrastructure.
 
@@ -80,7 +80,7 @@ The architecture is designed around a simple flow:
 
 ---
 
-## 🚀 What I Built
+## What I Built
 
 I worked across the application, backend, cloud infrastructure, and deployment pipeline.
 
@@ -133,7 +133,7 @@ I worked across the application, backend, cloud infrastructure, and deployment p
 
 ---
 
-## ☁️ AWS Architecture
+## AWS Architecture
 
 The backend infrastructure is primarily hosted on AWS.
 
@@ -177,7 +177,7 @@ This allows the infrastructure to be version controlled, reproducible, and consi
 
 ---
 
-## 🔐 Security
+## Security
 
 Security is an important part of the architecture because the application handles authentication, emergency alerts, and location data.
 
@@ -209,7 +209,7 @@ Sensitive configuration such as API credentials and database credentials is kept
 
 ---
 
-## 🔄 CI/CD
+## CI/CD
 
 The project uses GitHub Actions to automate the software delivery process.
 
@@ -341,7 +341,7 @@ Refer to the relevant project directory for installation and environment configu
 
 ---
 
-## 📈 Engineering Focus
+## Engineering Focus
 
 Discreta has been an end-to-end engineering project rather than only an application development project.
 
@@ -366,7 +366,7 @@ The project provided practical experience designing and operating a system acros
 
 ---
 
-## 👨‍💻 Project
+## Project
 
 **Discreta**
 
