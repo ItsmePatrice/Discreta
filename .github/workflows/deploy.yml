@@ -68,7 +68,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
-          source: "k8s/staging/deployment.yaml,k8s/staging/service.yaml"
+          source: "k8s/staging/deployment.yaml,k8s/staging/service.yaml,k8s/logging/fluent-bit-daemonset.yaml,k8s/logging/fluent-bit-configmap.yaml"
           target: "/home/ec2-user/app/k8s/staging"
           strip_components: 2
           overwrite: true
@@ -217,7 +217,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
-          source: "k8s/prod/deployment.yaml,k8s/prod/service.yaml"
+          source: "k8s/prod/deployment.yaml,k8s/prod/service.yaml,k8s/logging/fluent-bit-daemonset.yaml,k8s/logging/fluent-bit-configmap.yaml"
           target: "/home/ec2-user/app/k8s/prod"
           strip_components: 2
           overwrite: true
