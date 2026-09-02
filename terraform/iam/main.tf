@@ -38,19 +38,50 @@ data "aws_iam_policy_document" "assume_role" {
 
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "ec2_instance_profile"
-  role = aws_iam_role.ecr_read.name
+  role = aws_iam_role.ec2_node_role.name
 }
 
-resource "aws_iam_role" "ecr_read" {
-  name               = "ecr_read"
+resource "aws_iam_role" "ec2_node_role" {
+  name               = "ec2_node_role"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+resource "aws_iam_role_policy" "send_to_cloudwatch_policy" {
+  name = "send_to_cloudwatch_policy"
+  role = aws_iam_role.ec2_node_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:FilterLogEvents",
+          "logs:GetLogEvents"
+        ]
+        Resource = [
+          "arn:aws:logs:ca-central-1:*:log-group:/discreta/prod/app:*",
+          "arn:aws:logs:ca-central-1:*:log-group:/discreta/staging/app:*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_cloudwatch_log_group" "discreta_app" {
+  for_each          = toset(["prod", "staging"])
+  name              = "/discreta/${each.key}/app"
+  retention_in_days = each.key == "prod" ? 30 : 7
+  log_group_class   = "INFREQUENT_ACCESS"
+}
 
 resource "aws_iam_role_policy" "ecr_read_only_policy" {
   name = "ecr_read_only_policy"
-  role = aws_iam_role.ecr_read.id
+  role = aws_iam_role.ec2_node_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
