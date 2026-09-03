@@ -1,5 +1,4 @@
 # Discreta
-
 A personal safety system for professionals who work alone. A discreet physical device, a mobile app, and a cloud backend let a user silently trigger an emergency alert and share their live location with trusted contacts.
 
 **Product:** https://discreta.ca
@@ -8,7 +7,6 @@ A personal safety system for professionals who work alone. A discreet physical d
 ---
 
 ## What I Built
-
 End-to-end: mobile app, backend, cloud infrastructure, and deployment pipeline.
 
 **Application**
@@ -22,9 +20,10 @@ End-to-end: mobile app, backend, cloud infrastructure, and deployment pipeline.
 - Authentication middleware and protected routes
 
 **Cloud & Infrastructure**
-- AWS infrastructure provisioned entirely with Terraform (EC2, ECR, IAM, S3, CloudFront, ACM)
+- AWS infrastructure provisioned entirely with Terraform (EC2, ECR, IAM, S3, CloudFront, ACM, CloudWatch)
 - Self-managed Kubernetes cluster on EC2, Docker containers, NGINX reverse proxy
 - Multi-environment setup (prod/staging) with isolated state
+- Centralized logging via Fluent Bit (DaemonSet) shipping container logs to CloudWatch Logs, with Grafana Cloud connected as the monitoring/visualization layer
 
 **CI/CD**
 - GitHub Actions pipeline: build - containerize - push to ECR - deploy
@@ -38,8 +37,9 @@ End-to-end: mobile app, backend, cloud infrastructure, and deployment pipeline.
 |---|---|
 | Mobile | Flutter, Dart, Firebase, Bluetooth |
 | Backend | Node.js, Express, TypeScript, PostgreSQL |
-| Cloud | AWS EC2, ECR, IAM, S3, CloudFront, ACM |
+| Cloud | AWS EC2, ECR, IAM, S3, CloudFront, ACM, CloudWatch |
 | Infrastructure | Terraform, Docker, Kubernetes, NGINX |
+| Observability | CloudWatch Logs, Fluent Bit, Grafana Cloud |
 | CI/CD | GitHub Actions, GitHub OIDC |
 
 ---
@@ -54,9 +54,13 @@ Discreet Device (Flic) - Mobile App (Flutter) - Backend (Node.js/Express) - EC2 
 ```
 
 **Deployment flow:**
-
 ```text
 GitHub - GitHub Actions - OIDC - ECR (image) - EC2 / Kubernetes pods - NGINX - Internet
+```
+
+**Observability flow:**
+```text
+Kubernetes pods (stdout/stderr) - Fluent Bit DaemonSet - CloudWatch Logs - Grafana Cloud
 ```
 
 Infrastructure is fully version-controlled and provisioned through Terraform rather than the AWS console - reproducible and consistent across environments.
@@ -64,17 +68,14 @@ Infrastructure is fully version-controlled and provisioned through Terraform rat
 ---
 
 ## Security
-
 - GitHub Actions authenticates to AWS via **OIDC**, exchanging a short-lived token for temporary credentials instead of storing static AWS keys
-- IAM permissions scoped per workflow
+- IAM permissions scoped per workflow, with least-privilege policies for log shipping (write-only) and dashboard access (read-only) kept separate
 - API routes protected by authentication middleware; credentials kept out of source control
 
 ---
 
 ## Roadmap
-
 Planned next steps as the project scales beyond its current stage:
-
 1. Move Terraform state to a centralized S3 backend with state locking
 2. Introduce an Application Load Balancer and Auto Scaling Group
 3. Evaluate Amazon EKS if operational needs outgrow self-managed Kubernetes
@@ -82,10 +83,8 @@ Planned next steps as the project scales beyond its current stage:
 ---
 
 ## Local Development
-
 ```bash
 git clone https://github.com/ItsmePatrice/Discreta.git
 cd Discreta
 ```
-
 Each component (mobile, backend) has its own dependencies and setup instructions in its respective directory. Environment variables and production credentials are not included in this repository.
