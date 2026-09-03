@@ -134,3 +134,57 @@ module "github_oidc_web" {
   github_repo                         = "ItsmePatrice/panic-necklace"
   aws_iam_openid_connect_provider_arn = aws_iam_openid_connect_provider.github.arn
 }
+
+
+// create an IAM user for Grafana to read CloudWatch logs
+resource "aws_iam_user" "grafana_reader" {
+  name = "grafana_reader"
+  path = "/"
+}
+
+resource "aws_iam_access_key" "grafana_reader_key" {
+  user = aws_iam_user.grafana_reader.name
+}
+
+resource "aws_iam_user_policy" "grafana_reader_policy" {
+  name = "grafana_reader_policy"
+  user = aws_iam_user.grafana_reader.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:GetLogEvents",
+          "logs:GetLogRecord",
+          "logs:FilterLogEvents",
+          "logs:StartQuery",
+          "logs:StopQuery",
+          "logs:GetQueryResults"
+        ]
+        Resource = [
+          "arn:aws:logs:ca-central-1:*:log-group:/discreta/prod/app:*",
+          "arn:aws:logs:ca-central-1:*:log-group:/discreta/staging/app:*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:GetMetricData",
+          "cloudwatch:ListMetrics",
+          "cloudwatch:DescribeAlarms"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
